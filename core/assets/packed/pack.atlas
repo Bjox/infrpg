@@ -1,0 +1,123 @@
+
+pack.png
+size: 64,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+player
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+
+pack2.png
+size: 2048,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+animations/spearman_down
+  rotate: false
+  xy: 2, 163
+  size: 1040, 134
+  orig: 1040, 134
+  offset: 0, 0
+  index: -1
+animations/spearman_downleft
+  rotate: false
+  xy: 2, 713
+  size: 1580, 132
+  orig: 1580, 132
+  offset: 0, 0
+  index: -1
+animations/spearman_downright
+  rotate: false
+  xy: 2, 439
+  size: 1510, 132
+  orig: 1510, 132
+  offset: 0, 0
+  index: -1
+animations/spearman_idle
+  rotate: false
+  xy: 2, 299
+  size: 1464, 138
+  orig: 1464, 138
+  offset: 0, 0
+  index: -1
+animations/spearman_left
+  rotate: false
+  xy: 2, 1116
+  size: 2030, 123
+  orig: 2030, 123
+  offset: 0, 0
+  index: -1
+animations/spearman_right
+  rotate: false
+  xy: 2, 991
+  size: 1910, 123
+  orig: 1910, 123
+  offset: 0, 0
+  index: -1
+animations/spearman_up
+  rotate: false
+  xy: 2, 2
+  size: 980, 159
+  orig: 980, 159
+  offset: 0, 0
+  index: -1
+animations/spearman_upleft
+  rotate: false
+  xy: 2, 847
+  size: 1650, 142
+  orig: 1650, 142
+  offset: 0, 0
+  index: -1
+animations/spearman_upright
+  rotate: false
+  xy: 2, 573
+  size: 1510, 138
+  orig: 1510, 138
+  offset: 0, 0
+  index: -1
+
+pack3.png
+size: 256,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+maptiles/dirt
+  rotate: false
+  xy: 2, 36
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
+maptiles/grass
+  rotate: false
+  xy: 68, 166
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
+maptiles/grasspyramid
+  rotate: false
+  xy: 2, 70
+  size: 64, 128
+  orig: 64, 128
+  offset: 0, 0
+  index: -1
+maptiles/grasstest
+  rotate: false
+  xy: 2, 2
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
+maptiles/template
+  rotate: false
+  xy: 68, 132
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1

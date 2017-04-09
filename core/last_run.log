@@ -1,0 +1,8 @@
+[DEBUG]  Game instance created  (MyGdxGame.java:66)
+[INFO]  Game init...  (MyGdxGame.java:72)
+[DEBUG]  cam.position.z = 0.0  (InGameScreen.java:46)
+[DEBUG]  Disposing Game...  (MyGdxGame.java:113)
+[DEBUG]  Disposing InGameScreen...  (InGameScreen.java:130)
+[DEBUG]  Disposing map...  (Map.java:87)
+[DEBUG]  Cleanup complete  (MyGdxGame.java:120)
+[INFO]  Application will now exit  (MyGdxGame.java:121)

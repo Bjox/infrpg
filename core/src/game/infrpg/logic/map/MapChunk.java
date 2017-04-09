@@ -1,0 +1,81 @@
+package game.infrpg.logic.map;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Disposable;
+import game.infrpg.logic.RenderCallCounter;
+import game.infrpg.util.Util;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.List;
+import org.lwjgl.util.Point;
+
+/**
+ *
+ * @author Bjørnar W. Alvestad
+ */
+public class MapChunk implements Serializable, Disposable, RenderCallCounter {
+	
+	public static final int CHUNK_SIZE = 16;
+	public static final int TILE_SIZE = 32; // height of an isometric tile
+	
+	/** Chunk position. */
+	public final Point chunkPos;
+	
+	private final Vector2 screenPos;
+	
+	/** Contains a byte that specify what tile to render in a given position. */
+	private final byte[][] chunkTileData;
+	
+	//private transient SpriteBatch batch;
+	private final Vector2 coordTmp;
+	
+	
+	/**
+	 * 
+	 * @param x x chunkPos
+	 * @param y y chunkPos
+	 */
+	public MapChunk(int x, int y) {
+		this.chunkPos = new Point(x, y);
+		this.screenPos = new Vector2(x * CHUNK_SIZE * TILE_SIZE, y * CHUNK_SIZE * TILE_SIZE);
+		Util.cartesianToIso(screenPos);
+		this.chunkTileData = new byte[CHUNK_SIZE][CHUNK_SIZE];
+		this.coordTmp = new Vector2();
+	}
+
+	
+	public void render(List<TextureRegion> textureRegions, SpriteBatch batch) {
+		//batch.begin();
+		for (byte x = CHUNK_SIZE-1; x >= 0; x--) {
+			for (byte y = CHUNK_SIZE-1; y >= 0; y--) {
+				coordTmp.x = x * TILE_SIZE;
+				coordTmp.y = y * TILE_SIZE;
+				Util.cartesianToIso(coordTmp);
+				batch.draw(textureRegions.get(chunkTileData[x][y]), coordTmp.x + screenPos.x, coordTmp.y + screenPos.y);
+			}
+		}
+		//batch.end();
+	}
+
+	
+	@Override
+	public void dispose() {
+		//batch.dispose();
+	}
+	
+
+	@Override
+	public int getRenderCalls() {
+		return 0;//batch.renderCalls;
+	}
+	
+	
+//	private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
+//		inputStream.defaultReadObject();
+//	} 
+	
+	
+}
