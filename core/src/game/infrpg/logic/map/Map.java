@@ -9,7 +9,10 @@ import com.badlogic.gdx.utils.Disposable;
 import game.infrpg.logic.RenderCallCounter;
 import static game.infrpg.MyGdxGame.logger;
 import game.infrpg.graphics.Camera;
-import game.infrpg.logic.Constants;
+import static game.infrpg.logic.Constants.CHUNK_SIZE;
+import static game.infrpg.logic.Constants.TILE_SIZE;
+import static game.infrpg.logic.Constants.REGION_SIZE;
+import static game.infrpg.logic.Constants.CHUNK_RENDER_DISTANCE;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -22,6 +25,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -40,19 +44,19 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 	private transient SpriteBatch batch;
 	private transient Vector2 isoCamPosBuffer;
 	
-	private final HashMap<String, MapChunk> globalChunks;
+	private final HashMap<Integer, Region> regions;
 	public final long seed;
 	
 	
 	public Map(long seed) {
 		this.seed = seed;
-		this.globalChunks = new HashMap<>(1000);
+		this.regions = new HashMap<>(32);
 		
 		setupTransientFields();
 		
 		// create test chunks
-		for (int i = -2; i < 3; i++) {
-			for (int j = -2; j < 3; j++) {
+		for (int i = -200; i <= 200; i++) {
+			for (int j = -200; j <= 200; j++) {
 				MapChunk chunk = new MapChunk(i, j);
 				setChunk(chunk);
 			}
@@ -80,17 +84,58 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 	
 	
 	public MapChunk getChunk(int x, int y) {
-		return globalChunks.get(key(x, y));
+		short regionX = (short)Math.floorDiv(x, REGION_SIZE);
+		short regionY = (short)Math.floorDiv(y, REGION_SIZE);
+		
+		Region region = regions.get(regionsMapKey(regionX, regionY));
+		if (region == null) return null;
+		
+		int localChunkX = x - regionX * REGION_SIZE;
+		int localChunkY = y - regionY * REGION_SIZE;
+		return region.getLocalChunk(localChunkX, localChunkY);
 	}
 	
 	
 	public void setChunk(MapChunk chunk) {
-		globalChunks.put(key(chunk.position.getX(), chunk.position.getY()), chunk);
+		// Find the region where this chunk should reside
+		short regionX = (short)Math.floorDiv(chunk.position.getX(), REGION_SIZE); // TODO: test with negative
+		short regionY = (short)Math.floorDiv(chunk.position.getY(), REGION_SIZE);
+		
+		// Get/create the region
+		Region region = regions.get(regionsMapKey(regionX, regionY));
+		if (region == null) region = createRegion(regionX, regionY);
+		
+		// Calc local position of the chunk within the region
+		int localChunkX = chunk.position.getX() - regionX * REGION_SIZE;
+		int localChunkY = chunk.position.getY() - regionY * REGION_SIZE;
+		region.setLocalChunk(chunk, localChunkX, localChunkY);
 	}
 	
 	
-	private String key(int x, int y) {
-		return String.valueOf(x) + ":" + String.valueOf(y);
+	/**
+	 * Calculate the key used for region mapping.
+	 * @param x
+	 * @param y
+	 * @return 
+	 */
+	private int regionsMapKey(short x, short y) {
+		int key = Short.toUnsignedInt(y) << 16;
+		key |= Short.toUnsignedInt(x);
+		return key;
+	}
+	
+	
+	/**
+	 * Creates a region at position (x, y), and returns a reference
+	 * to the newly created region.
+	 * @param x
+	 * @param y
+	 * @return 
+	 */
+	private Region createRegion(short x, short y) {
+		Region region = new Region(x, y);
+		regions.put(regionsMapKey(x, y), region);
+		return region;
 	}
 	
 	
@@ -104,25 +149,18 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 		
 		cam.getIsometricPosition(isoCamPosBuffer);
 		Point centerChunk = new Point(
-				Math.floorDiv((int)isoCamPosBuffer.x, Constants.CHUNK_SIZE * Constants.TILE_SIZE),
-				Math.floorDiv((int)isoCamPosBuffer.y, Constants.CHUNK_SIZE * Constants.TILE_SIZE));
+				Math.floorDiv((int)isoCamPosBuffer.x, CHUNK_SIZE * TILE_SIZE),
+				Math.floorDiv((int)isoCamPosBuffer.y, CHUNK_SIZE * TILE_SIZE));
 		
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
 		
-		int RENDER_DIST = 1;
-		for (int i = centerChunk.getX() - RENDER_DIST; i <= centerChunk.getX() + RENDER_DIST; i++) {
-			for (int j = centerChunk.getY() - RENDER_DIST; j <= centerChunk.getY() + RENDER_DIST; j++) {
+		for (int i = centerChunk.getX() - CHUNK_RENDER_DISTANCE; i <= centerChunk.getX() + CHUNK_RENDER_DISTANCE; i++) {
+			for (int j = centerChunk.getY() - CHUNK_RENDER_DISTANCE; j <= centerChunk.getY() + CHUNK_RENDER_DISTANCE; j++) {
 				MapChunk chunk = getChunk(i, j);
 				if (chunk != null) chunk.render(mapTextureRegions, batch);
 			}
 		}
-		
-		// Render all chunks
-//		int numChunks = renderChunks.size();
-//		for (int i = 0; i < numChunks; i++) {
-//			renderChunks.get(i).render(mapTextureRegions, batch);
-//		}
 		
 		batch.end();
 	}
@@ -180,4 +218,6 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 		bfis.close();
 		return map;
 	}
+
+	
 }

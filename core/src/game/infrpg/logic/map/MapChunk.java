@@ -11,6 +11,7 @@ import java.util.List;
 import org.lwjgl.util.Point;
 import static game.infrpg.logic.Constants.CHUNK_SIZE;
 import static game.infrpg.logic.Constants.TILE_SIZE;
+import java.util.Random;
 
 /**
  *
@@ -18,7 +19,7 @@ import static game.infrpg.logic.Constants.TILE_SIZE;
  */
 public class MapChunk implements Serializable {
 	
-	/** Chunk position within the region. */
+	/** Global chunk position. */
 	public final Point position;
 	
 	private final Vector2 screenPos;
@@ -42,9 +43,10 @@ public class MapChunk implements Serializable {
 		this.chunkTileData = new byte[CHUNK_SIZE][CHUNK_SIZE];
 		this.coordTmp = new Vector2();
 		
+		Random rnd = new Random();
 		for (int i = 0; i < chunkTileData.length; i++) {
 			for (int j = 0; j < chunkTileData[i].length; j++) {
-				chunkTileData[i][j] = 4;
+				chunkTileData[i][j] = 4;//(byte)rnd.nextInt(6);
 			}
 		}
 	}
@@ -62,9 +64,16 @@ public class MapChunk implements Serializable {
 	}
 	
 	
+	
 //	private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
 //		inputStream.defaultReadObject();
 //	} 
+
+	
+	@Override
+	public String toString() {
+		return String.format("Map chunk [%d, %d]", position.getX(), position.getY());
+	}
 	
 	
 }

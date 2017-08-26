@@ -1,7 +1,6 @@
 package game.infrpg.logic.map;
 
 import static game.infrpg.logic.Constants.REGION_SIZE;
-import org.lwjgl.util.Point;
 
 /**
  *
@@ -9,26 +8,37 @@ import org.lwjgl.util.Point;
  */
 public class Region {
 	
-	/** Region position on the map. */
-	public final Point position;
+	/** Region x position on the map. */
+	public final short x;
+	/** Region y position on the map. */
+	public final short y;
 	
 	/** MapChunks in this region. */
 	private final MapChunk[][] chunks;
 	
 	
 	public Region(int x, int y) {
-		this.position = new Point(x, y);
+		this.x = (short)x;
+		this.y = (short)y;
 		this.chunks = new MapChunk[REGION_SIZE][REGION_SIZE];
 	}
 	
 	
-	public MapChunk getLocalChunk(int x, int y) {
-		return chunks[x][y];
+	public MapChunk getLocalChunk(int localX, int localY) {
+		return chunks[localX][localY];
 	}
 	
 	
-	public void setLocalChunk(MapChunk chunk, int x, int y) {
-		chunks[x][y] = chunk;
+	public void setLocalChunk(MapChunk chunk, int localX, int localY) {
+		chunks[localX][localY] = chunk;
 	}
+	
+
+	@Override
+	public String toString() {
+		return String.format("Map region [%d, %d]", x, y);
+	}
+	
+	
 	
 }

@@ -102,7 +102,7 @@ maptiles/dirt
   index: -1
 maptiles/grass
   rotate: false
-  xy: 68, 166
+  xy: 134, 166
   size: 64, 32
   orig: 64, 32
   offset: 0, 0
@@ -110,6 +110,13 @@ maptiles/grass
 maptiles/grasspyramid
   rotate: false
   xy: 2, 70
+  size: 64, 128
+  orig: 64, 128
+  offset: 0, 0
+  index: -1
+maptiles/grasspyramidpns
+  rotate: false
+  xy: 68, 70
   size: 64, 128
   orig: 64, 128
   offset: 0, 0
@@ -123,7 +130,7 @@ maptiles/grasstest
   index: -1
 maptiles/template
   rotate: false
-  xy: 68, 132
+  xy: 68, 36
   size: 64, 32
   orig: 64, 32
   offset: 0, 0

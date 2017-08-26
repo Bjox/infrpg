@@ -51,7 +51,12 @@ public class InGameScreen extends AbstractScreen {
 		batch = new SpriteBatch();
 		atlas = new TextureAtlas(Gdx.files.internal("packed/pack.atlas"));
 		
-		player = new SpearmanSprite(atlas, 18, 0.5f);
+		player = new SpearmanSprite(atlas, Constants.DEBUG_MOVEMENT_SPEED / 4.3f, 0.5f);
+		Vector2 v = new Vector2(256f, 256f);
+		Util.iso2cart(v);
+		player.x = v.x;
+		player.y = v.y;
+		
 		crossTex = atlas.findRegion("cross");
 		
 		Gdx.input.setInputProcessor(new InputProcessor() {
@@ -121,7 +126,7 @@ public class InGameScreen extends AbstractScreen {
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
 		player.render(batch, gameElapsedTime);
-		batch.draw(crossTex, cam.position.x + Constants.TILE_SIZE, cam.position.y);
+		//batch.draw(crossTex, cam.position.x + Constants.TILE_SIZE, cam.position.y);
 		batch.end();
 		
 		renderCalls += map.getRenderCalls();
