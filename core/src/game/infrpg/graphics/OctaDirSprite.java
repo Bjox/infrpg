@@ -1,4 +1,4 @@
-package game.infrpg.logic.graphics;
+package game.infrpg.graphics;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import game.infrpg.logic.Dir;
-import static game.infrpg.logic.graphics.GraphicsUtil.FRAME_DURATION;
+import static game.infrpg.graphics.GraphicsUtil.FRAME_DURATION;
 
 /**
  *

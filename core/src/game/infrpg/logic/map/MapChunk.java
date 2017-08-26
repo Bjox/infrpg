@@ -6,23 +6,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import game.infrpg.logic.RenderCallCounter;
 import game.infrpg.util.Util;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.List;
 import org.lwjgl.util.Point;
+import static game.infrpg.logic.Constants.CHUNK_SIZE;
+import static game.infrpg.logic.Constants.TILE_SIZE;
 
 /**
  *
  * @author Bjørnar W. Alvestad
  */
-public class MapChunk implements Serializable, Disposable, RenderCallCounter {
+public class MapChunk implements Serializable {
 	
-	public static final int CHUNK_SIZE = 16;
-	public static final int TILE_SIZE = 32; // height of an isometric tile
-	
-	/** Chunk position. */
-	public final Point chunkPos;
+	/** Chunk position within the region. */
+	public final Point position;
 	
 	private final Vector2 screenPos;
 	
@@ -39,37 +36,29 @@ public class MapChunk implements Serializable, Disposable, RenderCallCounter {
 	 * @param y y chunkPos
 	 */
 	public MapChunk(int x, int y) {
-		this.chunkPos = new Point(x, y);
+		this.position = new Point(x, y);
 		this.screenPos = new Vector2(x * CHUNK_SIZE * TILE_SIZE, y * CHUNK_SIZE * TILE_SIZE);
-		Util.cartesianToIso(screenPos);
+		Util.iso2cart(screenPos);
 		this.chunkTileData = new byte[CHUNK_SIZE][CHUNK_SIZE];
 		this.coordTmp = new Vector2();
+		
+		for (int i = 0; i < chunkTileData.length; i++) {
+			for (int j = 0; j < chunkTileData[i].length; j++) {
+				chunkTileData[i][j] = 4;
+			}
+		}
 	}
 
 	
 	public void render(List<TextureRegion> textureRegions, SpriteBatch batch) {
-		//batch.begin();
 		for (byte x = CHUNK_SIZE-1; x >= 0; x--) {
 			for (byte y = CHUNK_SIZE-1; y >= 0; y--) {
 				coordTmp.x = x * TILE_SIZE;
 				coordTmp.y = y * TILE_SIZE;
-				Util.cartesianToIso(coordTmp);
+				Util.iso2cart(coordTmp);
 				batch.draw(textureRegions.get(chunkTileData[x][y]), coordTmp.x + screenPos.x, coordTmp.y + screenPos.y);
 			}
 		}
-		//batch.end();
-	}
-
-	
-	@Override
-	public void dispose() {
-		//batch.dispose();
-	}
-	
-
-	@Override
-	public int getRenderCalls() {
-		return 0;//batch.renderCalls;
 	}
 	
 	

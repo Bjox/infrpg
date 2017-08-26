@@ -7,14 +7,14 @@ import com.badlogic.gdx.math.Vector2;
  * @author Bjørnar W. Alvestad
  */
 public enum Dir {
-	UP(1, 0, 1),
-	RIGHT(2, 1, 0),
-	LEFT(4, -1, 0),
-	DOWN(8, 0, -1),
-	UPRIGHT(UP.mask | RIGHT.mask, 2, 1),
-	UPLEFT(UP.mask | LEFT.mask, -2, 1),
+	UP       (1,  0,  1),
+	RIGHT    (2,  1,  0),
+	LEFT     (4, -1,  0),
+	DOWN     (8,  0, -1),
+	UPRIGHT  (UP.mask   | RIGHT.mask, 2,  1),
+	UPLEFT   (UP.mask   | LEFT.mask, -2,  1),
 	DOWNRIGHT(DOWN.mask | RIGHT.mask, 2, -1),
-	DOWNLEFT(DOWN.mask | LEFT.mask, -2, -1);
+	DOWNLEFT (DOWN.mask | LEFT.mask, -2, -1);
 
 	
 	public final int mask;

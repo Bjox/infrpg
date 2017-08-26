@@ -53,6 +53,10 @@ public class Logger {
 		debug(message, 1);
 	}
 	
+	public void debug(Object o) {
+		debug(String.valueOf(o));
+	}
+	
 	public void debug(String message, int stackMovement) {
 		log(new LogRecord("", message, "", Level.DEBUG, getStackTraceElement(stackMovement + 3)));
 	}
@@ -60,6 +64,10 @@ public class Logger {
 	
 	public void info(String message) {
 		info(message, 1);
+	}
+	
+	public void info(Object o) {
+		info(String.valueOf(o));
 	}
 	
 	public void info(String message, int stackMovement) {
@@ -71,6 +79,10 @@ public class Logger {
 		warning(message, 1);
 	}
 	
+	public void warning(Object o) {
+		warning(String.valueOf(o));
+	}
+	
 	public void warning(String message, int stackMovement) {
 		log(new LogRecord("", message, "", Level.WARNING, getStackTraceElement(stackMovement + 3)));
 	}
@@ -78,6 +90,10 @@ public class Logger {
 	
 	public void error(String message) {
 		error(message, 1);
+	}
+	
+	public void error(Object o) {
+		error(String.valueOf(o));
 	}
 	
 	public void error(String message, int stackMovement) {

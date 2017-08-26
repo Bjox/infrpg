@@ -17,14 +17,11 @@ import console.util.logging.ConsoleHandler;
 import console.util.logging.FileHandler;
 import console.util.logging.Level;
 import console.util.logging.Logger;
+import game.infrpg.logic.Constants;
 import java.io.IOException;
 
+
 public class MyGdxGame extends Game {
-	
-	public int SCREEN_WIDTH;
-	public int SCREEN_HEIGHT;
-	
-	public final boolean DEBUG;
 	
 	public static final Logger logger = new Logger();
 	public static MyGdxGame instance;
@@ -46,8 +43,9 @@ public class MyGdxGame extends Game {
 		this.args = new ArgumentParser(args);
 		this.args.printAllOptions();
 		
-		DEBUG = this.args.isPresent("-debug");
+		Constants.DEBUG = this.args.isPresent("-debug");
 		Locale.setDefault(Locale.ENGLISH);
+		
 		
 		Console.createConsole("Console");
 		Console.attachToErr();
@@ -55,7 +53,7 @@ public class MyGdxGame extends Game {
 		new ConsoleCmds().registerCommands();
 		Console.showConsole();
 		
-		logger.setCurrentLevel(DEBUG ? Level.ALL : Level.INFO);
+		logger.setCurrentLevel(Constants.DEBUG ? Level.ALL : Level.INFO);
 		logger.addHandler(new ConsoleHandler());
 		try {
 			logger.addHandler(new FileHandler("../last_run.log"));
@@ -73,8 +71,8 @@ public class MyGdxGame extends Game {
 		
 		instance = this;
 		
-		SCREEN_WIDTH = Gdx.graphics.getWidth();
-		SCREEN_HEIGHT = Gdx.graphics.getHeight();
+		Constants.SCREEN_WIDTH = Gdx.graphics.getWidth();
+		Constants.SCREEN_HEIGHT = Gdx.graphics.getHeight();
 		
 		fpsCounter = new FPSCounter(1000);
 		bitmapFont = new BitmapFont();
@@ -94,12 +92,13 @@ public class MyGdxGame extends Game {
 	public void render() {
 		super.render();
 		
-		if (DEBUG) {
+		if (Constants.DEBUG) {
 			double fps = fpsCounter.getFps();
 			int renderCalls = getScreen().getRenderCalls();
 			
 			batch.begin();
-			bitmapFont.draw(batch, String.format("FPS: %.1f\nRender calls: %d\n%s", fps, renderCalls, getScreen().debugRenderText()), 5, SCREEN_HEIGHT-5);
+			bitmapFont.draw(batch, String.format("FPS: %.1f\nRender calls: %d\n%s", fps,
+					renderCalls, getScreen().debugRenderText()), 5, Constants.SCREEN_HEIGHT-5);
 			batch.end();
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 		}

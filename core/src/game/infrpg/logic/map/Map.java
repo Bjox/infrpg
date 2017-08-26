@@ -1,14 +1,15 @@
-package game.infrpg.logic;
+package game.infrpg.logic.map;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
+import game.infrpg.logic.RenderCallCounter;
 import static game.infrpg.MyGdxGame.logger;
-import game.infrpg.logic.map.MapChunk;
+import game.infrpg.graphics.Camera;
+import game.infrpg.logic.Constants;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -37,17 +38,23 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 	private transient ArrayList<TextureRegion> mapTextureRegions;
 	private transient HashMap<String, Integer> regionNameIndexMap;
 	private transient SpriteBatch batch;
+	private transient Vector2 isoCamPosBuffer;
 	
-	private final HashMap<Point, MapChunk> globalChunks;
+	private final HashMap<String, MapChunk> globalChunks;
+	public final long seed;
 	
 	
-	public Map() {
+	public Map(long seed) {
+		this.seed = seed;
 		this.globalChunks = new HashMap<>(1000);
+		
 		setupTransientFields();
 		
-		for (int i = -1; i < 2; i++) {
-			for (int j = -1; j < 2; j++) {
-				renderChunks.add(new MapChunk(i, j));
+		// create test chunks
+		for (int i = -2; i < 3; i++) {
+			for (int j = -2; j < 3; j++) {
+				MapChunk chunk = new MapChunk(i, j);
+				setChunk(chunk);
 			}
 		}
 		
@@ -61,6 +68,7 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 		this.regionNameIndexMap = new HashMap<>(16);
 		this.atlas = new TextureAtlas(Gdx.files.internal("packed/pack.atlas"));
 		this.batch = new SpriteBatch();
+		this.isoCamPosBuffer = new Vector2();
 		
 		atlas.getRegions().forEach(region -> {
 			if (region.name.startsWith("maptiles")) {
@@ -71,21 +79,68 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 	}
 	
 	
-	public void render(OrthographicCamera cam) {
+	public MapChunk getChunk(int x, int y) {
+		return globalChunks.get(key(x, y));
+	}
+	
+	
+	public void setChunk(MapChunk chunk) {
+		globalChunks.put(key(chunk.position.getX(), chunk.position.getY()), chunk);
+	}
+	
+	
+	private String key(int x, int y) {
+		return String.valueOf(x) + ":" + String.valueOf(y);
+	}
+	
+	
+	private TextureRegion getMapTextureRegion(String name) {
+		return mapTextureRegions.get(regionNameIndexMap.get(name));
+	}
+	
+	
+	public void render(Camera cam) {
+		handleChunkGeneration(cam.position.x, cam.position.y);
+		
+		cam.getIsometricPosition(isoCamPosBuffer);
+		Point centerChunk = new Point(
+				Math.floorDiv((int)isoCamPosBuffer.x, Constants.CHUNK_SIZE * Constants.TILE_SIZE),
+				Math.floorDiv((int)isoCamPosBuffer.y, Constants.CHUNK_SIZE * Constants.TILE_SIZE));
+		
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
-		int numChunks = renderChunks.size();
-		for (int i = 0; i < numChunks; i++) {
-			renderChunks.get(i).render(mapTextureRegions, batch);
+		
+		int RENDER_DIST = 1;
+		for (int i = centerChunk.getX() - RENDER_DIST; i <= centerChunk.getX() + RENDER_DIST; i++) {
+			for (int j = centerChunk.getY() - RENDER_DIST; j <= centerChunk.getY() + RENDER_DIST; j++) {
+				MapChunk chunk = getChunk(i, j);
+				if (chunk != null) chunk.render(mapTextureRegions, batch);
+			}
 		}
+		
+		// Render all chunks
+//		int numChunks = renderChunks.size();
+//		for (int i = 0; i < numChunks; i++) {
+//			renderChunks.get(i).render(mapTextureRegions, batch);
+//		}
+		
 		batch.end();
+	}
+	
+	
+	private void handleChunkGeneration(float camX, float camY) {
+		
+	}
+	
+	
+	private void generateChunk(int x, int y) {
+		
 	}
 
 	
 	@Override
 	public void dispose() {
 		logger.debug("Disposing map...");
-		renderChunks.forEach(c -> c.dispose());
 		batch.dispose();
 		atlas.dispose();
 	}

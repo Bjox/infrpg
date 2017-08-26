@@ -1,4 +1,4 @@
-package game.infrpg.logic.graphics;
+package game.infrpg.graphics;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

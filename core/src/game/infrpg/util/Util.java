@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Util {
 	
-	public static void isoToCartesian(Vector2 p) {
+	public static void cart2iso(Vector2 p) {
 		float x = p.x;
 		p.x = (2*p.y + p.x) * 0.5f;
 		p.y = (2*p.y - x) * 0.5f;
@@ -16,7 +16,7 @@ public class Util {
 	}
 	
 	
-	public static void cartesianToIso(Vector2 p) {
+	public static void iso2cart(Vector2 p) {
 		float x = p.x;
 		p.x = p.x - p.y;
 		p.y = (x + p.y) * 0.5f;
