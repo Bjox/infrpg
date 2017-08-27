@@ -2,6 +2,9 @@ package game.infrpg;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -83,6 +86,12 @@ public class MyGdxGame extends Game {
 		// Enable alpha transparency
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		
+		Gdx.graphics.setVSync(Constants.VSYNC);
+		
+		AssetManager assman = new AssetManager();
+		TextureLoader.TextureParameter texparams = new TextureLoader.TextureParameter();
+		texparams.genMipMaps = true;
 		
 		setScreen(new InGameScreen(this));
 	}

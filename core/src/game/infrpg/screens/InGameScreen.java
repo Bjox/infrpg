@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -18,6 +19,7 @@ import game.infrpg.logic.Dir;
 import game.infrpg.graphics.SpearmanSprite;
 import game.infrpg.logic.Constants;
 import game.infrpg.logic.map.MapChunk;
+import game.infrpg.logic.map.Tileset;
 import game.infrpg.util.Util;
 import org.lwjgl.util.Point;
 
@@ -43,13 +45,17 @@ public class InGameScreen extends AbstractScreen {
 	
 	public InGameScreen(MyGdxGame game) {
 		super(game);
+		
+		atlas = new TextureAtlas(Gdx.files.internal("packed/pack.atlas"));
+		Tileset.loadTilesets(atlas);
+		batch = new SpriteBatch();
+		
 		map = new Map("penis".hashCode()); // TODO: Hardcoded map seed
+		map.setTileset(Tileset.Tilesets.SHIT);
+		
 		cam = new Camera(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
 		cam.zoom = 0.5f;
 		cam.update();
-		
-		batch = new SpriteBatch();
-		atlas = new TextureAtlas(Gdx.files.internal("packed/pack.atlas"));
 		
 		player = new SpearmanSprite(atlas, Constants.DEBUG_MOVEMENT_SPEED / 4.3f, 0.5f);
 		Vector2 v = new Vector2(256f, 256f);

@@ -2,7 +2,7 @@
 pack.png
 size: 64,64
 format: RGBA8888
-filter: Nearest,Nearest
+filter: MipMap,Nearest
 repeat: none
 cross
   rotate: false
@@ -22,7 +22,7 @@ player
 pack2.png
 size: 2048,2048
 format: RGBA8888
-filter: Nearest,Nearest
+filter: MipMap,Nearest
 repeat: none
 animations/spearman_down
   rotate: false
@@ -91,7 +91,7 @@ animations/spearman_upright
 pack3.png
 size: 256,256
 format: RGBA8888
-filter: Nearest,Nearest
+filter: MipMap,Nearest
 repeat: none
 maptiles/dirt
   rotate: false
@@ -131,6 +131,46 @@ maptiles/grasstest
 maptiles/template
   rotate: false
   xy: 68, 36
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
+
+pack4.png
+size: 256,64
+format: RGBA8888
+filter: MipMap,Nearest
+repeat: none
+tilesets/normal/dirt
+  rotate: false
+  xy: 2, 2
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
+tilesets/normal/grass
+  rotate: false
+  xy: 68, 2
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
+
+pack5.png
+size: 256,64
+format: RGBA8888
+filter: MipMap,Nearest
+repeat: none
+tilesets/shit/dirt
+  rotate: false
+  xy: 2, 2
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
+tilesets/shit/grass
+  rotate: false
+  xy: 68, 2
   size: 64, 32
   orig: 64, 32
   offset: 0, 0

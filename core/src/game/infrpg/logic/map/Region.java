@@ -1,12 +1,13 @@
 package game.infrpg.logic.map;
 
 import static game.infrpg.logic.Constants.REGION_SIZE;
+import java.io.Serializable;
 
 /**
  *
  * @author Bjørnar W. Alvestad
  */
-public class Region {
+public class Region implements Serializable {
 	
 	/** Region x position on the map. */
 	public final short x;

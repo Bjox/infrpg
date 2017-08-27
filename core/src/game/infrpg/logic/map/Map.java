@@ -13,6 +13,7 @@ import static game.infrpg.logic.Constants.CHUNK_SIZE;
 import static game.infrpg.logic.Constants.TILE_SIZE;
 import static game.infrpg.logic.Constants.REGION_SIZE;
 import static game.infrpg.logic.Constants.CHUNK_RENDER_DISTANCE;
+import game.infrpg.logic.map.Tileset.Tilesets;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -25,7 +26,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -38,11 +38,10 @@ import org.lwjgl.util.Point;
 public class Map implements Disposable, RenderCallCounter, Serializable {
 	
 	private transient TextureAtlas atlas;
-	private transient ArrayList<MapChunk> renderChunks;
-	private transient ArrayList<TextureRegion> mapTextureRegions;
 	private transient HashMap<String, Integer> regionNameIndexMap;
 	private transient SpriteBatch batch;
 	private transient Vector2 isoCamPosBuffer;
+	private transient Tileset tileset;
 	
 	private final HashMap<Integer, Region> regions;
 	public final long seed;
@@ -55,8 +54,8 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 		setupTransientFields();
 		
 		// create test chunks
-		for (int i = -200; i <= 200; i++) {
-			for (int j = -200; j <= 200; j++) {
+		for (int i = -20; i <= 20; i++) {
+			for (int j = -20; j <= 20; j++) {
 				MapChunk chunk = new MapChunk(i, j);
 				setChunk(chunk);
 			}
@@ -67,19 +66,17 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 	
 	
 	private void setupTransientFields() {
-		this.renderChunks = new ArrayList<>(6);
-		this.mapTextureRegions = new ArrayList<>(16);
 		this.regionNameIndexMap = new HashMap<>(16);
 		this.atlas = new TextureAtlas(Gdx.files.internal("packed/pack.atlas"));
 		this.batch = new SpriteBatch();
 		this.isoCamPosBuffer = new Vector2();
 		
-		atlas.getRegions().forEach(region -> {
-			if (region.name.startsWith("maptiles")) {
-				regionNameIndexMap.put(region.name, mapTextureRegions.size());
-				mapTextureRegions.add(region);
-			}
-		});
+		setTileset(Tilesets.NORMAL);
+	}
+	
+	
+	public void setTileset(Tileset.Tilesets tileset) {
+		this.tileset = tileset.instance();
 	}
 	
 	
@@ -114,6 +111,7 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 	
 	/**
 	 * Calculate the key used for region mapping.
+	 * The key format is effectively {@code x | y << 16}.
 	 * @param x
 	 * @param y
 	 * @return 
@@ -139,11 +137,6 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 	}
 	
 	
-	private TextureRegion getMapTextureRegion(String name) {
-		return mapTextureRegions.get(regionNameIndexMap.get(name));
-	}
-	
-	
 	public void render(Camera cam) {
 		handleChunkGeneration(cam.position.x, cam.position.y);
 		
@@ -155,10 +148,15 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
 		
-		for (int i = centerChunk.getX() - CHUNK_RENDER_DISTANCE; i <= centerChunk.getX() + CHUNK_RENDER_DISTANCE; i++) {
-			for (int j = centerChunk.getY() - CHUNK_RENDER_DISTANCE; j <= centerChunk.getY() + CHUNK_RENDER_DISTANCE; j++) {
+		int fromx = centerChunk.getX() - CHUNK_RENDER_DISTANCE;
+		int fromy = centerChunk.getY() - CHUNK_RENDER_DISTANCE;
+		int tox = fromx + 2*CHUNK_RENDER_DISTANCE;
+		int toy = fromy + 2*CHUNK_RENDER_DISTANCE;
+		
+		for (int i = tox; i >= fromx; i--) {
+			for (int j = toy; j >= fromy; j--) {
 				MapChunk chunk = getChunk(i, j);
-				if (chunk != null) chunk.render(mapTextureRegions, batch);
+				if (chunk != null) chunk.render(tileset, batch);
 			}
 		}
 		
