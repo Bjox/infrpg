@@ -1,6 +1,6 @@
 
 pack.png
-size: 64,64
+size: 128,64
 format: RGBA8888
 filter: MipMap,Nearest
 repeat: none
@@ -11,9 +11,16 @@ cross
   orig: 16, 16
   offset: 0, 0
   index: -1
-player
+grasstest
   rotate: false
   xy: 2, 20
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 68, 20
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -24,63 +31,63 @@ size: 2048,2048
 format: RGBA8888
 filter: MipMap,Nearest
 repeat: none
-animations/spearman_down
+animations/Spearman/spearman_down
   rotate: false
   xy: 2, 163
   size: 1040, 134
   orig: 1040, 134
   offset: 0, 0
   index: -1
-animations/spearman_downleft
+animations/Spearman/spearman_downleft
   rotate: false
   xy: 2, 713
   size: 1580, 132
   orig: 1580, 132
   offset: 0, 0
   index: -1
-animations/spearman_downright
+animations/Spearman/spearman_downright
   rotate: false
   xy: 2, 439
   size: 1510, 132
   orig: 1510, 132
   offset: 0, 0
   index: -1
-animations/spearman_idle
+animations/Spearman/spearman_idle
   rotate: false
   xy: 2, 299
   size: 1464, 138
   orig: 1464, 138
   offset: 0, 0
   index: -1
-animations/spearman_left
+animations/Spearman/spearman_left
   rotate: false
   xy: 2, 1116
   size: 2030, 123
   orig: 2030, 123
   offset: 0, 0
   index: -1
-animations/spearman_right
+animations/Spearman/spearman_right
   rotate: false
   xy: 2, 991
   size: 1910, 123
   orig: 1910, 123
   offset: 0, 0
   index: -1
-animations/spearman_up
+animations/Spearman/spearman_up
   rotate: false
   xy: 2, 2
   size: 980, 159
   orig: 980, 159
   offset: 0, 0
   index: -1
-animations/spearman_upleft
+animations/Spearman/spearman_upleft
   rotate: false
   xy: 2, 847
   size: 1650, 142
   orig: 1650, 142
   offset: 0, 0
   index: -1
-animations/spearman_upright
+animations/Spearman/spearman_upright
   rotate: false
   xy: 2, 573
   size: 1510, 138
@@ -89,6 +96,240 @@ animations/spearman_upright
   index: -1
 
 pack3.png
+size: 2048,2048
+format: RGBA8888
+filter: MipMap,Nearest
+repeat: none
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 2, 1100
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 0
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 2, 551
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 1
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 521, 1100
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 2
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 2, 2
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 3
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 521, 551
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 4
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 1040, 1100
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 5
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 521, 2
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 6
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 1040, 551
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 7
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 1040, 2
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 8
+
+pack4.png
+size: 2048,2048
+format: RGBA8888
+filter: MipMap,Nearest
+repeat: none
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 2, 1100
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 9
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 2, 551
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 10
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 521, 1100
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 11
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 2, 2
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 12
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 521, 551
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 13
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 1040, 1100
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 14
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 521, 2
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 15
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 1040, 551
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 16
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 1040, 2
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 17
+
+pack5.png
+size: 2048,2048
+format: RGBA8888
+filter: MipMap,Nearest
+repeat: none
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 2, 1100
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 18
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 2, 551
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 19
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 521, 1100
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 20
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 2, 2
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 21
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 521, 551
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 22
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 1040, 1100
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 23
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 521, 2
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 24
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 1040, 551
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 25
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 1040, 2
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 26
+
+pack6.png
+size: 2048,1024
+format: RGBA8888
+filter: MipMap,Nearest
+repeat: none
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 2, 2
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 27
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 521, 2
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 28
+animations/Swietenia_tree/_test_tree-animation
+  rotate: false
+  xy: 1040, 2
+  size: 517, 547
+  orig: 517, 547
+  offset: 0, 0
+  index: 29
+
+pack7.png
 size: 256,256
 format: RGBA8888
 filter: MipMap,Nearest
@@ -136,7 +377,7 @@ maptiles/template
   offset: 0, 0
   index: -1
 
-pack4.png
+pack8.png
 size: 256,64
 format: RGBA8888
 filter: MipMap,Nearest
@@ -156,7 +397,7 @@ tilesets/normal/grass
   offset: 0, 0
   index: -1
 
-pack5.png
+pack9.png
 size: 256,64
 format: RGBA8888
 filter: MipMap,Nearest
@@ -175,3 +416,71 @@ tilesets/shit/grass
   orig: 64, 32
   offset: 0, 0
   index: -1
+
+pack10.png
+size: 2048,2048
+format: RGBA8888
+filter: MipMap,Nearest
+repeat: none
+_tree_1/_tree_01
+  rotate: false
+  xy: 2, 727
+  size: 631, 723
+  orig: 631, 723
+  offset: 0, 0
+  index: 0
+_tree_1/_tree_01
+  rotate: false
+  xy: 2, 2
+  size: 631, 723
+  orig: 631, 723
+  offset: 0, 0
+  index: 10000
+_tree_1/_tree_01
+  rotate: false
+  xy: 635, 727
+  size: 631, 723
+  orig: 631, 723
+  offset: 0, 0
+  index: 20000
+_tree_1/_tree_01
+  rotate: false
+  xy: 635, 2
+  size: 631, 723
+  orig: 631, 723
+  offset: 0, 0
+  index: 30000
+_tree_1/_tree_01
+  rotate: false
+  xy: 1268, 727
+  size: 631, 723
+  orig: 631, 723
+  offset: 0, 0
+  index: 40000
+_tree_1/_tree_01
+  rotate: false
+  xy: 1268, 2
+  size: 631, 723
+  orig: 631, 723
+  offset: 0, 0
+  index: 50000
+
+pack11.png
+size: 2048,1024
+format: RGBA8888
+filter: MipMap,Nearest
+repeat: none
+_tree_1/_tree_01
+  rotate: false
+  xy: 2, 2
+  size: 631, 723
+  orig: 631, 723
+  offset: 0, 0
+  index: 60000
+_tree_1/_tree_01
+  rotate: false
+  xy: 635, 2
+  size: 631, 723
+  orig: 631, 723
+  offset: 0, 0
+  index: 70000

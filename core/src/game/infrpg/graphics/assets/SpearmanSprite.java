@@ -1,8 +1,10 @@
-package game.infrpg.graphics;
+package game.infrpg.graphics.assets;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import game.infrpg.graphics.GraphicsUtil;
+import game.infrpg.graphics.OctaDirSprite;
 import game.infrpg.logic.Dir;
 
 /**
@@ -17,9 +19,10 @@ public class SpearmanSprite extends OctaDirSprite {
 	
 	
 	public SpearmanSprite(TextureAtlas atlas, float fps, float scale) {
-		super("animations/spearman", atlas, 1, 10, fps, scale);
+		super("animations/Spearman/spearman", atlas, 1, 10, fps, scale);
 		this.idle = true;
-		TextureRegion[] idleFrameUnordered = GraphicsUtil.getSpritesheetAnimationFrames(atlas, "animations/spearman_idle", 1, 8);
+		TextureRegion[] idleFrameUnordered = GraphicsUtil.getSpritesheetAnimationFrames(
+				atlas, "animations/Spearman/spearman_idle", 1, 8);
 		this.idleFrames = new TextureRegion[idleFrameUnordered.length];
 		
 		this.idleFrames[Dir.DOWN.index] = idleFrameUnordered[0];

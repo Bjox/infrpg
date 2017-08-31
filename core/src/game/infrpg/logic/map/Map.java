@@ -3,7 +3,6 @@ package game.infrpg.logic.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import game.infrpg.logic.RenderCallCounter;
@@ -25,7 +24,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -38,35 +36,35 @@ import org.lwjgl.util.Point;
 public class Map implements Disposable, RenderCallCounter, Serializable {
 	
 	private transient TextureAtlas atlas;
-	private transient HashMap<String, Integer> regionNameIndexMap;
 	private transient SpriteBatch batch;
 	private transient Vector2 isoCamPosBuffer;
 	private transient Tileset tileset;
 	
 	private final HashMap<Integer, Region> regions;
 	public final long seed;
+	private int chunkCounter;
 	
 	
 	public Map(long seed) {
 		this.seed = seed;
 		this.regions = new HashMap<>(32);
+		this.chunkCounter = 0;
 		
 		setupTransientFields();
 		
 		// create test chunks
-		for (int i = -20; i <= 20; i++) {
-			for (int j = -20; j <= 20; j++) {
-				MapChunk chunk = new MapChunk(i, j);
-				setChunk(chunk);
-			}
-		}
+//		for (int i = -20; i <= 20; i++) {
+//			for (int j = -20; j <= 20; j++) {
+//				MapChunk chunk = new MapChunk(i, j);
+//				setChunk(chunk);
+//			}
+//		}
 		
 		//TextureAtlas.AtlasRegion region = atlas.findRegion("maptiles/grass");
 	}
 	
 	
 	private void setupTransientFields() {
-		this.regionNameIndexMap = new HashMap<>(16);
 		this.atlas = new TextureAtlas(Gdx.files.internal("packed/pack.atlas"));
 		this.batch = new SpriteBatch();
 		this.isoCamPosBuffer = new Vector2();
@@ -138,8 +136,6 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 	
 	
 	public void render(Camera cam) {
-		handleChunkGeneration(cam.position.x, cam.position.y);
-		
 		cam.getIsometricPosition(isoCamPosBuffer);
 		Point centerChunk = new Point(
 				Math.floorDiv((int)isoCamPosBuffer.x, CHUNK_SIZE * TILE_SIZE),
@@ -156,7 +152,11 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 		for (int i = tox; i >= fromx; i--) {
 			for (int j = toy; j >= fromy; j--) {
 				MapChunk chunk = getChunk(i, j);
-				if (chunk != null) chunk.render(tileset, batch);
+				if (chunk == null) {
+					generateChunk(i, j);
+				} else {
+					chunk.render(tileset, batch);
+				}
 			}
 		}
 		
@@ -164,13 +164,15 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 	}
 	
 	
-	private void handleChunkGeneration(float camX, float camY) {
-		
+	private void generateChunk(int x, int y) {
+		MapChunk chunk = new MapChunk(x, y);
+		setChunk(chunk);
+		chunkCounter++;
 	}
 	
 	
-	private void generateChunk(int x, int y) {
-		
+	public int getChunkCount() {
+		return chunkCounter;
 	}
 
 	

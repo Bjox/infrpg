@@ -204,36 +204,33 @@ class Penis extends Command {
 
 	@Override
 	public String getHelp() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Console.setInputEnabled(false);
-					Thread.sleep(2000);
-					Console.println("Let me help...");
-					Thread.sleep(1000);
-					Console.print("p");
-					Thread.sleep(100);
-					Console.print("e");
-					Thread.sleep(200);
-					Console.print("n");
-					Thread.sleep(200);
-					Console.print("i");
-					Thread.sleep(100);
-					Console.print("s");
-					Thread.sleep(400);
-					Console.print(" ");
-					Console.print("2");
-					Thread.sleep(400);
-					Console.print("0");
-					Thread.sleep(1000);
-					Console.print("\n");
-					new Penis().execute(new String[]{"penis", "20"});
-					
-				} catch (Exception e) {
-				} finally {
-					Console.setInputEnabled(true);
-				}
+		new Thread(() -> {
+			try {
+				Console.setInputEnabled(false);
+				Thread.sleep(2000);
+				Console.println("Let me help...");
+				Thread.sleep(1000);
+				Console.print("p");
+				Thread.sleep(100);
+				Console.print("e");
+				Thread.sleep(200);
+				Console.print("n");
+				Thread.sleep(200);
+				Console.print("i");
+				Thread.sleep(100);
+				Console.print("s");
+				Thread.sleep(400);
+				Console.print(" ");
+				Console.print("2");
+				Thread.sleep(400);
+				Console.print("0");
+				Thread.sleep(1000);
+				Console.print("\n");
+				new Penis().execute(new String[]{"penis", "20"});
+				
+			} catch (Exception e) {
+			} finally {
+				Console.setInputEnabled(true);
 			}
 		}).start();
 		return "Really? You need help with this?";

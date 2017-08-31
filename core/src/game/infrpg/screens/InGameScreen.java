@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -16,9 +14,10 @@ import game.infrpg.MyGdxGame;
 import static game.infrpg.MyGdxGame.logger;
 import game.infrpg.graphics.Camera;
 import game.infrpg.logic.Dir;
-import game.infrpg.graphics.SpearmanSprite;
+import game.infrpg.graphics.assets.SpearmanSprite;
+import game.infrpg.graphics.assets.SwieteniaTree;
 import game.infrpg.logic.Constants;
-import game.infrpg.logic.map.MapChunk;
+import game.infrpg.graphics.ent.Sprite;
 import game.infrpg.logic.map.Tileset;
 import game.infrpg.util.Util;
 import org.lwjgl.util.Point;
@@ -37,33 +36,38 @@ public class InGameScreen extends AbstractScreen {
 	
 	private final TextureAtlas atlas;
 	private final SpriteBatch batch;
+	private final Vector2 isoCamPosBuffer;
 	
 	private SpearmanSprite player;
-	private Vector2 isoCamPosBuffer = new Vector2();
 	private TextureRegion crossTex;
-	
+	private Sprite tree;
 	
 	public InGameScreen(MyGdxGame game) {
 		super(game);
 		
+		this.isoCamPosBuffer = new Vector2();
 		atlas = new TextureAtlas(Gdx.files.internal("packed/pack.atlas"));
 		Tileset.loadTilesets(atlas);
 		batch = new SpriteBatch();
 		
 		map = new Map("penis".hashCode()); // TODO: Hardcoded map seed
-		map.setTileset(Tileset.Tilesets.SHIT);
 		
 		cam = new Camera(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
 		cam.zoom = 0.5f;
+		
 		cam.update();
 		
+		tree = new Sprite(atlas.findRegion("_tree_1/_tree_01", 0));
+		tree.x = 100;
+		
 		player = new SpearmanSprite(atlas, Constants.DEBUG_MOVEMENT_SPEED / 4.3f, 0.5f);
-		Vector2 v = new Vector2(256f, 256f);
+		Vector2 v = new Vector2(100f, 100f);
 		Util.iso2cart(v);
 		player.x = v.x;
 		player.y = v.y;
 		
 		crossTex = atlas.findRegion("cross");
+		
 		
 		Gdx.input.setInputProcessor(new InputProcessor() {
 			@Override
@@ -132,7 +136,8 @@ public class InGameScreen extends AbstractScreen {
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
 		player.render(batch, gameElapsedTime);
-		//batch.draw(crossTex, cam.position.x + Constants.TILE_SIZE, cam.position.y);
+		tree.render(batch, delta);
+		//batch.draw(crossTex, 0, 0);
 		batch.end();
 		
 		renderCalls += map.getRenderCalls();
@@ -183,6 +188,13 @@ public class InGameScreen extends AbstractScreen {
 			directionMask |= Dir.RIGHT.mask;
 		}
 		
+		if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
+			map.setTileset(Tileset.Tilesets.SHIT);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.E)) {
+			map.setTileset(Tileset.Tilesets.NORMAL);
+		}
+		
 		Dir moveDir = Dir.dirFromMask(directionMask);
 		
 		if (moveDir != null) {
@@ -212,8 +224,8 @@ public class InGameScreen extends AbstractScreen {
 		StringBuilder str = new StringBuilder();
 		
 		cam.getIsometricPosition(isoCamPosBuffer);
-		str.append(String.format("Camera pos: %.1f, %.1f\nIsometric pos: %.1f, %.1f\n",
-				cam.position.x, cam.position.y, isoCamPosBuffer.x, isoCamPosBuffer.y));
+		str.append(String.format("%-15s (%.1f, %.1f)\n", "Screen pos:", cam.position.x, cam.position.y));
+		str.append(String.format("%-15s (%.1f, %.1f)\n", "Isometric pos:", isoCamPosBuffer.x, isoCamPosBuffer.y));
 		
 		float chunkX = isoCamPosBuffer.x / (Constants.CHUNK_SIZE * Constants.TILE_SIZE);
 		float chunkY = isoCamPosBuffer.y / (Constants.CHUNK_SIZE * Constants.TILE_SIZE);
@@ -221,7 +233,10 @@ public class InGameScreen extends AbstractScreen {
 				Math.floorDiv((int)isoCamPosBuffer.x, Constants.CHUNK_SIZE * Constants.TILE_SIZE),
 				Math.floorDiv((int)isoCamPosBuffer.y, Constants.CHUNK_SIZE * Constants.TILE_SIZE));
 		
-		str.append(String.format("Chunk: %.2f, %.2f  [%d, %d]\n", chunkX, chunkY, centerChunk.getX(), centerChunk.getY()));
+		str.append(String.format("%-15s %.2f, %.2f  [%d, %d]\n", "Chunk pos:",
+				chunkX, chunkY, centerChunk.getX(), centerChunk.getY()));
+		
+		str.append(String.format("%-15s %d\n", "Chunks:", map.getChunkCount()));
 		
 		return str.toString();
 	}

@@ -3,7 +3,6 @@ package game.infrpg;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,6 +13,8 @@ import game.infrpg.util.FPSCounter;
 import console.Console;
 import java.util.Locale;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import game.infrpg.screens.AbstractScreen;
 import game.infrpg.util.ArgumentParser;
 import console.util.logging.ConsoleHandler;
@@ -78,10 +79,15 @@ public class MyGdxGame extends Game {
 		Constants.SCREEN_HEIGHT = Gdx.graphics.getHeight();
 		
 		fpsCounter = new FPSCounter(1000);
-		bitmapFont = new BitmapFont();
 		batch = new SpriteBatch();
 		
+		FreeTypeFontGenerator fontgenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/consola.ttf"));
+		FreeTypeFontParameter fontparameter = new FreeTypeFontParameter();
+		fontparameter.size = 16;
+		fontparameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS;
+		bitmapFont = fontgenerator.generateFont(fontparameter);
 		bitmapFont.setColor(Color.WHITE);
+		fontgenerator.dispose();
 		
 		// Enable alpha transparency
 		Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -94,6 +100,7 @@ public class MyGdxGame extends Game {
 		texparams.genMipMaps = true;
 		
 		setScreen(new InGameScreen(this));
+		
 	}
 	
 	
@@ -105,9 +112,13 @@ public class MyGdxGame extends Game {
 			double fps = fpsCounter.getFps();
 			int renderCalls = getScreen().getRenderCalls();
 			
+			StringBuilder debugstr = new StringBuilder();
+			debugstr.append(String.format("%-15s %.1f\n", "FPS:", fps));
+			debugstr.append(String.format("%-15s %d\n", "Render calls:", renderCalls));
+			debugstr.append(getScreen().debugRenderText());
+			
 			batch.begin();
-			bitmapFont.draw(batch, String.format("FPS: %.1f\nRender calls: %d\n%s", fps,
-					renderCalls, getScreen().debugRenderText()), 5, Constants.SCREEN_HEIGHT-5);
+			bitmapFont.draw(batch, debugstr.toString(), 5, Constants.SCREEN_HEIGHT-5);
 			batch.end();
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 		}

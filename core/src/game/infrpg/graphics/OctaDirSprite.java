@@ -14,8 +14,6 @@ import static game.infrpg.graphics.GraphicsUtil.FRAME_DURATION;
  */
 public class OctaDirSprite {
 
-	
-
 	public final String name;
 	public final int rows;
 	public final int columns;
