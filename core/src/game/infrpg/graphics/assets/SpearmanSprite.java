@@ -4,14 +4,14 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import game.infrpg.graphics.GraphicsUtil;
-import game.infrpg.graphics.OctaDirSprite;
+import game.infrpg.graphics.ent.OctaDirSpriteOld;
 import game.infrpg.logic.Dir;
 
 /**
  *
  * @author Bjørnar W. Alvestad
  */
-public class SpearmanSprite extends OctaDirSprite {
+public class SpearmanSprite extends OctaDirSpriteOld {
 
 	private boolean idle;
 	private final TextureRegion[] idleFrames;
@@ -50,9 +50,9 @@ public class SpearmanSprite extends OctaDirSprite {
 	
 
 	@Override
-	protected TextureRegion currentFrame(float elapsedTime, int frameIndex) {
+	protected TextureRegion currentFrame(float elapsedTime) {
 		if (idle) return idleFrames[currentDir.ordinal()];
-		return super.currentFrame(elapsedTime, frameIndex);
+		return super.currentFrame(elapsedTime);
 	}
 
 	

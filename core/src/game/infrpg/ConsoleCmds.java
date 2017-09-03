@@ -22,7 +22,7 @@ public class ConsoleCmds extends CommandList {
 		public void execute(String[] args) {
 			try {
 				int fps = Integer.parseInt(args[1]);
-				MyGdxGame.instance.config.foregroundFPS = fps;
+				MyGdxGame.gameInstance().config.foregroundFPS = fps;
 			} catch (Exception e) {
 				Console.println("Usage: maxfps <int_arg>");
 			}

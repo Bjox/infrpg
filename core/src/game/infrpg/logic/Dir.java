@@ -1,6 +1,7 @@
 package game.infrpg.logic;
 
 import com.badlogic.gdx.math.Vector2;
+import game.infrpg.util.Util;
 
 /**
  *
@@ -20,16 +21,26 @@ public enum Dir {
 	public final int mask;
 	public final int index = ordinal();
 	private final Vector2 unitDirVector;
-
+	private final Vector2 isoDirVector;
+	public static final int NUM_DIRECTIONS = values().length;
+	
 	
 	private Dir(int mask, float unitVecX, float unitVecY) {
 		this.mask = mask;
-		this.unitDirVector = new Vector2(unitVecX, unitVecY).nor(); // TODO: meby shit to return new vector each time. create immutable vector instead?
+		this.unitDirVector = new Vector2(unitVecX, unitVecY).nor();
+		this.isoDirVector = new Vector2(unitDirVector);
+		Util.cart2iso(isoDirVector);
 	}
 	
 	
 	public Vector2 getUnitDirVector() {
+		// TODO: repeated Vector2 creation
 		return new Vector2(unitDirVector);
+	}
+	
+	
+	public Vector2 getIsometricDirVector() {
+		return new Vector2(isoDirVector);
 	}
 
 	

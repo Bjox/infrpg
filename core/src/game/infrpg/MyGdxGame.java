@@ -13,6 +13,7 @@ import game.infrpg.util.FPSCounter;
 import console.Console;
 import java.util.Locale;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import game.infrpg.screens.AbstractScreen;
@@ -22,19 +23,23 @@ import console.util.logging.FileHandler;
 import console.util.logging.Level;
 import console.util.logging.Logger;
 import game.infrpg.logic.Constants;
+import game.infrpg.logic.Dir;
 import java.io.IOException;
 
 
 public class MyGdxGame extends Game {
 	
 	public static final Logger logger = new Logger();
-	public static MyGdxGame instance;
+	private static MyGdxGame instance;
+	private double elapsedTime;
+	
 	public final LwjglApplicationConfiguration config;
 	public final ArgumentParser args;
 	
 	private FPSCounter fpsCounter;
-	public BitmapFont bitmapFont;
+	public BitmapFont consolaFont;
 	private SpriteBatch batch;
+	private TextureAtlas atlas;
 
 	
 	/**
@@ -43,6 +48,7 @@ public class MyGdxGame extends Game {
 	 * @param args Arguments passed when launcing the application.
 	 */
 	public MyGdxGame(LwjglApplicationConfiguration config, String[] args) {
+		this.elapsedTime = 0;
 		this.config = config;
 		this.args = new ArgumentParser(args);
 		this.args.printAllOptions();
@@ -69,6 +75,25 @@ public class MyGdxGame extends Game {
 	}
 	
 	
+	public static MyGdxGame gameInstance() {
+		return instance;
+	}
+	
+	
+	public static TextureAtlas getAtlas() {
+		return instance.atlas;
+	}
+	
+	
+	/**
+	 * Gets elapsed game-time in seconds.
+	 * @return 
+	 */
+	public static float elapsedTime() {
+		return (float)instance.elapsedTime;
+	}
+	
+	
 	@Override
 	public void create () {
 		logger.info("Game init...");
@@ -78,6 +103,8 @@ public class MyGdxGame extends Game {
 		Constants.SCREEN_WIDTH = Gdx.graphics.getWidth();
 		Constants.SCREEN_HEIGHT = Gdx.graphics.getHeight();
 		
+		atlas = new TextureAtlas(Gdx.files.internal("packed/pack.atlas"));
+		
 		fpsCounter = new FPSCounter(1000);
 		batch = new SpriteBatch();
 		
@@ -85,8 +112,8 @@ public class MyGdxGame extends Game {
 		FreeTypeFontParameter fontparameter = new FreeTypeFontParameter();
 		fontparameter.size = 16;
 		fontparameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS;
-		bitmapFont = fontgenerator.generateFont(fontparameter);
-		bitmapFont.setColor(Color.WHITE);
+		consolaFont = fontgenerator.generateFont(fontparameter);
+		consolaFont.setColor(Color.WHITE);
 		fontgenerator.dispose();
 		
 		// Enable alpha transparency
@@ -106,6 +133,7 @@ public class MyGdxGame extends Game {
 	
 	@Override
 	public void render() {
+		elapsedTime = System.nanoTime() / 1_000_000_000.0;
 		super.render();
 		
 		if (Constants.DEBUG) {
@@ -118,7 +146,7 @@ public class MyGdxGame extends Game {
 			debugstr.append(getScreen().debugRenderText());
 			
 			batch.begin();
-			bitmapFont.draw(batch, debugstr.toString(), 5, Constants.SCREEN_HEIGHT-5);
+			consolaFont.draw(batch, debugstr.toString(), 5, Constants.SCREEN_HEIGHT-5);
 			batch.end();
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 		}
@@ -132,8 +160,9 @@ public class MyGdxGame extends Game {
 		logger.debug("Disposing Game...");
 		
 		getScreen().dispose();
-		bitmapFont.dispose();
+		consolaFont.dispose();
 		batch.dispose();
+		atlas.dispose();
 		Console.destroyConsole();
 		
 		logger.debug("Cleanup complete");

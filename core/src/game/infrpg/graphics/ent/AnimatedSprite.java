@@ -1,8 +1,8 @@
 package game.infrpg.graphics.ent;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import game.infrpg.graphics.GraphicsUtil;
 
 /**
  *
@@ -13,19 +13,21 @@ public class AnimatedSprite extends Sprite {
 	private final Animation<TextureRegion> animation;
 
 	public AnimatedSprite(Animation<TextureRegion> animation) {
-		super(animation.getKeyFrames()[0]);
+		super(animation.getKeyFrame(0));
 		this.animation = animation;
 	}
 
 	@Override
-	public void render(SpriteBatch batch, float t, float screenx, float screeny) {
-		// Set the correct animation frame
-		setTextureRegion(animation.getKeyFrame(t));
-		// Render the sprite
-		super.render(batch, t);
+	protected TextureRegion getTextureRegion(float t) {
+		return animation.getKeyFrame(t);
 	}
 	
+	public final void setFps(float fps) {
+		animation.setFrameDuration(GraphicsUtil.FRAME_DURATION(fps));
+	}
 	
-	
+	public final void setPlayMode(Animation.PlayMode playMode) {
+		animation.setPlayMode(playMode);
+	}
 	
 }

@@ -1,10 +1,11 @@
-package game.infrpg.graphics;
+package game.infrpg.graphics.ent;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import game.infrpg.graphics.GraphicsUtil;
 import game.infrpg.logic.Dir;
 import static game.infrpg.graphics.GraphicsUtil.FRAME_DURATION;
 
@@ -12,7 +13,7 @@ import static game.infrpg.graphics.GraphicsUtil.FRAME_DURATION;
  *
  * @author Bjørnar W. Alvestad
  */
-public class OctaDirSprite {
+public class OctaDirSpriteOld {
 
 	public final String name;
 	public final int rows;
@@ -27,7 +28,7 @@ public class OctaDirSprite {
 	private final Vector2[] animationOffsets;
 	
 	
-	public OctaDirSprite(String name, TextureAtlas atlas, int rows, int columns, float fps, float scale) {
+	public OctaDirSpriteOld(String name, TextureAtlas atlas, int rows, int columns, float fps, float scale) {
 		this.name = name;
 		this.rows = rows;
 		this.columns = columns;
@@ -70,10 +71,9 @@ public class OctaDirSprite {
 	/**
 	 * Get the current frame of the sprite.
 	 * @param elapsedTime Used to decide which frame to select in an animation.
-	 * @param frameIndex The index of the current animation/frame.
 	 * @return 
 	 */
-	protected TextureRegion currentFrame(float elapsedTime, int frameIndex) {
+	protected TextureRegion currentFrame(float elapsedTime) {
 		return animations[currentDir.index].getKeyFrame(elapsedTime, true);
 	}
 	
@@ -86,7 +86,7 @@ public class OctaDirSprite {
 	public void render(SpriteBatch batch, float elapsedTime) {
 		int animationIndex = currentDir.index;
 		Vector2 offset = currentAnimationOffset(animationIndex);
-		TextureRegion tr = currentFrame(elapsedTime, animationIndex);
+		TextureRegion tr = currentFrame(elapsedTime);
 		batch.draw(tr, x + offset.x, y + offset.y, 0, 0, tr.getRegionWidth(), tr.getRegionHeight(), scale, scale, 0);
 	}
 	
