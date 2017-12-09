@@ -6,35 +6,35 @@ filter: MipMap,Nearest
 repeat: none
 a
   rotate: false
-  xy: 118, 47
+  xy: 72, 55
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 cross
   rotate: false
-  xy: 184, 61
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 grass
   rotate: false
-  xy: 2, 2
-  size: 114, 109
-  orig: 114, 109
+  xy: 2, 54
+  size: 68, 65
+  orig: 68, 65
   offset: 0, 0
   index: -1
 grasstest
   rotate: false
-  xy: 118, 13
+  xy: 2, 20
   size: 64, 32
   orig: 64, 32
   offset: 0, 0
   index: -1
 player
   rotate: false
-  xy: 184, 79
+  xy: 138, 87
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

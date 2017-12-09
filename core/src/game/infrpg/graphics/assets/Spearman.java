@@ -37,7 +37,8 @@ public class Spearman extends DirSprite {
 		
 		setFps(Constants.DEBUG_MOVEMENT_SPEED / 4.3f);
 		setScale(SCALE);
-		setOrigin(ORIGIN_DOWN);
+		setOrigin(Origin.DOWN);
+		origin_y -= 0.15;
 	}
 	
 	public void setIdle(boolean idle) {

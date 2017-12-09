@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import static game.infrpg.graphics.GraphicsUtil.FRAME_DURATION;
-import static game.infrpg.MyGdxGame.*;
+import static game.infrpg.Infrpg.*;
 import game.infrpg.graphics.GraphicsUtil;
 import game.infrpg.graphics.ent.AnimatedSprite;
 import game.infrpg.graphics.ent.Sprite;

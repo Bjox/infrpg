@@ -27,10 +27,10 @@ import game.infrpg.logic.Dir;
 import java.io.IOException;
 
 
-public class MyGdxGame extends Game {
+public class Infrpg extends Game {
 	
 	public static final Logger logger = new Logger();
-	private static MyGdxGame instance;
+	private static Infrpg instance;
 	private double elapsedTime;
 	
 	public final LwjglApplicationConfiguration config;
@@ -47,7 +47,7 @@ public class MyGdxGame extends Game {
 	 * @param config LwjglApplication configuration.
 	 * @param args Arguments passed when launcing the application.
 	 */
-	public MyGdxGame(LwjglApplicationConfiguration config, String[] args) {
+	public Infrpg(LwjglApplicationConfiguration config, String[] args) {
 		this.elapsedTime = 0;
 		this.config = config;
 		this.args = new ArgumentParser(args);
@@ -75,7 +75,7 @@ public class MyGdxGame extends Game {
 	}
 	
 	
-	public static MyGdxGame gameInstance() {
+	public static Infrpg gameInstance() {
 		return instance;
 	}
 	

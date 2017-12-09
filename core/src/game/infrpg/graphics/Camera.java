@@ -2,6 +2,7 @@ package game.infrpg.graphics;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import game.infrpg.graphics.ent.Entity;
 import game.infrpg.util.Util;
 
 /**
@@ -10,10 +11,29 @@ import game.infrpg.util.Util;
  */
 public class Camera extends OrthographicCamera {
 	
+	/** The entity to follow. */
+	private Entity lookAtEnt;
+	/** Translational offset. */
+	public float offset_x, offset_y;
+	
 	public Camera(float viewportWidth, float viewportHeight) {
 		super(viewportWidth, viewportHeight);
 	}
 	
+	
+	public void lookAt(Entity ent) {
+		this.lookAtEnt = ent;
+	}
+	
+
+	@Override
+	public void update(boolean updateFrustum) {
+		if (lookAtEnt != null) {
+			position.x = lookAtEnt.getScreenX() + offset_x;
+			position.y = lookAtEnt.getScreenY() + offset_y;
+		}
+		super.update(updateFrustum);
+	}
 	
 	/**
 	 * Returns a new vector containing the isometric camera position.

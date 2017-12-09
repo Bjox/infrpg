@@ -6,7 +6,7 @@ package game.infrpg.logic;
  */
 public class Constants {
 	
-	public static final float DEBUG_MOVEMENT_SPEED = 180;
+	public static final float DEBUG_MOVEMENT_SPEED = 120;
 	public static final boolean ENABLE_ZOOM = true;
 	
 	public static final int REGION_SIZE = 16;

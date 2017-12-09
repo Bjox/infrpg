@@ -1,3 +1,6 @@
+core/last_run.log
+core/assets/packed/
+
 ## Java
 
 *.class

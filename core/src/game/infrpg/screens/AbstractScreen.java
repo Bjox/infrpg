@@ -1,7 +1,7 @@
 package game.infrpg.screens;
 
 import com.badlogic.gdx.Screen;
-import game.infrpg.MyGdxGame;
+import game.infrpg.Infrpg;
 import game.infrpg.logic.RenderCallCounter;
 
 /**
@@ -10,10 +10,10 @@ import game.infrpg.logic.RenderCallCounter;
  */
 public abstract class AbstractScreen implements Screen, RenderCallCounter {
 	
-	protected final MyGdxGame game;
+	protected final Infrpg game;
 
 	
-	public AbstractScreen(MyGdxGame game) {
+	public AbstractScreen(Infrpg game) {
 		this.game = game;
 	}
 	

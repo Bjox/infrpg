@@ -11,16 +11,17 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import game.infrpg.logic.map.Map;
-import game.infrpg.MyGdxGame;
-import static game.infrpg.MyGdxGame.*;
+import game.infrpg.Infrpg;
+import static game.infrpg.Infrpg.*;
 import game.infrpg.graphics.Camera;
-import game.infrpg.graphics.assets.GraphicsAssetLoader;
+import game.infrpg.graphics.assets.Grass;
 import game.infrpg.graphics.assets.Spearman;
 import game.infrpg.logic.Dir;
 import game.infrpg.graphics.assets.SwieteniaTree;
-import game.infrpg.graphics.ent.DirSprite;
 import game.infrpg.logic.Constants;
 import game.infrpg.logic.map.Tileset;
+import game.infrpg.util.Util;
+import java.util.ArrayList;
 import org.lwjgl.util.Point;
 
 /**
@@ -31,7 +32,6 @@ public class InGameScreen extends AbstractScreen {
 	
 	private final Map map;
 	private final Camera cam;
-	private final Matrix4 IDENTITY = new Matrix4();
 	private float zoomacc = 0.0f;
 	private int renderCalls;
 	
@@ -42,9 +42,9 @@ public class InGameScreen extends AbstractScreen {
 	private SwieteniaTree tree;
 	private Spearman player;
 //	private Grass grass1;
-//	private ArrayList<Grass> grass;
+	private ArrayList<Grass> grass;
 	
-	public InGameScreen(MyGdxGame game) {
+	public InGameScreen(Infrpg game) {
 		super(game);
 		
 		TextureAtlas atlas = getAtlas();
@@ -61,75 +61,32 @@ public class InGameScreen extends AbstractScreen {
 		cam.update();
 		
 		tree = new SwieteniaTree();
-//		tree.x = 100;
-//		tree.y = -200;
+		tree.x = 100;
+		tree.y = -100;
 		
 		player = new Spearman();
-		
-//		grass1 = new Grass();
-//		grass1.x = 100;
-//		grass1.y = 30;
-//		
-//		int n = 50;
-//		grass = new ArrayList<>(n*n);
-//		for (int i = 0; i < n; i++) {
-//			for (int j = 0; j < n; j++) {
-//				Grass g = new Grass();
-//				g.x = i * 20 + Util.randomFloat(-15, 15);
-//				g.y = j * 20 + Util.randomFloat(-15, 15);
-//				grass.add(g);
-//			}
-//		}
-//		java.util.Collections.sort(grass, (Grass o1, Grass o2) -> {
-//			if (o1.getScreenY() > o2.getScreenY()) return -1;
-//			else return 1;
-//		});
+		cam.lookAt(player);
+		cam.offset_y = 25f;
+	
+		int n = 10;
+		grass = new ArrayList<>(n*n);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				Grass g = new Grass();
+				g.x = i * 25 + Util.randomFloat(-5, 5);
+				g.y = j * 25 + Util.randomFloat(-5, 5);
+				g.swayOffset = g.y * 0.01f + Util.randomFloat(0.3f, 0.5f);
+				grass.add(g);
+			}
+		}
+		java.util.Collections.sort(grass, (Grass o1, Grass o2) -> {
+			if (o1.getScreenY() > o2.getScreenY()) return -1;
+			else return 1;
+		});
 		
 		crossTex = atlas.findRegion("cross");
 		
-		
-		Gdx.input.setInputProcessor(new InputProcessor() {
-			@Override
-			public boolean keyDown(int keycode) {
-				return false;
-			}
-
-			@Override
-			public boolean keyUp(int keycode) {
-				return false;
-			}
-
-			@Override
-			public boolean keyTyped(char character) {
-				return false;
-			}
-
-			@Override
-			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				return false;
-			}
-
-			@Override
-			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-				return false;
-			}
-
-			@Override
-			public boolean touchDragged(int screenX, int screenY, int pointer) {
-				return false;
-			}
-
-			@Override
-			public boolean mouseMoved(int screenX, int screenY) {
-				return false;
-			}
-
-			@Override
-			public boolean scrolled(int amount) {
-				if (Constants.ENABLE_ZOOM) zoomacc += amount * 0.2;
-				return false;
-			}
-		});
+		Gdx.input.setInputProcessor(new InGameInput());
 	}
 	
 	
@@ -147,8 +104,6 @@ public class InGameScreen extends AbstractScreen {
 			cam.zoom *= 1.0f + zoomspeed;
 		}
 		
-		cam.position.x = player.getScreenX();
-		cam.position.y = player.getScreenY();
 		cam.update();
 		map.render(cam);
 		
@@ -156,7 +111,7 @@ public class InGameScreen extends AbstractScreen {
 //		batch.setTransformMatrix(IDENTITY);
 		
 		batch.begin();
-		player.render(batch);
+//		player.render(batch);
 		tree.render(batch);
 		
 //		Matrix4 shear = new Matrix4();
@@ -164,21 +119,20 @@ public class InGameScreen extends AbstractScreen {
 //		shear.val[Matrix4.M10] = 0; // y
 //		batch.setTransformMatrix(shear);
 		
-//		grass1.render(batch, gameElapsedTime);
-//		boolean pRendered = false;
-//		for (Grass g : grass) {
-//			if (!pRendered && g.getScreenY() < player.y - 26) {
-//				player.render(batch, gameElapsedTime);
-//				pRendered = true;
-//			}
-//			g.render(batch, gameElapsedTime);
-//		}
-//		if (!pRendered) player.render(batch, gameElapsedTime);
-		//batch.draw(crossTex, 0, 0);
+//		grass1.render(batch);
+		boolean pRendered = false;
+		for (Grass g : grass) {
+			if (!pRendered && g.getScreenY() < player.getScreenY()) {
+				player.render(batch);
+				pRendered = true;
+			}
+			g.render(batch);
+		}
+		if (!pRendered) player.render(batch);
+		
+		batch.draw(crossTex, 0, 0);
 		
 		batch.end();
-		
-		
 		
 		renderCalls += map.getRenderCalls();
 		renderCalls += batch.renderCalls;
@@ -285,4 +239,47 @@ public class InGameScreen extends AbstractScreen {
 		return cam.position;
 	}
 	
+	
+	private class InGameInput implements InputProcessor {
+		@Override
+			public boolean keyDown(int keycode) {
+				return false;
+			}
+
+			@Override
+			public boolean keyUp(int keycode) {
+				return false;
+			}
+
+			@Override
+			public boolean keyTyped(char character) {
+				return false;
+			}
+
+			@Override
+			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+				return false;
+			}
+
+			@Override
+			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+				return false;
+			}
+
+			@Override
+			public boolean touchDragged(int screenX, int screenY, int pointer) {
+				return false;
+			}
+
+			@Override
+			public boolean mouseMoved(int screenX, int screenY) {
+				return false;
+			}
+
+			@Override
+			public boolean scrolled(int amount) {
+				if (Constants.ENABLE_ZOOM) zoomacc += amount * 0.2;
+				return false;
+			}
+	} 
 }

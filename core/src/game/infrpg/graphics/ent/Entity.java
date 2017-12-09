@@ -3,7 +3,7 @@ package game.infrpg.graphics.ent;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Affine2;
-import static game.infrpg.MyGdxGame.*;
+import static game.infrpg.Infrpg.*;
 
 /**
  *
@@ -11,15 +11,17 @@ import static game.infrpg.MyGdxGame.*;
  */
 public abstract class Entity {
 	
-	public static final int ORIGIN_LEFT      = 0;
-	public static final int ORIGIN_UPLEFT    = 1;
-	public static final int ORIGIN_UP        = 2;
-	public static final int ORIGIN_UPRIGHT   = 3;
-	public static final int ORIGIN_RIGHT     = 4;
-	public static final int ORIGIN_DOWNRIGHT = 5;
-	public static final int ORIGIN_DOWN      = 6;
-	public static final int ORIGIN_DOWNLEFT  = 7;
-	public static final int ORIGIN_CENTER    = 8;
+	public enum Origin {
+		LEFT,
+		UPLEFT,
+		UP,
+		UPRIGHT,
+		RIGHT,
+		DOWNRIGHT,
+		DOWN,
+		DOWNLEFT,
+		CENTER
+	}
 	
 	/** Position on the isometric map. */
 	public float x, y;
@@ -27,6 +29,9 @@ public abstract class Entity {
 	public float scale_x, scale_y;
 	/** Origin relative to the bottom left corner. */
 	public float origin_x, origin_y;
+	/** Shear to apply when rendering. */
+	public float shear_x, shear_y;
+	private final Affine2 transformMatrix = new Affine2();
 
 	/**
 	 * Constructor.
@@ -67,17 +72,17 @@ public abstract class Entity {
 	 * for possible values.
 	 * @param origin 
 	 */
-	public final void setOrigin(int origin) {
+	public final void setOrigin(Origin origin) {
 		switch (origin) {
-			case ORIGIN_CENTER:    origin_x = -0.5f; origin_y = -0.5f; break;
-			case ORIGIN_DOWN:      origin_x = -0.5f; origin_y =    0f; break;
-			case ORIGIN_DOWNLEFT:  origin_x =    0f; origin_y =    0f; break;
-			case ORIGIN_DOWNRIGHT: origin_x =   -1f; origin_y =    0f; break;
-			case ORIGIN_LEFT:      origin_x =    0f; origin_y = -0.5f; break;
-			case ORIGIN_RIGHT:     origin_x =   -1f; origin_y = -0.5f; break;
-			case ORIGIN_UP:        origin_x = -0.5f; origin_y =   -1f; break;
-			case ORIGIN_UPLEFT:    origin_x =    0f; origin_y =   -1f; break;
-			case ORIGIN_UPRIGHT:   origin_x =   -1f; origin_y =   -1f; break;
+			case CENTER:    origin_x = -0.5f; origin_y = -0.5f; break;
+			case DOWN:      origin_x = -0.5f; origin_y =    0f; break;
+			case DOWNLEFT:  origin_x =    0f; origin_y =    0f; break;
+			case DOWNRIGHT: origin_x =   -1f; origin_y =    0f; break;
+			case LEFT:      origin_x =    0f; origin_y = -0.5f; break;
+			case RIGHT:     origin_x =   -1f; origin_y = -0.5f; break;
+			case UP:        origin_x = -0.5f; origin_y =   -1f; break;
+			case UPLEFT:    origin_x =    0f; origin_y =   -1f; break;
+			case UPRIGHT:   origin_x =   -1f; origin_y =   -1f; break;
 			default: logger.warning("Unknown origin passed to setOrigin.");
 		}
 	}
@@ -91,13 +96,18 @@ public abstract class Entity {
 		float width = tr.getRegionWidth();
 		float height = tr.getRegionHeight();
 		
-		Affine2 aff = new Affine2();
-		aff.translate(
-				getScreenX() + origin_x * width * scale_x,
-				getScreenY() + origin_y * height * scale_y);
-		aff.scale(scale_x, scale_y);
+		transformMatrix.idt()
+			.translate(
+					getScreenX() + origin_x * width * scale_x,
+					getScreenY() + origin_y * height * scale_y)
+			.shear(
+					shear_x,
+					shear_y)
+			.scale(
+					scale_x,
+					scale_y);
 		
-		batch.draw(tr, width, height, aff);
+		batch.draw(tr, width, height, transformMatrix);
 	}
 	
 //	public float getWidth() {

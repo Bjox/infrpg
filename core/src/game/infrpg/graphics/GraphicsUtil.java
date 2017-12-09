@@ -2,7 +2,7 @@ package game.infrpg.graphics;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import static game.infrpg.MyGdxGame.logger;
+import static game.infrpg.Infrpg.logger;
 
 /**
  *

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import game.infrpg.logic.RenderCallCounter;
-import static game.infrpg.MyGdxGame.logger;
+import static game.infrpg.Infrpg.logger;
 import game.infrpg.graphics.Camera;
 import static game.infrpg.logic.Constants.CHUNK_SIZE;
 import static game.infrpg.logic.Constants.TILE_SIZE;
@@ -133,6 +133,9 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 		regions.put(regionsMapKey(x, y), region);
 		return region;
 	}
+	
+	
+	
 	
 	
 	public void render(Camera cam) {
