@@ -24,7 +24,9 @@ import console.util.logging.Level;
 import console.util.logging.Logger;
 import game.infrpg.logic.Constants;
 import game.infrpg.logic.Dir;
+import game.infrpg.util.Util;
 import java.io.IOException;
+import java.util.Arrays;
 
 
 public class Infrpg extends Game {
@@ -122,12 +124,11 @@ public class Infrpg extends Game {
 		
 		Gdx.graphics.setVSync(Constants.VSYNC);
 		
-		AssetManager assman = new AssetManager();
-		TextureLoader.TextureParameter texparams = new TextureLoader.TextureParameter();
-		texparams.genMipMaps = true;
+//		AssetManager assman = new AssetManager();
+//		TextureLoader.TextureParameter texparams = new TextureLoader.TextureParameter();
+//		texparams.genMipMaps = true;
 		
 		setScreen(new InGameScreen(this));
-		
 	}
 	
 	
@@ -139,9 +140,14 @@ public class Infrpg extends Game {
 		if (Constants.DEBUG) {
 			double fps = fpsCounter.getFps();
 			int renderCalls = getScreen().getRenderCalls();
+			long totalMemory = Runtime.getRuntime().totalMemory();
+			long maxMemory = Runtime.getRuntime().maxMemory();
+			long freeMemory = Runtime.getRuntime().freeMemory();
+			long usedMemory = totalMemory - freeMemory;
 			
 			StringBuilder debugstr = new StringBuilder();
 			debugstr.append(String.format("%-15s %.1f\n", "FPS:", fps));
+			debugstr.append(String.format("%-15s %d/%d MB\n", "RAM usage:", usedMemory / 1000000, maxMemory / 1000000));
 			debugstr.append(String.format("%-15s %d\n", "Render calls:", renderCalls));
 			debugstr.append(getScreen().debugRenderText());
 			

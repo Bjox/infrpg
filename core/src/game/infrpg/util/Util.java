@@ -74,6 +74,10 @@ public class Util {
 		return rand.nextBoolean();
 	}
 	
+	public static void randomBytes(byte[] bytes) {
+		rand.nextBytes(bytes);
+	}
+	
 	public static boolean randomEvent(double prob) {
 		return randomDouble() <= prob;
 	}

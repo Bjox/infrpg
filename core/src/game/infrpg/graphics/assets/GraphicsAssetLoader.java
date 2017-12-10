@@ -4,11 +4,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
-import static game.infrpg.graphics.GraphicsUtil.FRAME_DURATION;
 import static game.infrpg.Infrpg.*;
-import game.infrpg.graphics.GraphicsUtil;
 import game.infrpg.graphics.ent.AnimatedSprite;
-import game.infrpg.graphics.ent.Sprite;
+import game.infrpg.logic.Constants;
 import game.infrpg.logic.Dir;
 
 /**
@@ -16,17 +14,12 @@ import game.infrpg.logic.Dir;
  * @author Bjørnar W. Alvestad
  */
 public class GraphicsAssetLoader {
-	
-	/** 
-	 * Default FPS used when loding animations.
-	 * Frame duration can later be changed in the returned animation object.
+
+	/** Calculate the frame duration in seconds for a given framerate.
+	 * @param FPS
+	 * @return  Frame duration in seconds.
 	 */
-	public static float defaultAnimationFps = 20;
-	/**
-	 * Default playmode used when loading animations.
-	 * This can later be changed in the returned animation object.
-	 */
-	public static Animation.PlayMode defaultAnimationPlaymode = Animation.PlayMode.LOOP;
+	public static float FRAME_DURATION(float FPS) { return 1 / (float)FPS; }
 	
 	/**
 	 * Private constructor.
@@ -57,7 +50,7 @@ public class GraphicsAssetLoader {
 		Array<TextureAtlas.AtlasRegion> regions = getAtlas().findRegions(name);
 		if (regions.size == 0) warnNotFound(name);
 		Animation<TextureRegion> animation = new Animation(
-				FRAME_DURATION(defaultAnimationFps), regions, defaultAnimationPlaymode);
+				FRAME_DURATION(Constants.DEFAULT_ANIMATION_FRAMERATE), regions, Constants.DEFAULT_ANIMATION_PLAYMODE);
 		return animation;
 	}
 	
@@ -86,14 +79,14 @@ public class GraphicsAssetLoader {
 	public static Animation<TextureRegion> loadSheetAnimation(String name, int rows, int columns) {
 		TextureRegion[] trs;
 		try {
-			trs = GraphicsUtil.getSpritesheetAnimationFrames(getAtlas(), name, rows, columns);
+			trs = getSpritesheetRegions(getAtlas(), name, rows, columns);
 		} catch (NullPointerException e) {
 			warnNotFound(name);
 			return null;
 		}
 		Array<TextureRegion> arr = new Array((Object[])trs);
 		Animation<TextureRegion> animation = new Animation(
-				FRAME_DURATION(defaultAnimationFps), arr, defaultAnimationPlaymode);
+				FRAME_DURATION(Constants.DEFAULT_ANIMATION_FRAMERATE), arr, Constants.DEFAULT_ANIMATION_PLAYMODE);
 		return animation;
 	}
 	
@@ -131,12 +124,47 @@ public class GraphicsAssetLoader {
 	public static TextureRegion[] loadDirSheetSprite(String name) {
 		TextureRegion[] trs;
 		try {
-			trs = GraphicsUtil.getSpritesheetAnimationFrames(getAtlas(), name, 1, Dir.NUM_DIRECTIONS);
+			trs = getSpritesheetRegions(getAtlas(), name, 1, Dir.NUM_DIRECTIONS);
 		} catch (NullPointerException e) {
 			warnNotFound(name);
 			return null;
 		}
 		return trs;
+	}
+	
+	/**
+	 * Get a spritesheet as an array of separate texture regions.
+	 * @param atlas
+	 * @param textureName
+	 * @param rows
+	 * @param columns
+	 * @return 
+	 */
+	public static TextureRegion[] getSpritesheetRegions(TextureAtlas atlas, String textureName, int rows, int columns) {
+		TextureRegion tex = atlas.findRegion(textureName);
+		if (tex == null)
+			throw new NullPointerException("Texture \"" + textureName + "\" not found.");
+		
+		int tileWidth = tex.getRegionWidth() / columns;
+		int tileHeight = tex.getRegionHeight() / rows;
+		
+		if (tex.getRegionWidth() % columns != 0 || tex.getRegionHeight() % rows != 0)
+			logger.warning("Spritesheet \"" + textureName + "\" dimensions are not evenly divided by specified rows:columns (" + rows + ":" + columns + ").");
+		
+		TextureRegion[][] texRegions = tex.split(tileWidth, tileHeight);
+		return flatten2Darray(texRegions);
+	}
+	
+	
+	private static TextureRegion[] flatten2Darray(TextureRegion[][] array) {
+		TextureRegion[] ret = new TextureRegion[array.length * array[0].length];
+		int index = 0;
+		for (int i = 0; i < array.length; i++) {
+			for (int j = 0; j < array[i].length; j++) {
+				ret[index++] = array[i][j];
+			}
+		}
+		return ret;
 	}
 	
 }

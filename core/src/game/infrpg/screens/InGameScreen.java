@@ -41,8 +41,7 @@ public class InGameScreen extends AbstractScreen {
 	private TextureRegion crossTex;
 	private SwieteniaTree tree;
 	private Spearman player;
-//	private Grass grass1;
-	private ArrayList<Grass> grass;
+//	private ArrayList<Grass> grass;
 	
 	public InGameScreen(Infrpg game) {
 		super(game);
@@ -68,21 +67,21 @@ public class InGameScreen extends AbstractScreen {
 		cam.lookAt(player);
 		cam.offset_y = 25f;
 	
-		int n = 10;
-		grass = new ArrayList<>(n*n);
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				Grass g = new Grass();
-				g.x = i * 25 + Util.randomFloat(-5, 5);
-				g.y = j * 25 + Util.randomFloat(-5, 5);
-				g.swayOffset = g.y * 0.01f + Util.randomFloat(0.3f, 0.5f);
-				grass.add(g);
-			}
-		}
-		java.util.Collections.sort(grass, (Grass o1, Grass o2) -> {
-			if (o1.getScreenY() > o2.getScreenY()) return -1;
-			else return 1;
-		});
+//		int n = 10;
+//		grass = new ArrayList<>(n*n);
+//		for (int i = 0; i < n; i++) {
+//			for (int j = 0; j < n; j++) {
+//				Grass g = new Grass();
+//				g.x = i * 25 + Util.randomFloat(-5, 5);
+//				g.y = j * 25 + Util.randomFloat(-5, 5);
+//				g.swayOffset = g.y * 0.01f + Util.randomFloat(0.3f, 0.5f);
+//				grass.add(g);
+//			}
+//		}
+//		java.util.Collections.sort(grass, (Grass o1, Grass o2) -> {
+//			if (o1.getScreenY() > o2.getScreenY()) return -1;
+//			else return 1;
+//		});
 		
 		crossTex = atlas.findRegion("cross");
 		
@@ -121,13 +120,13 @@ public class InGameScreen extends AbstractScreen {
 		
 //		grass1.render(batch);
 		boolean pRendered = false;
-		for (Grass g : grass) {
-			if (!pRendered && g.getScreenY() < player.getScreenY()) {
-				player.render(batch);
-				pRendered = true;
-			}
-			g.render(batch);
-		}
+//		for (Grass g : grass) {
+//			if (!pRendered && g.getScreenY() < player.getScreenY()) {
+//				player.render(batch);
+//				pRendered = true;
+//			}
+//			g.render(batch);
+//		}
 		if (!pRendered) player.render(batch);
 		
 		batch.draw(crossTex, 0, 0);
