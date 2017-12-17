@@ -1,0 +1,5 @@
+Shear tranformation:
+Matrix4 shear = new Matrix4();
+shear.val[Matrix4.M01] = 1f; // x
+shear.val[Matrix4.M10] = 0; // y
+batch.setTransformMatrix(shear);

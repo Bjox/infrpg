@@ -4,7 +4,19 @@
   <auxiliary>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-      <group/>
+      <group>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/entities/SpriteEntity.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/graphics/assets/GraphicsAsset.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/Infrpg.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/screens/InGameScreen.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/graphics/assets/Assets.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/graphics/assets/GraphicsAssetLoader.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/entities/Entity.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/graphics/ent/Entity.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/logic/Dir.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/graphics/testents/Spearman.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/entities/rendering/Renderable.java</file>
+      </group>
     </open-files>
     <editor-bookmarks lastBookmarkId="0" xmlns="http://www.netbeans.org/ns/editor-bookmarks/2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">

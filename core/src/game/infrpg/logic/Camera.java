@@ -1,8 +1,8 @@
-package game.infrpg.graphics;
+package game.infrpg.logic;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import game.infrpg.graphics.ent.Entity;
+import game.infrpg.entities.Entity;
 import game.infrpg.util.Util;
 
 /**

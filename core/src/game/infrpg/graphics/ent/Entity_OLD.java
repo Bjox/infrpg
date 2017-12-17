@@ -9,7 +9,8 @@ import static game.infrpg.Infrpg.*;
  *
  * @author Bjørnar W. Alvestad
  */
-public abstract class Entity {
+@Deprecated
+public abstract class Entity_OLD {
 	
 	public enum Origin {
 		LEFT,
@@ -36,7 +37,7 @@ public abstract class Entity {
 	/**
 	 * Constructor.
 	 */
-	public Entity() {
+	public Entity_OLD() {
 		this.scale_x = 1;
 		this.scale_y = 1;
 	}

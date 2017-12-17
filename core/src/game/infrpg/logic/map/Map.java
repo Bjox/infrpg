@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import game.infrpg.logic.RenderCallCounter;
 import static game.infrpg.Infrpg.logger;
-import game.infrpg.graphics.Camera;
+import game.infrpg.logic.Camera;
 import static game.infrpg.logic.Constants.CHUNK_SIZE;
 import static game.infrpg.logic.Constants.TILE_SIZE;
 import static game.infrpg.logic.Constants.REGION_SIZE;

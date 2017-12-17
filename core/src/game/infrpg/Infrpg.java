@@ -2,8 +2,6 @@ package game.infrpg;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -23,23 +21,22 @@ import console.util.logging.FileHandler;
 import console.util.logging.Level;
 import console.util.logging.Logger;
 import game.infrpg.logic.Constants;
-import game.infrpg.logic.Dir;
-import game.infrpg.util.Util;
 import java.io.IOException;
-import java.util.Arrays;
 
 
 public class Infrpg extends Game {
 	
 	public static final Logger logger = new Logger();
 	private static Infrpg instance;
-	private double elapsedTime;
+	
+	private float elapsed_t;
+	private float delta_t;
 	
 	public final LwjglApplicationConfiguration config;
 	public final ArgumentParser args;
 	
+	private BitmapFont consolaFont;
 	private FPSCounter fpsCounter;
-	public BitmapFont consolaFont;
 	private SpriteBatch batch;
 	private TextureAtlas atlas;
 
@@ -50,7 +47,7 @@ public class Infrpg extends Game {
 	 * @param args Arguments passed when launcing the application.
 	 */
 	public Infrpg(LwjglApplicationConfiguration config, String[] args) {
-		this.elapsedTime = 0;
+		this.elapsed_t = 0;
 		this.config = config;
 		this.args = new ArgumentParser(args);
 		this.args.printAllOptions();
@@ -92,9 +89,16 @@ public class Infrpg extends Game {
 	 * @return 
 	 */
 	public static float elapsedTime() {
-		return (float)instance.elapsedTime;
+		return instance.elapsed_t;
 	}
 	
+	/**
+	 * Gets the delta time is seconds since the last render.
+	 * @return 
+	 */
+	public static float deltaTime() {
+		return instance.delta_t;
+	}
 	
 	@Override
 	public void create () {
@@ -134,7 +138,8 @@ public class Infrpg extends Game {
 	
 	@Override
 	public void render() {
-		elapsedTime = System.nanoTime() / 1_000_000_000.0;
+		delta_t = Gdx.graphics.getDeltaTime();
+		elapsed_t = (float) (System.nanoTime() / 1_000_000_000d);
 		super.render();
 		
 		if (Constants.DEBUG) {

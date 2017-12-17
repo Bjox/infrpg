@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
-import static game.infrpg.Infrpg.*;
-import game.infrpg.graphics.ent.AnimatedSprite;
+import static game.infrpg.Infrpg.logger;
 import game.infrpg.logic.Constants;
 import game.infrpg.logic.Dir;
+import java.util.function.BiConsumer;
 
 /**
  *
@@ -40,29 +40,66 @@ public class GraphicsAssetLoader {
 	 */
 	
 	/**
-	 * Load an animation with separate, indexed key frame images.<br>
-	 * ani_01.png, ani_02.png, ani_03.png, ...<br>
-	 * There can only be one key frame per image.
+	 * Loads a single sprite in the form of a texture region.
+	 * @param atlas
 	 * @param name
 	 * @return 
 	 */
-	public static Animation<TextureRegion> loadIndexedAnimation(String name) {
-		Array<TextureAtlas.AtlasRegion> regions = getAtlas().findRegions(name);
+	public static TextureRegion loadSprite(TextureAtlas atlas, String name) {
+		TextureRegion tr = atlas.findRegion(name);
+		if (tr == null) warnNotFound(name);
+		return tr;
+	}
+	
+	/**
+	 * Loads a directional sprite from a series of files.
+	 * @param atlas
+	 * @param name
+	 * @return 
+	 */
+	public static TextureRegion[] loadSpriteDirectional(TextureAtlas atlas, String name) {
+		TextureRegion[] trs = new TextureRegion[Dir.NUM_DIRECTIONS];
+		forEachDirName(name, (dir, fullName) -> {
+			trs[dir.index] = loadSprite(atlas, fullName);
+		});
+		return trs;
+	}
+	
+	/**
+	 * Load directional texture regions from a single image,
+	 * where the directional texture regions are laid out
+	 * on a single row. The image must be on the format:<br>
+	 * 1 2 3 ... n, where n is the number of directions defined
+	 * in the Dir enum.
+	 * @param atlas
+	 * @param name
+	 * @return An array of texture regions, with length n.
+	 */
+	public static TextureRegion[] loadSpriteDirectionalSheet(TextureAtlas atlas, String name) {
+		TextureRegion[] trs;
+		try {
+			trs = getSpritesheetRegionsFlatten(atlas, name, 1, Dir.NUM_DIRECTIONS);
+		} catch (NullPointerException e) {
+			warnNotFound(name);
+			return null;
+		}
+		return trs;
+	}
+	
+	/**
+	 * Load an animation with separate, indexed key frame images.<br>
+	 * ani_01.png, ani_02.png, ani_03.png, ...<br>
+	 * There can only be one key frame per image.
+	 * @param atlas
+	 * @param name
+	 * @return 
+	 */
+	public static Animation<TextureRegion> loadAnimationIndexed(TextureAtlas atlas, String name) {
+		Array<TextureAtlas.AtlasRegion> regions = atlas.findRegions(name);
 		if (regions.size == 0) warnNotFound(name);
 		Animation<TextureRegion> animation = new Animation(
 				FRAME_DURATION(Constants.DEFAULT_ANIMATION_FRAMERATE), regions, Constants.DEFAULT_ANIMATION_PLAYMODE);
 		return animation;
-	}
-	
-	/**
-	 * Loads a single sprite in the form of a texture region.
-	 * @param name
-	 * @return 
-	 */
-	public static TextureRegion loadSprite(String name) {
-		TextureRegion tr = getAtlas().findRegion(name);
-		if (tr == null) warnNotFound(name);
-		return tr;
 	}
 	
 	/**
@@ -71,15 +108,16 @@ public class GraphicsAssetLoader {
 	 * order is:<br>
 	 * 1 2 3<br>
 	 * 4 5 6
+	 * @param atlas
 	 * @param name
 	 * @param rows
 	 * @param columns
 	 * @return 
 	 */
-	public static Animation<TextureRegion> loadSheetAnimation(String name, int rows, int columns) {
+	public static Animation<TextureRegion> loadAnimationSheet(TextureAtlas atlas, String name, int rows, int columns) {
 		TextureRegion[] trs;
 		try {
-			trs = getSpritesheetRegions(getAtlas(), name, rows, columns);
+			trs = getSpritesheetRegionsFlatten(atlas, name, rows, columns);
 		} catch (NullPointerException e) {
 			warnNotFound(name);
 			return null;
@@ -98,38 +136,19 @@ public class GraphicsAssetLoader {
 	 * Each image define a row/column ordered animation in the format:<br>
 	 * 1 2 3<br>
 	 * 4 5 6
+	 * @param atlas
 	 * @param name
 	 * @param rows
 	 * @param columns
 	 * @return 
 	 */
-	public static AnimatedSprite[] loadDirAnimation(String name, int rows, int columns) {
-		AnimatedSprite[] anis = new AnimatedSprite[Dir.NUM_DIRECTIONS];
-		for (Dir dir : Dir.values()) {
-			String dirname = name + "_" + dir.name().toLowerCase();
-			anis[dir.index] = new AnimatedSprite(loadSheetAnimation(dirname, rows, columns));
-		}
+	public static Animation<TextureRegion>[] loadAnimationSheetDirectional(TextureAtlas atlas, String name, int rows, int columns) {
+		Animation<TextureRegion>[] anis = new Animation[Dir.NUM_DIRECTIONS];
+		forEachDirName(name, (dir, fullName) -> {
+			Animation<TextureRegion> an = loadAnimationSheet(atlas, fullName, rows, columns);
+			anis[dir.index] = an;
+		});
 		return anis;
-	}
-	
-	/**
-	 * Load directional texture regions from a single image,
-	 * where the directional texture regions are laid out
-	 * on a single row. The image must be on the format:<br>
-	 * 1 2 3 ... n, where n is the number of directions defined
-	 * in the Dir enum.
-	 * @param name
-	 * @return An array of texture regions, with length n.
-	 */
-	public static TextureRegion[] loadDirSheetSprite(String name) {
-		TextureRegion[] trs;
-		try {
-			trs = getSpritesheetRegions(getAtlas(), name, 1, Dir.NUM_DIRECTIONS);
-		} catch (NullPointerException e) {
-			warnNotFound(name);
-			return null;
-		}
-		return trs;
 	}
 	
 	/**
@@ -140,7 +159,19 @@ public class GraphicsAssetLoader {
 	 * @param columns
 	 * @return 
 	 */
-	public static TextureRegion[] getSpritesheetRegions(TextureAtlas atlas, String textureName, int rows, int columns) {
+	public static TextureRegion[] getSpritesheetRegionsFlatten(TextureAtlas atlas, String textureName, int rows, int columns) {
+		return flatten2Darray(getSpritesheetRegions(atlas, textureName, rows, columns));
+	}
+	
+	/**
+	 * Get a spritesheet as an array of separate texture regions.
+	 * @param atlas
+	 * @param textureName
+	 * @param rows
+	 * @param columns
+	 * @return 
+	 */
+	public static TextureRegion[][] getSpritesheetRegions(TextureAtlas atlas, String textureName, int rows, int columns) {
 		TextureRegion tex = atlas.findRegion(textureName);
 		if (tex == null)
 			throw new NullPointerException("Texture \"" + textureName + "\" not found.");
@@ -151,10 +182,8 @@ public class GraphicsAssetLoader {
 		if (tex.getRegionWidth() % columns != 0 || tex.getRegionHeight() % rows != 0)
 			logger.warning("Spritesheet \"" + textureName + "\" dimensions are not evenly divided by specified rows:columns (" + rows + ":" + columns + ").");
 		
-		TextureRegion[][] texRegions = tex.split(tileWidth, tileHeight);
-		return flatten2Darray(texRegions);
+		return tex.split(tileWidth, tileHeight);
 	}
-	
 	
 	private static TextureRegion[] flatten2Darray(TextureRegion[][] array) {
 		TextureRegion[] ret = new TextureRegion[array.length * array[0].length];
@@ -165,6 +194,12 @@ public class GraphicsAssetLoader {
 			}
 		}
 		return ret;
+	}
+	
+	private static void forEachDirName(String baseName, BiConsumer<Dir, String> consumer) {
+		for (Dir dir : Dir.values()) {
+			consumer.accept(dir, baseName.concat("_").concat(dir.name().toLowerCase()));
+		}
 	}
 	
 }
