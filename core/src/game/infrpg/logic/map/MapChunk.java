@@ -2,7 +2,7 @@ package game.infrpg.logic.map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import game.infrpg.graphics.ent.Entity_OLD;
+import game.infrpg.entities.Entity;
 import game.infrpg.util.Util;
 import java.io.Serializable;
 import org.lwjgl.util.Point;
@@ -29,7 +29,7 @@ public class MapChunk implements Serializable {
 	
 	private final Vector2 coordTmp;
 	
-	private final List<Entity_OLD> ents;
+	private final List<Entity> ents;
 	
 	
 	/**
@@ -54,12 +54,12 @@ public class MapChunk implements Serializable {
 	}
 	
 	
-	public void addEntity(Entity_OLD ent) {
+	public void addEntity(Entity ent) {
 		ents.add(ent);
 	}
 	
 	
-	public List<Entity_OLD> getEnts() {
+	public List<Entity> getEnts() {
 		return ents;
 	}
 	

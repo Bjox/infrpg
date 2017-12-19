@@ -2,6 +2,7 @@ package game.infrpg.graphics.testents;
 
 import game.infrpg.entities.MovingDirEntity;
 import game.infrpg.graphics.assets.Assets;
+import game.infrpg.logic.Constants;
 
 /**
  *
@@ -14,7 +15,8 @@ public class Spearman extends MovingDirEntity {
 	public Spearman() {
 		super(Assets.SPEARMAN_IDLE.loadRenderable(), Assets.SPEARMAN_MOVE.loadRenderable());
 		
-//		setFps(Constants.DEBUG_MOVEMENT_SPEED / 4.3f);
+		float fps = Constants.DEBUG_MOVEMENT_SPEED / 4.3f;
+		getMovingRenderStateMap().forEachAnimation(a -> a.setFps(fps));
 		setOrigin(Origin.DOWN);
 		setScale(SCALE);
 		origin_y = 0.15f;

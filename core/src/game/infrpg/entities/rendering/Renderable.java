@@ -18,6 +18,11 @@ public interface Renderable {
 		public TextureRegion getTextureRegion() {
 			return null;
 		}
+
+		@Override
+		public String toString() {
+			return "NULL_RENDERABLE@" + Integer.toHexString(hashCode());
+		}
 	};
 	
 	public TextureRegion getTextureRegion();

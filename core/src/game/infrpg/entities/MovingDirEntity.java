@@ -9,7 +9,9 @@ import game.infrpg.logic.Dir;
  */
 public class MovingDirEntity extends DirEntity {
 	
+	/** Moving flag. */
 	private boolean moving;
+	/** The state map used during movement. */
 	private final RenderStateMap movingStates;
 	
 	public MovingDirEntity(DirRenderable idleRenderable, DirRenderable moveRenderable) {
@@ -25,14 +27,34 @@ public class MovingDirEntity extends DirEntity {
 		movingStates.set(RS_DOWNRIGHT, moveRenderable.getRenderable(Dir.DOWNRIGHT));
 	}
 	
+	/**
+	 * Set the moving flag.
+	 * @param moving 
+	 */
 	public void setMoving(boolean moving) {
 		this.moving = moving;
 	}
 	
+	/**
+	 * Get the moving flag.
+	 * @return 
+	 */
 	public boolean isMoving() {
 		return moving;
 	}
+	
+	/**
+	 * Get the render state map used during movement.
+	 * @return 
+	 */
+	protected final RenderStateMap getMovingRenderStateMap() {
+		return movingStates;
+	}
 
+	/**
+	 * Overridden method. Returns the moving state map if the moving flag is set.
+	 * @return 
+	 */
 	@Override
 	protected RenderStateMap getRenderStateMap() {
 		return moving ? movingStates : super.getRenderStateMap();

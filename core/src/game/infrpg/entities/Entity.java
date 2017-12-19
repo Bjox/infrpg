@@ -28,7 +28,7 @@ public abstract class Entity {
 	/** The default render state. */
 	public final int RS_DEFAULT;
 	/** The render state map. */
-	private RenderStateMap stateMap;
+	private final RenderStateMap stateMap;
 	/** Current render state. */
 	private int renderState;
 	
@@ -80,19 +80,29 @@ public abstract class Entity {
 	}
 	
 	/**
-	 * Get the currently active render state map.
+	 * Get the renderable to be drawn.
 	 * @return 
 	 */
-	protected RenderStateMap getRenderStateMap() {
-		return stateMap;
+	protected Renderable getRenderable() {
+		return this.stateMap.get(this.renderState);
 	}
 	
 	/**
-	 * Set the active render state map.
-	 * @param stateMap 
+	 * Get the render state map to be used for rendering.
+	 * Override this method in derived classes in order to provide
+	 * alternative state maps in certain situations.
+	 * @return 
 	 */
-	protected void setRenderStateMap(RenderStateMap stateMap) {
-		this.stateMap = stateMap;
+	protected RenderStateMap getRenderStateMap() {
+		return getBaseRenderStateMap();
+	}
+	
+	/**
+	 * Get the base render state map.
+	 * @return 
+	 */
+	protected final RenderStateMap getBaseRenderStateMap() {
+		return stateMap;
 	}
 	
 	/**
@@ -210,10 +220,10 @@ public abstract class Entity {
 	}
 	
 	/**
-	 * Get the current texture region to be drawn.
+	 * Get the texture region to be drawn.
 	 * @return A texture region, or null if nothing is to be rendered.
 	 */
-	public TextureRegion getTextureRegion() {
+	protected TextureRegion getTextureRegion() {
 		return getRenderStateMap().get(renderState).getTextureRegion();
 	}
 	
