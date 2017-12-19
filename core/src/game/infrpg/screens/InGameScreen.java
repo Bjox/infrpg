@@ -3,20 +3,23 @@ package game.infrpg.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import game.infrpg.logic.map.Map;
+import game.engine.logic.map.Map;
 import game.infrpg.Infrpg;
 import static game.infrpg.Infrpg.*;
-import game.infrpg.logic.Camera;
-import game.infrpg.graphics.testents.Spearman;
-import game.infrpg.logic.Dir;
-import game.infrpg.logic.Constants;
-import game.infrpg.logic.map.Tileset;
+import game.engine.logic.Camera;
+import game.infrpg.entities.Spearman;
+import game.engine.logic.Dir;
+import game.engine.logic.Constants;
+import game.engine.logic.map.Tileset;
+import game.infrpg.entities.SwieteniaTree;
 import org.lwjgl.util.Point;
 
 /**
@@ -33,8 +36,10 @@ public class InGameScreen extends AbstractScreen {
 	private final SpriteBatch batch;
 	private final Vector2 isoCamPosBuffer;
 	
-	private TextureRegion crossTex;
 	private Spearman player;
+	private SwieteniaTree tree;
+	
+	private ShapeRenderer shapeRenderer;
 	
 	public InGameScreen(Infrpg game) {
 		super(game);
@@ -52,12 +57,15 @@ public class InGameScreen extends AbstractScreen {
 		
 		cam.update();
 		
+		shapeRenderer = new ShapeRenderer();
+		
 		player = new Spearman();
 		player.setRenderState(player.RS_DOWN);
 		cam.lookAt(player);
 		cam.offset_y = 25f;
 		
-		crossTex = atlas.findRegion("cross");
+		tree = new SwieteniaTree();
+		tree.x = 100;
 		
 		Gdx.input.setInputProcessor(new InGameInput());
 	}
@@ -83,9 +91,15 @@ public class InGameScreen extends AbstractScreen {
 		batch.setProjectionMatrix(cam.combined);
 		
 		batch.begin();
-		batch.draw(crossTex, 0, 0);
 		player.render(batch);
+		tree.render(batch);
 		batch.end();
+		
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setProjectionMatrix(cam.combined);
+		shapeRenderer.setColor(Color.RED);
+		shapeRenderer.circle(player.getScreenX(), player.getScreenY(), 0.5f);
+		shapeRenderer.end();
 		
 		renderCalls += map.getRenderCalls();
 		renderCalls += batch.renderCalls;

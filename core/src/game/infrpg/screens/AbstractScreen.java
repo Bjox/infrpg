@@ -2,7 +2,7 @@ package game.infrpg.screens;
 
 import com.badlogic.gdx.Screen;
 import game.infrpg.Infrpg;
-import game.infrpg.logic.RenderCallCounter;
+import game.engine.logic.RenderCallCounter;
 
 /**
  *

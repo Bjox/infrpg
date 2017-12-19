@@ -1,5 +1,6 @@
 package game.infrpg;
 
+import game.infrpg.util.ConsoleCmds;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -8,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import game.infrpg.screens.InGameScreen;
 import game.infrpg.util.FPSCounter;
-import console.Console;
+import game.infrpg.console.Console;
 import java.util.Locale;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -16,11 +17,11 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import game.infrpg.screens.AbstractScreen;
 import game.infrpg.util.ArgumentParser;
-import console.util.logging.ConsoleHandler;
-import console.util.logging.FileHandler;
-import console.util.logging.Level;
-import console.util.logging.Logger;
-import game.infrpg.logic.Constants;
+import game.infrpg.console.util.logging.ConsoleHandler;
+import game.infrpg.console.util.logging.FileHandler;
+import game.infrpg.console.util.logging.Level;
+import game.infrpg.console.util.logging.Logger;
+import game.engine.logic.Constants;
 import java.io.IOException;
 
 
@@ -139,7 +140,9 @@ public class Infrpg extends Game {
 	@Override
 	public void render() {
 		delta_t = Gdx.graphics.getDeltaTime();
-		elapsed_t = (float) (System.nanoTime() / 1_000_000_000d);
+		//elapsed_t = (float) (System.nanoTime() / 1_000_000_000d); // This caused stuttering in animations
+		elapsed_t += delta_t;
+		
 		super.render();
 		
 		if (Constants.DEBUG) {
