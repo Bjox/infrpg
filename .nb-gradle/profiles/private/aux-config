@@ -4,10 +4,6 @@
   <auxiliary>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-      <group/>
-    </open-files>
-    <editor-bookmarks lastBookmarkId="0" xmlns="http://www.netbeans.org/ns/editor-bookmarks/2"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
       <group>
         <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/screens/InGameScreen.java</file>
         <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/graphics/assets/Assets.java</file>
@@ -16,6 +12,17 @@
         <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/entities/Entity.java</file>
         <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/graphics/testents/Spearman.java</file>
         <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/entities/MovingDirEntity.java</file>
+      </group>
+    </open-files>
+    <editor-bookmarks lastBookmarkId="0" xmlns="http://www.netbeans.org/ns/editor-bookmarks/2"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+      <group>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/Infrpg.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/screens/InGameScreen.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/engine/graphics/assets/Assets.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/engine/entities/rendering/AnimationRenderable.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/infrpg/entities/SwieteniaTree.java</file>
+        <file>file:/C:/Users/bjorn/git/infrpg/core/src/game/engine/entities/SimpleEntity.java</file>
       </group>
     </open-files>
   </auxiliary>
