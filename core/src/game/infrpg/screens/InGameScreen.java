@@ -19,6 +19,7 @@ import game.infrpg.entities.Spearman;
 import game.engine.logic.Dir;
 import game.engine.logic.Constants;
 import game.engine.logic.map.Tileset;
+import game.engine.rendering.RenderUtils;
 import game.infrpg.entities.SwieteniaTree;
 import org.lwjgl.util.Point;
 
@@ -95,11 +96,13 @@ public class InGameScreen extends AbstractScreen {
 		tree.render(batch);
 		batch.end();
 		
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.setProjectionMatrix(cam.combined);
-		shapeRenderer.setColor(Color.RED);
-		shapeRenderer.circle(player.getScreenX(), player.getScreenY(), 0.5f);
-		shapeRenderer.end();
+		RenderUtils.render(cam.combined);
+		
+//		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//		shapeRenderer.setProjectionMatrix(cam.combined);
+//		shapeRenderer.setColor(Color.RED);
+//		shapeRenderer.circle(player.getScreenX(), player.getScreenY(), 1f);
+//		shapeRenderer.end();
 		
 		renderCalls += map.getRenderCalls();
 		renderCalls += batch.renderCalls;

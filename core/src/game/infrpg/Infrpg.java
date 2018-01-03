@@ -22,6 +22,7 @@ import game.infrpg.console.util.logging.FileHandler;
 import game.infrpg.console.util.logging.Level;
 import game.infrpg.console.util.logging.Logger;
 import game.engine.logic.Constants;
+import game.engine.rendering.DebugTextRenderer;
 import java.io.IOException;
 
 
@@ -40,6 +41,7 @@ public class Infrpg extends Game {
 	private FPSCounter fpsCounter;
 	private SpriteBatch batch;
 	private TextureAtlas atlas;
+	private DebugTextRenderer debugText;
 
 	
 	/**
@@ -117,11 +119,13 @@ public class Infrpg extends Game {
 		
 		FreeTypeFontGenerator fontgenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/consola.ttf"));
 		FreeTypeFontParameter fontparameter = new FreeTypeFontParameter();
-		fontparameter.size = 16;
+		fontparameter.size = 20;
 		fontparameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS;
 		consolaFont = fontgenerator.generateFont(fontparameter);
 		consolaFont.setColor(Color.WHITE);
 		fontgenerator.dispose();
+		
+		debugText = new DebugTextRenderer(consolaFont);
 		
 		// Enable alpha transparency
 		Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -135,7 +139,6 @@ public class Infrpg extends Game {
 		
 		setScreen(new InGameScreen(this));
 	}
-	
 	
 	@Override
 	public void render() {
@@ -153,19 +156,23 @@ public class Infrpg extends Game {
 			long freeMemory = Runtime.getRuntime().freeMemory();
 			long usedMemory = totalMemory - freeMemory;
 			
-			StringBuilder debugstr = new StringBuilder();
-			debugstr.append(String.format("%-15s %.1f\n", "FPS:", fps));
-			debugstr.append(String.format("%-15s %d/%d MB\n", "RAM usage:", usedMemory / 1000000, maxMemory / 1000000));
-			debugstr.append(String.format("%-15s %d\n", "Render calls:", renderCalls));
-			debugstr.append(getScreen().debugRenderText());
+//			StringBuilder debugstr = new StringBuilder();
+//			debugstr.append(String.format("%-15s %.1f\n", "FPS:", fps));
+//			debugstr.append(String.format("%-15s %d/%d MB\n", "RAM usage:", usedMemory / 1000000, maxMemory / 1000000));
+//			debugstr.append(String.format("%-15s %d\n", "Render calls:", renderCalls));
+//			debugstr.append(getScreen().debugRenderText());
+
+			debugText.setLine(0, String.format("%-15s %.1f", "FPS:", fps));
+			debugText.setLine(1, String.format("%-15s %d/%d MB", "RAM usage:", usedMemory / 1000000, maxMemory / 1000000));
+			debugText.setLine(2, String.format("%-15s %d", "Render calls:", renderCalls));
+			debugText.setLine(4, getScreen().debugRenderText());
 			
 			batch.begin();
-			consolaFont.draw(batch, debugstr.toString(), 5, Constants.SCREEN_HEIGHT-5);
+			//consolaFont.draw(batch, debugstr.toString(), 5, Constants.SCREEN_HEIGHT-5);
+			debugText.render(batch, 5, Constants.SCREEN_HEIGHT - 5);
 			batch.end();
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 		}
-		
-		
 	}
 	
 	

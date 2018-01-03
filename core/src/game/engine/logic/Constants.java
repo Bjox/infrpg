@@ -25,6 +25,8 @@ public class Constants {
 	public static int SCREEN_WIDTH;
 	public static int SCREEN_HEIGHT;
 	public static boolean DEBUG;
+	public static boolean RENDER_ENTITY_OUTLINE = true;
+	public static boolean RENDER_ENTITY_ORIGIN = true;
 	
 	/** Default FPS used when loding animations. */
 	public static final float DEFAULT_ANIMATION_FRAMERATE = 20;
