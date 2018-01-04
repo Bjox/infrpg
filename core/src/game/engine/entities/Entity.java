@@ -10,7 +10,8 @@ import game.infrpg.Infrpg;
 import static game.infrpg.Infrpg.logger;
 import game.engine.entities.rendering.Renderable;
 import game.engine.logic.Constants;
-import game.engine.rendering.RenderUtils;
+import game.engine.rendering.shapes.RenderUtils;
+import game.engine.rendering.shapes.Shape;
 
 /**
  *
@@ -209,10 +210,11 @@ public abstract class Entity {
 		batch.draw(tr, width, height, RENDER_MAT);
 		
 		if (Constants.RENDER_ENTITY_OUTLINE) {
-			RenderUtils.queueOutlinedShape(new RenderUtils.Rect(0, 0, width, height, Color.RED, new Matrix4().set(RENDER_MAT)));
+			RenderUtils.queueOutlinedShape(new Shape.Rect(0, 0, width, height, Color.RED, new Matrix4().set(RENDER_MAT)));
 		}
+		
 		if (Constants.RENDER_ENTITY_ORIGIN) {
-			RenderUtils.queueFilledShape(new RenderUtils.Circle(getScreenX(), getScreenY(), 1f, Color.RED));
+			RenderUtils.queueFilledShape(new Shape.Point(getScreenX(), getScreenY(), Color.CYAN));
 		}
 	}
 	
