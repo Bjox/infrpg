@@ -1,0 +1,1 @@
+java -jar packr.jar --platform windows64 --jdk "%JAVA_HOME%" --executable infrpg --classpath ../target/infrpg-1.0.jar --mainclass game.infrpg.DesktopLauncher --vmargs Xmx4G --minimizejre soft --output win64
