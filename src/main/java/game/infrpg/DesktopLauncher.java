@@ -31,14 +31,17 @@ public class DesktopLauncher {
 		Constants.SERVER = argp.isPresent(Arguments.SERVER);
 		Constants.HEADLESS = argp.isPresent(Arguments.HEADLESS);
 
-		if (Constants.HEADLESS && !Constants.SERVER) {
-			logger.warning("Ignoring headless flag because this is a client.");
+		if (Constants.HEADLESS) {
+			logger.info("Running in headless mode");
+			if (!Constants.SERVER) {
+				logger.warning("Headless flag is not applicable on a client instance");
+			}
 		}
 
 		if (!Constants.HEADLESS) {
 			Console.createConsole("Infrpg console");
-			//Console.attachToOut();
-			//Console.attachToErr();
+			Console.attachToOut();
+			Console.attachToErr();
 			Console.showConsole();
 			logger.addHandler(new ConsoleHandler());
 		}
@@ -49,19 +52,21 @@ public class DesktopLauncher {
 		catch (IOException e) {
 			logger.error("Unable to set up file logger: " + e.getMessage());
 		}
-
-		if (Constants.DEBUG) {
-			argp.printAllOptions();
-		}
+		
 		logger.info(argp);
 
-		Instance instance;
-		if (argp.isPresent(Arguments.SERVER)) {
-			instance = new InfrpgServer(argp);
+		try {
+			Instance instance;
+			if (argp.isPresent(Arguments.SERVER)) {
+				instance = new InfrpgServer(argp);
+			}
+			else {
+				instance = new InfrpgClient(argp);
+			}
+			instance.start();
 		}
-		else {
-			instance = new InfrpgClient(argp);
+		catch (Exception e) {
+			logger.trackException(e);
 		}
-		instance.start();
 	}
 }

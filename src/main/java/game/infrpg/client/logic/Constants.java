@@ -12,13 +12,15 @@ public class Constants {
 	public static final boolean ENABLE_ZOOM = true;
 	
 	/** Region size in chunks. */
-	public static final int REGION_SIZE = 16;
+	public static final int REGION_SIZE = 32;
 	/** Chunk size in tiles. */
 	public static final int CHUNK_SIZE = 16;
 	/** Height of an isometric tile in pixels. */
 	public static final int TILE_SIZE = 32;
 	/** Render distance in chunks from camera center. */
 	public static final int CHUNK_RENDER_DISTANCE = 2;
+	
+	public static final boolean COMPRESS_REGIONS = true;
 	
 	public static final boolean VSYNC = false;
 	

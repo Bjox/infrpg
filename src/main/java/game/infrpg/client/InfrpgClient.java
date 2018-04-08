@@ -13,6 +13,7 @@ public class InfrpgClient extends Instance {
 
 	public InfrpgClient(ArgumentParser args) {
 		super(args);
+		logger.info("Infrpg Client");
 	}
 
 	@Override
@@ -25,10 +26,8 @@ public class InfrpgClient extends Instance {
 		config.foregroundFPS = 0;
 		config.backgroundFPS = 30;
 		
-		InfrpgGame game = new InfrpgGame(config);
-		
 		// Bootstraps the game
-		new LwjglApplication(game, config);
+		new LwjglApplication(new InfrpgGame(config), config);
 	}
 
 }

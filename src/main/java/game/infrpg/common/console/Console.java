@@ -117,9 +117,9 @@ public final class Console extends JFrame {
 		} catch (IOException e){}
 		
 		setTitle(title == null ? "Console" : title + " - Console");
-		setSize(600, 300);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setBackground(backgroundcolor);
+		//setUndecorated(true);
+		//setBackground(backgroundcolor);
 		setResizable(true);
 		setLayout(new BorderLayout(0, 0));
 		document = new DefaultStyledDocument();
@@ -130,8 +130,9 @@ public final class Console extends JFrame {
 		textpane.setBackground(backgroundcolor);
 		textpane.setForeground(foregroundColor);
 		textpane.setCaretColor(foregroundColor);
-		textpane.setFont(new Font("Monospaced", 0, 12));
+		textpane.setFont(new Font("Lucida Console", 0, 12));
 		textpane.getCaret().setSelectionVisible(true);
+		setConsoleSize(new Dimension(800, 400));
 //		textpane.addFocusListener(new FocusListener() {
 //			public void focusGained(FocusEvent e) {input.requestFocus();}
 //			public void focusLost(FocusEvent e) {}
@@ -144,7 +145,6 @@ public final class Console extends JFrame {
 		JScrollPane scrollp = new JScrollPane(textpane);
 		scrollp.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 		scrollp.setBorder(null);
-		scrollp.setPreferredSize(new Dimension(600, 300));
 		scrollp.getVerticalScrollBar().setPreferredSize(new Dimension(14, 0));
 		scrollp.getHorizontalScrollBar().setPreferredSize(new Dimension(5, 0));
 		scrollp.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
@@ -200,6 +200,11 @@ public final class Console extends JFrame {
 		setConsoleForeground(foregroundColor);
 		carrigeReturnOffset = 0;
 		//		slp(100); // to avoid getting a fucking retarted nullpointer somewhere in awt event queue for no damn reason
+	}
+	
+	
+	public static synchronized void setConsoleSize(Dimension size) {
+		textpane.setPreferredSize(size);
 	}
 	
 	

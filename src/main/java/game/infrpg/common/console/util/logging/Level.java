@@ -19,6 +19,7 @@ public enum Level {
 	OFF(0),
 	;
 	
+	
 	/** The default logging level (INFO). */
 	public static final Level DEFAULT = INFO;
 	public final int value;
@@ -27,4 +28,7 @@ public enum Level {
 		this.value = value;
 	}
 	
+	public boolean check(Level level) {
+		return this.value >= level.value;
+	}
 }

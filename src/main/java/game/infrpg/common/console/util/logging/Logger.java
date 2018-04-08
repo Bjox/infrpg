@@ -107,18 +107,23 @@ public class Logger {
 	}
 
 	public void trackException(Throwable throwable) {
-		try (
-				StringWriter stringWriter = new StringWriter();
-				PrintWriter printWriter = new PrintWriter(stringWriter)) {
-			throwable.printStackTrace(printWriter);
-			printWriter.flush();
-			error(stringWriter.toString());
+		if (currentLevel.check(Level.DEBUG)) {
+			try (
+					StringWriter stringWriter = new StringWriter();
+					PrintWriter printWriter = new PrintWriter(stringWriter)) {
+				throwable.printStackTrace(printWriter);
+				printWriter.flush();
+				error(stringWriter.toString(), 1);
+			}
+			catch (IOException ex) {
+				error("An exception occurred:");
+				error(ex);
+				error("while tracking exception:");
+				error(throwable);
+			}
 		}
-		catch (IOException ex) {
-			error("An exception occurred:");
-			error(ex);
-			error("while tracking exception:");
-			error(throwable);
+		else {
+			error(throwable.toString());
 		}
 	}
 
