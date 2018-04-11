@@ -106,6 +106,9 @@ public class SQLiteMapStorage extends SerializedMapStorage {
 					if (bytesRead == -1) {
 						return READ_SERIALIZED_EOF_EOS;
 					}
+					if (bin.available() + bytesRead > buffer.length) {
+						return READ_SERIALIZED_BUFF_OVERFLOW;
+					}
 					return bytesRead;
 				}
 

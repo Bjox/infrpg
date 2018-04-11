@@ -11,6 +11,7 @@ import game.infrpg.common.Instance;
 import game.infrpg.common.console.Console;
 import game.infrpg.common.util.ArgumentParser;
 import game.infrpg.server.map.Region;
+import game.infrpg.server.services.MapService;
 import java.io.File;
 
 /**
@@ -37,18 +38,30 @@ public class InfrpgServer extends Instance implements ApplicationListener {
 			Console.addShutdownHook(() -> Gdx.app.exit());
 		}
 		
-		File dbFile = new File("testmap.db");
-		
-		try (IMapStorage mapStorage = new SQLiteMapStorage(dbFile)) {
-			logger.debug("Map storage created");
-			
-//			Region r = new Region(0, 0);
-//			mapStorage.storeRegion(r);
+//		File dbFile = new File("testmap.db");
+//		
+//		try (IMapStorage mapStorage = new SQLiteMapStorage(dbFile)) {
+//			logger.debug("Map storage created");
+//			
+////			Region r = new Region(0, 0);
+////			mapStorage.storeRegion(r);
+//
+//			mapStorage.getRegion(0, 0);
+//		}
+//		catch (Exception e) {
+//			logger.trackException(e);
+//		}
 
-			mapStorage.getRegion(0, 0);
+		try {
+			ServerProperties properties = new ServerProperties(new File("server.properties"));
+			
+			if (Constants.DEBUG) {
+				logger.debug(properties);
+			}
+			
+			MapService mapservice = new MapService(new File(properties.getProperty(Property.MAP_DIRECTORY)));
 		}
 		catch (Exception e) {
-			logger.trackException(e);
 		}
 	}
 

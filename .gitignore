@@ -1,4 +1,4 @@
 target/
 packr/win64
 src/main/resources/packed/
-last_run.log
+run/
