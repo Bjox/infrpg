@@ -74,7 +74,13 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 	
 	
 	public void setTileset(Tileset.Tilesets tileset) {
+		logger.debug("Setting tileset " + tileset.toString());
 		this.tileset = tileset.instance();
+	}
+	
+	
+	public Tileset.Tilesets getTileset() {
+		return tileset.enumInstance;
 	}
 	
 	

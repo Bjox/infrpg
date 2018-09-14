@@ -30,6 +30,8 @@ public class InfrpgServer extends Instance implements ApplicationListener {
 
 	@Override
 	public void start() {
+		logger.info("Setting up server...");
+		
 		HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
 		config.renderInterval = 1f / TICKRATE;
 		new HeadlessApplication(this, config);
@@ -63,6 +65,9 @@ public class InfrpgServer extends Instance implements ApplicationListener {
 		}
 		catch (Exception e) {
 		}
+		
+		logger.info("Server setup complete");
+
 	}
 
 	@Override
@@ -71,11 +76,11 @@ public class InfrpgServer extends Instance implements ApplicationListener {
 	}
 
 	@Override
-	public void resize(int width, int height) {
-	}
-
-	@Override
 	public void render() {
+	}
+	
+	@Override
+	public void resize(int width, int height) {
 	}
 
 	@Override

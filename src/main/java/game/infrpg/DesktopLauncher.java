@@ -30,7 +30,7 @@ public class DesktopLauncher {
 
 		Constants.SERVER = argp.isPresent(Arguments.SERVER);
 		Constants.HEADLESS = argp.isPresent(Arguments.HEADLESS);
-
+		
 		if (Constants.HEADLESS) {
 			logger.info("Running in headless mode");
 			if (!Constants.SERVER) {

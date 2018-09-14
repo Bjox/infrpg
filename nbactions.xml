@@ -46,4 +46,17 @@
                 <exec.workingdir>C:\Users\bjorn\git\infrpg\run</exec.workingdir>
             </properties>
         </action>
+        <action>
+            <actionName>CUSTOM-Pack textures</actionName>
+            <displayName>Pack textures</displayName>
+        </action>
+        <action>
+            <actionName>build</actionName>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>compile</goal>
+            </goals>
+        </action>
     </actions>

@@ -17,19 +17,13 @@ import java.util.zip.GZIPOutputStream;
  */
 public abstract class SerializedMapStorage implements IMapStorage {
 
-	/**
-	 * Return value of <code>readSerialized</code> indicating that the requesting region was not found.
-	 */
-	
+	/** Return value of <code>readSerialized</code> indicating that the requesting region was not found. */
 	public static final int READ_SERIALIZED_NOT_FOUND = -1;
-	/**
-	 * Return value of <code>readSerialized</code> indicating that the supplied buffer is too small.
-	 */
 	
+	/** Return value of <code>readSerialized</code> indicating that the supplied buffer is too small. */
 	public static final int READ_SERIALIZED_BUFF_OVERFLOW = -2;
-	/**
-	 * Return value of <code>readSerialized</code> indicating that the underlying stream ended unexpectedly.
-	 */
+	
+	/** Return value of <code>readSerialized</code> indicating that the underlying stream ended unexpectedly. */
 	public static final int READ_SERIALIZED_EOF_EOS = -3;
 	
 	

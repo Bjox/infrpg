@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import game.infrpg.client.screens.InGameScreen;
+import game.infrpg.client.screens.ingame.InGameScreen;
 import game.infrpg.client.util.FPSCounter;
 import game.infrpg.common.console.Console;
 import java.util.Locale;

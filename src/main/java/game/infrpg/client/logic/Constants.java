@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 public class Constants {
 	
 	public static final float DEBUG_MOVEMENT_SPEED = 120;
+	
 	public static final boolean ENABLE_ZOOM = true;
 	
 	/** Region size in chunks. */
@@ -21,6 +22,8 @@ public class Constants {
 	public static final int CHUNK_RENDER_DISTANCE = 2;
 	
 	public static final boolean COMPRESS_REGIONS = true;
+	
+	public static final int DEFAULT_PORT = 30555;
 	
 	public static final boolean VSYNC = false;
 	

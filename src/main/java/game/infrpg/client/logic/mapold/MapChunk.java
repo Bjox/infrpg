@@ -74,7 +74,9 @@ public class MapChunk implements Serializable {
 			for (byte y = CHUNK_SIZE-1; y >= 0; y--) {
 				coordTmp.x = x * TILE_SIZE;
 				coordTmp.y = y * TILE_SIZE;
+				
 				Util.iso2cart(coordTmp);
+				
 				batch.draw(tileset.getTexture(chunkTileData[x][y]), coordTmp.x + screenPos.x, coordTmp.y + screenPos.y);
 			}
 		}

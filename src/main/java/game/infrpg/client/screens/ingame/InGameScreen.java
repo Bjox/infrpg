@@ -1,4 +1,4 @@
-package game.infrpg.client.screens;
+package game.infrpg.client.screens.ingame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -19,6 +19,8 @@ import game.infrpg.client.logic.Constants;
 import game.infrpg.client.logic.mapold.Tileset;
 import game.infrpg.client.rendering.shapes.RenderUtils;
 import game.infrpg.client.entities.SwieteniaTree;
+import game.infrpg.client.screens.AbstractScreen;
+import java.util.Arrays;
 import org.lwjgl.util.Point;
 
 /**
@@ -29,6 +31,7 @@ public class InGameScreen extends AbstractScreen {
 
 	private final Map map;
 	private final Camera cam;
+	private final TilesetCycler tilesetCycler;
 	private float zoomacc = 0.0f;
 	private int renderCalls;
 
@@ -50,6 +53,8 @@ public class InGameScreen extends AbstractScreen {
 		batch = new SpriteBatch();
 
 		map = new Map("penis".hashCode()); // TODO: Hardcoded map seed
+
+		tilesetCycler = new TilesetCycler(map);
 
 		cam = new Camera(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
 		cam.zoom = 0.5f;
@@ -142,13 +147,6 @@ public class InGameScreen extends AbstractScreen {
 			directionMask |= Dir.RIGHT.mask;
 		}
 
-		if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-			map.setTileset(Tileset.Tilesets.SHIT);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-			map.setTileset(Tileset.Tilesets.NORMAL);
-		}
-
 		Dir moveDir = Dir.dirFromMask(directionMask);
 
 		if (moveDir != null) {
@@ -158,7 +156,8 @@ public class InGameScreen extends AbstractScreen {
 			player.y += dirVector.y;
 			player.setDirection(moveDir);
 			player.setIdle(false);
-		} else {
+		}
+		else {
 			player.setIdle(true);
 		}
 
@@ -206,13 +205,21 @@ public class InGameScreen extends AbstractScreen {
 				case Input.Keys.F1:
 					Constants.RENDER_DEBUG_TEXT = !Constants.RENDER_DEBUG_TEXT;
 					return true;
-					
+
 				case Input.Keys.F2:
 					Constants.RENDER_ENTITY_ORIGIN = !Constants.RENDER_ENTITY_ORIGIN;
 					return true;
-					
+
 				case Input.Keys.F3:
 					Constants.RENDER_ENTITY_OUTLINE = !Constants.RENDER_ENTITY_OUTLINE;
+					return true;
+					
+				case Input.Keys.Q:
+					map.setTileset(tilesetCycler.getNextTileset());
+					return true;
+					
+				case Input.Keys.E:
+					map.setTileset(tilesetCycler.getPreviousTileset());
 					return true;
 			}
 

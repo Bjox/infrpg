@@ -17,6 +17,7 @@ public class Tileset {
 	public enum Tilesets {
 		NORMAL,
 		SHIT,
+		DEV
 		;
 
 		/**
@@ -63,7 +64,7 @@ public class Tileset {
 		for (Tilesets tilesets_enum : Tilesets.values()) {
 			String tilesetname = tilesets_enum.name().toLowerCase();
 			logger.debug(String.format("Adding tileset %s...", tilesets_enum.name()));
-			tilesets.put(tilesetname, new Tileset(tilesetname, atlas));
+			tilesets.put(tilesetname, new Tileset(tilesets_enum, tilesetname, atlas));
 		}
 	}
 	
@@ -95,6 +96,9 @@ public class Tileset {
 	/** Name of this tileset, which corresponds to the sprite directory. */
 	public final String name;
 	
+	/** The corresponding Tilesets enum. */
+	public final Tilesets enumInstance;
+	
 	/** Array to store the textures for this tileset. */
 	private final TextureRegion[] textures;
 
@@ -103,8 +107,9 @@ public class Tileset {
 	 * @param name
 	 * @param atlas 
 	 */
-	private Tileset(String name, TextureAtlas atlas) {
+	private Tileset(Tilesets tileset, String name, TextureAtlas atlas) {
 		this.name = name;
+		this.enumInstance = tileset;
 		this.textures = new TextureRegion[Tiles.AMOUNT];
 		
 		for (Tiles tile : Tiles.values()) {
