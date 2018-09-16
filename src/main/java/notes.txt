@@ -3,3 +3,20 @@ Matrix4 shear = new Matrix4();
 shear.val[Matrix4.M01] = 1f; // x
 shear.val[Matrix4.M10] = 0; // y
 batch.setTransformMatrix(shear);
+
+
+Run texture packer:
+TexturePacker.Settings texSettings = new TexturePacker.Settings();
+TexturePacker.process(texSettings, "raw/", "packed/", "pack");
+
+
+Config:
+1. Engine config (compile)
+2. Game config (compile)
+3. Runtime config
+
+Config source:
+1. Constants (compile)
+2. Computed (run)
+3. Config file (run)
+4. Command line arguments (run)

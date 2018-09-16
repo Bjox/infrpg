@@ -1,6 +1,6 @@
 package game.infrpg.server;
 
-import game.engine.server.util.Property;
+import game.engine.server.util.ServerProperty;
 import game.engine.server.util.ServerProperties;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -20,13 +20,12 @@ import java.io.File;
  *
  * @author Bjørnar W. Alvestad
  */
-public class InfrpgServer extends Instance implements ApplicationListener {
+public class ServerInstance extends Instance implements ApplicationListener {
 
 	private static final int TICKRATE = 20;
 	
-	public InfrpgServer(ArgumentParser args) {
+	public ServerInstance(String[] args) {
 		super(args);
-		
 		logger.info("Infrpg Server");
 	}
 
@@ -36,6 +35,7 @@ public class InfrpgServer extends Instance implements ApplicationListener {
 		
 		HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
 		config.renderInterval = 1f / TICKRATE;
+		
 		new HeadlessApplication(this, config);
 		
 		if (!Constants.HEADLESS) {
@@ -63,7 +63,7 @@ public class InfrpgServer extends Instance implements ApplicationListener {
 				logger.debug(properties);
 			}
 			
-			MapService mapservice = new MapService(new File(properties.getProperty(Property.MAP_DIRECTORY)));
+			MapService mapservice = new MapService(new File(properties.getProperty(ServerProperty.MAP_DIRECTORY)));
 		}
 		catch (Exception e) {
 		}

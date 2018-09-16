@@ -128,18 +128,12 @@ public class InfrpgGame extends Game {
 			long freeMemory = Runtime.getRuntime().freeMemory();
 			long usedMemory = totalMemory - freeMemory;
 
-//			StringBuilder debugstr = new StringBuilder();
-//			debugstr.append(String.format("%-15s %.1f\n", "FPS:", fps));
-//			debugstr.append(String.format("%-15s %d/%d MB\n", "RAM usage:", usedMemory / 1000000, maxMemory / 1000000));
-//			debugstr.append(String.format("%-15s %d\n", "Render calls:", renderCalls));
-//			debugstr.append(getScreen().debugRenderText());
 			debugText.setLine(0, String.format("%-15s %.1f", "FPS:", fps));
 			debugText.setLine(1, String.format("%-15s %d/%d MB", "RAM usage:", usedMemory / 1000000, maxMemory / 1000000));
 			debugText.setLine(2, String.format("%-15s %d", "Render calls:", renderCalls));
 			debugText.setLine(4, getScreen().debugRenderText());
 
 			batch.begin();
-			//consolaFont.draw(batch, debugstr.toString(), 5, Constants.SCREEN_HEIGHT-5);
 			debugText.render(batch, 5, Constants.SCREEN_HEIGHT - 5);
 			batch.end();
 			

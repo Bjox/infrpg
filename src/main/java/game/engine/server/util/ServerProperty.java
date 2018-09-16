@@ -6,7 +6,7 @@ import game.engine.client.logic.Constants;
  *
  * @author Bjørnar W. Alvestad
  */
-public enum Property {
+public enum ServerProperty {
 
 	MAP_DIRECTORY("map"),
 	PORT(Constants.DEFAULT_PORT),
@@ -14,11 +14,11 @@ public enum Property {
 	
 	public final String defaultValue;
 
-	private Property(String defaultValue) {
+	private ServerProperty(String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 	
-	private Property(int defaultValue) {
+	private ServerProperty(int defaultValue) {
 		this.defaultValue = String.valueOf(defaultValue);
 	}
 

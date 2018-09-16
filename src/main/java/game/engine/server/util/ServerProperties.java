@@ -46,7 +46,7 @@ public class ServerProperties {
 		}
 	}
 
-	public String getProperty(Property property) {
+	public String getProperty(ServerProperty property) {
 		return prop.getProperty(property.key());
 	}
 
@@ -72,7 +72,7 @@ public class ServerProperties {
 
 	private static Properties createDefaults() {
 		Properties defaults = new Properties();
-		Arrays.stream(Property.values()).forEach(P
+		Arrays.stream(ServerProperty.values()).forEach(P
 				-> defaults.setProperty(P.key(), P.defaultValue));
 		return defaults;
 	}

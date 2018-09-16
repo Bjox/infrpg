@@ -12,8 +12,8 @@ public abstract class Instance {
 	public final Logger logger;
 	public final ArgumentParser args;
 	
-	public Instance(ArgumentParser args) {
-		this.args = args;
+	public Instance(String[] args) {
+		this.args = new ArgumentParser(args);
 		this.logger = Logger.getPublicLogger();
 	}
 	
