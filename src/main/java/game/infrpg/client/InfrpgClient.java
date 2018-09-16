@@ -2,8 +2,8 @@ package game.infrpg.client;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import game.infrpg.common.Instance;
-import game.infrpg.common.util.ArgumentParser;
+import game.engine.common.Instance;
+import game.engine.common.util.ArgumentParser;
 
 /**
  *

@@ -1,17 +1,19 @@
 package game.infrpg.server;
 
+import game.engine.server.util.Property;
+import game.engine.server.util.ServerProperties;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
-import game.infrpg.client.logic.Constants;
-import game.infrpg.server.map.IMapStorage;
-import game.infrpg.server.map.sqlite.SQLiteMapStorage;
-import game.infrpg.common.Instance;
-import game.infrpg.common.console.Console;
-import game.infrpg.common.util.ArgumentParser;
-import game.infrpg.server.map.Region;
-import game.infrpg.server.services.MapService;
+import game.engine.client.logic.Constants;
+import game.engine.server.map.IMapStorage;
+import game.engine.server.map.sqlite.SQLiteMapStorage;
+import game.engine.common.Instance;
+import game.engine.common.console.Console;
+import game.engine.common.util.ArgumentParser;
+import game.engine.server.map.Region;
+import game.engine.server.service.MapService;
 import java.io.File;
 
 /**

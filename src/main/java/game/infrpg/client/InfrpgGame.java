@@ -1,6 +1,6 @@
 package game.infrpg.client;
 
-import game.infrpg.client.util.ConsoleCmds;
+import game.engine.client.util.ConsoleCmds;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -8,17 +8,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import game.infrpg.client.screens.ingame.InGameScreen;
-import game.infrpg.client.util.FPSCounter;
-import game.infrpg.common.console.Console;
+import game.engine.client.util.FPSCounter;
+import game.engine.common.console.Console;
 import java.util.Locale;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import game.infrpg.client.screens.AbstractScreen;
-import game.infrpg.common.console.util.logging.Logger;
-import game.infrpg.client.logic.Constants;
-import game.infrpg.client.rendering.DebugTextRenderer;
+import game.engine.client.logic.AbstractScreen;
+import game.engine.common.console.logging.Logger;
+import game.engine.client.logic.Constants;
+import game.engine.client.rendering.DebugTextRenderer;
 
 public class InfrpgGame extends Game {
 

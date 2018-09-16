@@ -9,17 +9,17 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import game.infrpg.client.logic.mapold.Map;
+import game.engine.client.logic.mapold.Map;
 import game.infrpg.client.InfrpgGame;
 import static game.infrpg.client.InfrpgGame.*;
-import game.infrpg.client.logic.Camera;
+import game.engine.client.logic.Camera;
 import game.infrpg.client.entities.Spearman;
-import game.infrpg.client.logic.Dir;
-import game.infrpg.client.logic.Constants;
-import game.infrpg.client.logic.mapold.Tileset;
-import game.infrpg.client.rendering.shapes.RenderUtils;
+import game.engine.client.logic.Dir;
+import game.engine.client.logic.Constants;
+import game.engine.client.logic.mapold.Tileset;
+import game.engine.client.rendering.shapes.RenderUtils;
 import game.infrpg.client.entities.SwieteniaTree;
-import game.infrpg.client.screens.AbstractScreen;
+import game.engine.client.logic.AbstractScreen;
 import java.util.Arrays;
 import org.lwjgl.util.Point;
 
@@ -76,6 +76,8 @@ public class InGameScreen extends AbstractScreen {
 
 	@Override
 	public void render(float delta) {
+		tick(delta);
+		
 		renderCalls = 0;
 		handleInput(delta);
 
@@ -107,6 +109,10 @@ public class InGameScreen extends AbstractScreen {
 //		shapeRenderer.end();
 		renderCalls += map.getRenderCalls();
 		renderCalls += batch.renderCalls;
+	}
+	
+	private void tick(float delta) {
+		tree.tick();
 	}
 
 	@Override

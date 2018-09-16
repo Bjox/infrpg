@@ -1,7 +1,8 @@
 package game.infrpg.client.entities;
 
-import game.infrpg.client.graphics.assets.Assets;
-import game.infrpg.client.logic.Constants;
+import game.engine.client.entity.MovingDirEntity;
+import game.engine.client.graphics.assets.Assets;
+import game.engine.client.logic.Constants;
 
 /**
  *
