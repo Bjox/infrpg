@@ -1,17 +1,17 @@
 package game.infrpg;
 
-import game.engine.common.util.Arguments;
+import game.infrpg.common.util.Arguments;
 import game.infrpg.client.ClientInstance;
-import game.engine.client.logic.Constants;
-import game.engine.client.util.ClientConfig;
-import game.engine.common.Instance;
-import game.engine.common.console.Console;
-import game.engine.common.console.logging.ConsoleHandler;
-import game.engine.common.console.logging.FileHandler;
-import game.engine.common.console.logging.Level;
-import game.engine.common.console.logging.Logger;
-import game.engine.common.console.logging.PrintStreamHandler;
-import game.engine.common.util.ArgumentParser;
+import game.infrpg.client.util.Constants;
+import game.infrpg.client.util.ClientConfig;
+import game.infrpg.common.Instance;
+import game.infrpg.common.console.Console;
+import game.infrpg.common.console.logging.ConsoleHandler;
+import game.infrpg.common.console.logging.FileHandler;
+import game.infrpg.common.console.logging.Level;
+import game.infrpg.common.console.logging.Logger;
+import game.infrpg.common.console.logging.PrintStreamHandler;
+import game.infrpg.common.util.ArgumentParser;
 import game.infrpg.server.ServerInstance;
 import java.io.IOException;
 
@@ -24,10 +24,10 @@ public class DesktopLauncher {
 		logger.addHandler(new PrintStreamHandler(System.out, false));
 
 		Constants.DEBUG = argp.isPresent(Arguments.DEBUG);
-		logger.setCurrentLevel(Constants.DEBUG ? Level.ALL : Level.DEFAULT);
-
 		Constants.SERVER = argp.isPresent(Arguments.SERVER);
 		Constants.HEADLESS = argp.isPresent(Arguments.HEADLESS);
+		
+		logger.setCurrentLevel(Constants.DEBUG ? Level.ALL : Level.DEFAULT);
 		
 		if (Constants.HEADLESS) {
 			logger.info("Running in headless mode");
@@ -35,8 +35,7 @@ public class DesktopLauncher {
 				logger.warning("Headless flag is not applicable on a client instance");
 			}
 		}
-
-		if (!Constants.HEADLESS) {
+		else {
 			Console.createConsole("Infrpg console");
 			Console.attachToOut();
 			Console.attachToErr();
@@ -55,6 +54,7 @@ public class DesktopLauncher {
 
 		try {
 			Instance instance;
+			
 			if (argp.isPresent(Arguments.SERVER)) {
 				instance = new ServerInstance(args);
 			}
@@ -66,14 +66,15 @@ public class DesktopLauncher {
 				clientConfig.fpsForeground = 0;
 				clientConfig.fpsBackground = 30;
 				clientConfig.vSync = false;
-				clientConfig.windowTitle = "Game";
+				clientConfig.windowTitle = "Infrpg";
 				
 				instance = new ClientInstance(args, clientConfig);
 			}
+			
 			instance.start();
 		}
 		catch (Exception e) {
-			logger.trackException(e);
+			logger.logException(e);
 		}
 	}
 }

@@ -1,19 +1,19 @@
 package game.infrpg.server;
 
-import game.engine.server.util.ServerProperty;
-import game.engine.server.util.ServerProperties;
+import game.infrpg.server.util.ServerProperty;
+import game.infrpg.server.util.ServerProperties;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
-import game.engine.client.logic.Constants;
-import game.engine.server.map.IMapStorage;
-import game.engine.server.map.sqlite.SQLiteMapStorage;
-import game.engine.common.Instance;
-import game.engine.common.console.Console;
-import game.engine.common.util.ArgumentParser;
-import game.engine.server.map.Region;
-import game.engine.server.service.MapService;
+import game.infrpg.client.util.Constants;
+import game.infrpg.server.map.IMapStorage;
+import game.infrpg.server.map.sqlite.SQLiteMapStorage;
+import game.infrpg.common.Instance;
+import game.infrpg.common.console.Console;
+import game.infrpg.common.util.ArgumentParser;
+import game.infrpg.server.map.Region;
+import game.infrpg.server.service.map.MapService;
 import java.io.File;
 
 /**
@@ -41,20 +41,6 @@ public class ServerInstance extends Instance implements ApplicationListener {
 		if (!Constants.HEADLESS) {
 			Console.addShutdownHook(() -> Gdx.app.exit());
 		}
-		
-//		File dbFile = new File("testmap.db");
-//		
-//		try (IMapStorage mapStorage = new SQLiteMapStorage(dbFile)) {
-//			logger.debug("Map storage created");
-//			
-////			Region r = new Region(0, 0);
-////			mapStorage.storeRegion(r);
-//
-//			mapStorage.getRegion(0, 0);
-//		}
-//		catch (Exception e) {
-//			logger.trackException(e);
-//		}
 
 		try {
 			ServerProperties properties = new ServerProperties(new File("server.properties"));
@@ -66,6 +52,7 @@ public class ServerInstance extends Instance implements ApplicationListener {
 			MapService mapservice = new MapService(new File(properties.getProperty(ServerProperty.MAP_DIRECTORY)));
 		}
 		catch (Exception e) {
+			logger.logException(e);
 		}
 		
 		logger.info("Server setup complete");

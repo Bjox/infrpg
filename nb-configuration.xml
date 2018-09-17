@@ -10,7 +10,6 @@ Without this configuration present, some functionality in the IDE may be limited
         <configurations>
             <configuration id="server" profiles=""/>
             <configuration id="server headless" profiles=""/>
-            <configuration id="server debug" profiles=""/>
         </configurations>
     </config-data>
 </project-shared-configuration>

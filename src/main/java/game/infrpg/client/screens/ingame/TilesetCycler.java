@@ -1,7 +1,7 @@
 package game.infrpg.client.screens.ingame;
 
-import game.engine.client.logic.mapold.Map;
-import game.engine.client.logic.mapold.Tileset.Tilesets;
+import game.infrpg.client.logic.mapold.Map;
+import game.infrpg.client.logic.mapold.Tileset.Tilesets;
 import java.util.Arrays;
 
 /**
