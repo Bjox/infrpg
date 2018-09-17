@@ -1,7 +1,7 @@
 package game.infrpg.common;
 
 import game.infrpg.common.console.logging.Logger;
-import game.infrpg.common.util.args.ArgumentParser;
+import lib.ArgumentParser;
 
 /**
  *

@@ -1,4 +1,4 @@
-package game.infrpg.common.util.args;
+package game.infrpg.common.util;
 
 /**
  *

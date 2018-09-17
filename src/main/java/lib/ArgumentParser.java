@@ -1,4 +1,4 @@
-package game.infrpg.common.util.args;
+package lib;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,8 +6,9 @@ import java.util.Map;
 /**
  * Very simple argument parser. Options must start with dash: "-".
  * @author Bjørnar W. Alvestad
+ * @param <T> Argument enum
  */
-public class ArgumentParser {
+public class ArgumentParser<T extends Enum<T>> {
 	
 	private final Map<String, String> map;
 	
@@ -29,7 +30,7 @@ public class ArgumentParser {
 	}
 	
 	
-	private String argumentEnumToString(Arguments argument) {
+	private String argumentEnumToString(T argument) {
 		return argument.toString().toLowerCase();
 	}
 	
@@ -40,7 +41,7 @@ public class ArgumentParser {
 	}
 	
 	
-	public boolean isPresent(Arguments option) {
+	public boolean isPresent(T option) {
 		return isPresent(argumentEnumToString(option));
 	}
 	

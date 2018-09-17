@@ -1,6 +1,6 @@
 package game.infrpg;
 
-import game.infrpg.common.util.args.Arguments;
+import game.infrpg.common.util.Arguments;
 import game.infrpg.client.ClientInstance;
 import game.infrpg.client.util.Constants;
 import game.infrpg.client.util.ClientConfig;
@@ -11,21 +11,23 @@ import game.infrpg.common.console.logging.FileHandler;
 import game.infrpg.common.console.logging.Level;
 import game.infrpg.common.console.logging.Logger;
 import game.infrpg.common.console.logging.PrintStreamHandler;
-import game.infrpg.common.util.args.ArgumentParser;
+import lib.ArgumentParser;
 import game.infrpg.server.ServerInstance;
 import java.io.IOException;
 
 public class DesktopLauncher {
-
+	
+	public static ArgumentParser<Arguments> arguments;
+	
 	public static void main(String[] args) {
-		ArgumentParser argp = new ArgumentParser(args);
+		arguments = new ArgumentParser(args);
 
 		Logger logger = Logger.getPublicLogger();
 		logger.addHandler(new PrintStreamHandler(System.out, false));
 
-		Constants.DEBUG = argp.isPresent(Arguments.DEBUG);
-		Constants.SERVER = argp.isPresent(Arguments.SERVER);
-		Constants.HEADLESS = argp.isPresent(Arguments.HEADLESS);
+		Constants.DEBUG = arguments.isPresent(Arguments.DEBUG);
+		Constants.SERVER = arguments.isPresent(Arguments.SERVER);
+		Constants.HEADLESS = arguments.isPresent(Arguments.HEADLESS);
 		
 		logger.setCurrentLevel(Constants.DEBUG ? Level.ALL : Level.DEFAULT);
 		
@@ -50,24 +52,16 @@ public class DesktopLauncher {
 			logger.error("Unable to set up file logger: " + e.getMessage());
 		}
 		
-		logger.info(argp);
+		logger.info(arguments);
 
 		try {
 			Instance instance;
 			
-			if (argp.isPresent(Arguments.SERVER)) {
+			if (arguments.isPresent(Arguments.SERVER)) {
 				instance = new ServerInstance(args);
 			}
 			else {
 				ClientConfig clientConfig = new ClientConfig();
-				
-				clientConfig.screenWidth = 1000;
-				clientConfig.screenHeight = 800;
-				clientConfig.fpsForeground = 0;
-				clientConfig.fpsBackground = 30;
-				clientConfig.vSync = false;
-				clientConfig.windowTitle = "Infrpg";
-				
 				instance = new ClientInstance(args, clientConfig);
 			}
 			
