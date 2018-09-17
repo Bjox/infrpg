@@ -11,7 +11,7 @@ import game.infrpg.server.map.IMapStorage;
 import game.infrpg.server.map.sqlite.SQLiteMapStorage;
 import game.infrpg.common.Instance;
 import game.infrpg.common.console.Console;
-import game.infrpg.common.util.ArgumentParser;
+import game.infrpg.common.util.args.ArgumentParser;
 import game.infrpg.server.map.Region;
 import game.infrpg.server.service.map.MapService;
 import java.io.File;

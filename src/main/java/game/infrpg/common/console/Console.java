@@ -30,7 +30,7 @@ import javax.swing.text.*;
  */
 public final class Console extends JFrame {
 
-	private final static int HISTORY_MAX = 15; // max length history buffer
+	private final static int HISTORY_MAX = 100; // max length history buffer
 	
 	private static Console               console;
 	private static JTextPane             textpane;
@@ -40,8 +40,8 @@ public final class Console extends JFrame {
 	private static JLabel                label;
 	private static Color                 backgroundcolor = Color.DARK_GRAY.darker().darker();
 	private static Color                 foregroundColor = Color.LIGHT_GRAY;
-	private static int                   hIndex = 0;
-	private static int                   headIndex = 0;
+	private static int                   historyPointer = 0;
+	private static int                   historyHead = 0;
 	private static String[]              history = new String[HISTORY_MAX];
 	private static StyledDocument        doc;
 	private static DefaultStyledDocument document;
@@ -70,22 +70,21 @@ public final class Console extends JFrame {
 
 	/** Decides whether or not to also print the log to standard output stream. */
 	public static final boolean PRINT_TO_STANDARD_OUT = false;
+	
 	/** Decides whether or not to also print the log to standard error output stream. */
 	public static final boolean PRINT_TO_STANDARD_ERR = false;
 	
+	/** Original System.out assignment. */
 	private static final PrintStream STANDARD_OUT = System.out;
+	
+	/** Original System.err assignment. */
 	private static final PrintStream STANDARD_ERR = System.err;
-	private static final long serialVersionUID = 1L;
 
 	/** A list of shutdown hook threads that will be started when the console is disposed. */
-	private static final ArrayList<Thread>        shutdownHooks = new ArrayList<>();
-	
-	//private static final ArrayList<PrintStream>   printStreams = new ArrayList<>();
+	private static final ArrayList<Thread> shutdownHooks = new ArrayList<>();
 	
 	/** HashMap containing all the current console commands. Maps command name to Command object. */
 	private static final HashMap<String, Command> commands = new HashMap<>();
-	
-	//private static final HashMap<String, String>  variables = new HashMap<>();
 	
 	/**
 	 * Creates a new Console window. This should only be done at the start of the application.
@@ -193,7 +192,6 @@ public final class Console extends JFrame {
 		add(scrollp, BorderLayout.CENTER);
 		
 		pack();
-		Arrays.fill(history, "");
 		console = this;
 		addKeyBindings();
 		DefaultCommands.addDefaultCommands(this);
@@ -818,7 +816,7 @@ public final class Console extends JFrame {
 	}
 	
 	
-	public static Color negative(Color c) {
+	private static Color negative(Color c) {
 		return new Color(255 - c.getRed(), 255 - c.getGreen(), 255 - c.getBlue());
 	}
 	
@@ -880,41 +878,44 @@ public final class Console extends JFrame {
 	
 	
 	private String historyBack() {
-		int loop = 0;
-		do {
-			if (hIndex > 0) {
-				hIndex--;
-			} else {
-				hIndex = HISTORY_MAX-1;
-			}
-			loop++;
-		} while (history[hIndex].isEmpty() && loop < HISTORY_MAX);
-		return history[hIndex];
+		int oldHistory = historyPointer;
+		historyPointer--;
+		if (historyPointer < 0) {
+			historyPointer = HISTORY_MAX - 1;
+		}
+		String value = history[historyPointer];
+		if (value == null) {
+			historyPointer = oldHistory;
+			return history[historyPointer];
+		}
+		return value;
 	}
 
 	
 	private String historyForwards() {
-		int loop = 0;
-		do {
-			if (hIndex < HISTORY_MAX-1) {
-				hIndex++;
-			} else {
-				hIndex = 0;
-			}
-			loop++;
-		} while (history[hIndex].isEmpty() && loop < HISTORY_MAX);
-		return history[hIndex];
+		int oldHistory = historyPointer;
+		historyPointer++;
+		if (historyPointer == HISTORY_MAX) {
+			historyPointer = 0;
+		}
+		if (historyPointer == historyHead) {
+			return "";
+		}
+		String value = history[historyPointer];
+		if (value == null) {
+			historyPointer = oldHistory;
+			return history[historyPointer];
+		}
+		return value;
 	}
 
 	
 	private void addToHistory(String s) {
-		if (headIndex < 9) {
-			headIndex++;
-		} else {
-			headIndex = 0;
+		history[historyHead++] = s;
+		if (historyHead >= HISTORY_MAX) {
+			historyHead = 0;
 		}
-		hIndex = headIndex;
-		history[hIndex] = s;
+		historyPointer = historyHead;
 	}
 	
 

@@ -1,4 +1,4 @@
-package game.infrpg.common.util;
+package game.infrpg.common.util.args;
 
 import java.util.HashMap;
 import java.util.Map;

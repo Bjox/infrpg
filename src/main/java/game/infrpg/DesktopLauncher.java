@@ -1,6 +1,6 @@
 package game.infrpg;
 
-import game.infrpg.common.util.Arguments;
+import game.infrpg.common.util.args.Arguments;
 import game.infrpg.client.ClientInstance;
 import game.infrpg.client.util.Constants;
 import game.infrpg.client.util.ClientConfig;
@@ -11,7 +11,7 @@ import game.infrpg.common.console.logging.FileHandler;
 import game.infrpg.common.console.logging.Level;
 import game.infrpg.common.console.logging.Logger;
 import game.infrpg.common.console.logging.PrintStreamHandler;
-import game.infrpg.common.util.ArgumentParser;
+import game.infrpg.common.util.args.ArgumentParser;
 import game.infrpg.server.ServerInstance;
 import java.io.IOException;
 

@@ -7,7 +7,7 @@ import java.util.Random;
  *
  * @author Bjørnar W. Alvestad
  */
-public class Util {
+public final class Util {
 	
 	private static Random rand = new Random();
 	
@@ -101,4 +101,6 @@ public class Util {
 		//return new Vector2(p.x - p.y, (p.x + p.y) * 0.5f);
 	}
 	
+	private Util() {
+	}
 }
