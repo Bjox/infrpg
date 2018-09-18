@@ -17,10 +17,9 @@ import java.io.IOException;
 
 public class DesktopLauncher {
 	
-	public static ArgumentParser<Arguments> arguments;
-	
 	public static void main(String[] args) {
-		arguments = new ArgumentParser(args);
+		ArgumentParser<Arguments> arguments = Globals.container
+				.registerInstance(new ArgumentParser<>(args));
 
 		Logger logger = Logger.getPublicLogger();
 		logger.addHandler(new PrintStreamHandler(System.out, false));

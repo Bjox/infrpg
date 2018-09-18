@@ -1,6 +1,5 @@
 package lib.di;
 
-import java.awt.Point;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -15,6 +14,8 @@ import java.util.stream.Stream;
  */
 public class Container implements IContainer {
 
+	// TODO: when constructing, check accessability (public etc.) cannot construct unaccessable types.
+	
 	private final Map<Class<?>, Object> instances;
 	private final Map<Class<?>, Class<?>> typeRegistrations;
 	private final Set<Class<?>> failedTypes;
@@ -27,6 +28,10 @@ public class Container implements IContainer {
 
 	@Override
 	public <I, T extends I> void registerType(Class<I> interfaceType, Class<T> implementationType) {
+		if (interfaceType.equals(implementationType)) {
+			throw new DependencyContainerException("Cannot register type mapping " + interfaceType.getName() + " with itself.");
+		}
+		
 		if (!interfaceType.isInterface()) {
 			throw new DependencyContainerException(
 					"Cannot register type mapping " + interfaceType.getName() + " -> " + implementationType.getName() + ". Type is not an interface.");
@@ -42,7 +47,7 @@ public class Container implements IContainer {
 	}
 
 	@Override
-	public <T> void registerInstance(T instance) {
+	public <T> T registerInstance(T instance) {
 		Class<?> type = instance.getClass();
 
 		if (instances.containsKey(type)) {
@@ -51,11 +56,20 @@ public class Container implements IContainer {
 
 		instances.put(type, instance);
 		failedTypes.remove(type);
+		
+		return instance;
 	}
 
 	@Override
 	public <T> T resolve(Class<T> type) {
 		return getOrCreateInstanceOfType(type, new HashSet<>());
+	}
+	
+	@Override
+	public <T> T resolveAndRegisterInstance(Class<T> type) {
+		T instance = resolve(type);
+		registerInstance(instance);
+		return instance;
 	}
 
 	private <T> T getOrCreateInstanceOfType(Class<T> type, Set<Class<?>> typesTriedConstructing) {

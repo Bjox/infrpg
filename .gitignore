@@ -2,3 +2,4 @@ target/
 packr/win64
 src/main/resources/packed/
 run/
+/nbproject/
