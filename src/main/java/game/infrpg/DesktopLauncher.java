@@ -1,5 +1,6 @@
 package game.infrpg;
 
+import com.google.inject.Stage;
 import game.infrpg.common.util.Arguments;
 import game.infrpg.client.ClientInstance;
 import game.infrpg.client.util.Constants;
@@ -14,13 +15,15 @@ import game.infrpg.common.console.logging.PrintStreamHandler;
 import lib.ArgumentParser;
 import game.infrpg.server.ServerInstance;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 public class DesktopLauncher {
 	
 	public static void main(String[] args) {
-		ArgumentParser<Arguments> arguments = Globals.container
-				.registerInstance(new ArgumentParser<>(args));
-
+		InitializeGlobals(args);
+		
+		ArgumentParser<Arguments> arguments = Globals.injector().getInstance(ArgumentParser.class);
+		
 		Logger logger = Logger.getPublicLogger();
 		logger.addHandler(new PrintStreamHandler(System.out, false));
 
@@ -69,5 +72,11 @@ public class DesktopLauncher {
 		catch (Exception e) {
 			logger.logException(e);
 		}
+	}
+	
+	private static void InitializeGlobals(String[] args) {
+		boolean debug = Stream.of(args).anyMatch(arg -> "-debug".equals(arg));
+		Stage stage = debug ? Stage.DEVELOPMENT : Stage.PRODUCTION;
+		Globals.setupInjector(stage, new CommonModule(args));
 	}
 }

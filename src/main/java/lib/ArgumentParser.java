@@ -1,5 +1,7 @@
 package lib;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +18,8 @@ public class ArgumentParser<T extends Enum<T>> {
 	 * 
 	 * @param args The String[] arguement passed to the main method.
 	 */
-	public ArgumentParser(String[] args) {
+	@Inject
+	public ArgumentParser(@Named("command line args") String[] args) {
 		this.map = new HashMap<>();
 		
 		for (int i = 0; i < args.length; i++) {
