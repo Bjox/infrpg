@@ -22,7 +22,7 @@ public class DesktopLauncher {
 	public static void main(String[] args) {
 		InitializeGlobals(args);
 		
-		ArgumentParser<Arguments> arguments = Globals.injector().getInstance(ArgumentParser.class);
+		ArgumentParser<Arguments> arguments = new ArgumentParser<>(args);
 		
 		Logger logger = Logger.getPublicLogger();
 		logger.addHandler(new PrintStreamHandler(System.out, false));
@@ -75,8 +75,8 @@ public class DesktopLauncher {
 	}
 	
 	private static void InitializeGlobals(String[] args) {
-		boolean debug = Stream.of(args).anyMatch(arg -> "-debug".equals(arg));
-		Stage stage = debug ? Stage.DEVELOPMENT : Stage.PRODUCTION;
-		Globals.setupInjector(stage, new CommonModule(args));
+//		boolean debug = Stream.of(args).anyMatch(arg -> "-debug".equals(arg));
+//		Stage stage = debug ? Stage.DEVELOPMENT : Stage.PRODUCTION;
+//		Globals.setupInjector(stage, new CommonModule(args));
 	}
 }
