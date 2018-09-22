@@ -1,4 +1,4 @@
-package game.infrpg.common.console.logging;
+package lib.logger;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -9,11 +9,11 @@ import java.io.PrintWriter;
  *
  * @author Bjørnar W. Alvestad
  */
-public class FileHandler extends Handler {
+public class FileLoggerHandler extends LoggerHandler {
 
 	private final PrintWriter writer;
 
-	public FileHandler(String filename) throws IOException {
+	public FileLoggerHandler(String filename) throws IOException {
 		writer = new PrintWriter(new BufferedWriter(new FileWriter(filename)), false);
 	}
 
@@ -22,7 +22,7 @@ public class FileHandler extends Handler {
 
 		writer.printf("[%s] %s %s %s", record.getLevel().name(), record.getPrefix(), record.getMessage(), record.getSuffix());
 
-		if (logger.getCurrentLevel().check(Level.DEBUG)) {
+		if (logger.getCurrentLevel().check(LoggerLevel.DEBUG)) {
 			writer.printf(" (%s:%d)", record.getFileName(), record.getLine());
 		}
 

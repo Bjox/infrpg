@@ -1,10 +1,8 @@
 package test.lib.di;
 
 import lib.di.Container;
-import org.junit.After;
-import org.junit.AfterClass;
+import lib.di.Inject;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -92,6 +90,20 @@ public class ContainerTests {
 		assertSame(resolvedInstance, resolvedInstance2);
 	}
 	
+	@Test
+	public void testResolveTypeWithMultipleConstructors() {
+		container.registerType(TestInterfaceB.class, TestClassB.class);
+		
+		TestClassE resolvedInstance = container.resolve(TestClassE.class);
+		assertNotNull(resolvedInstance);
+		assertNotNull(resolvedInstance.b);
+		assertTrue(resolvedInstance.b instanceof TestClassB);
+	}
+	
+	/*
+	Test interfaces and classes
+	*/
+	
 	public static interface TestInterfaceA {
 		String getValue();
 	}
@@ -100,6 +112,7 @@ public class ContainerTests {
 		public String value1;
 		public String value2;
 		
+		@Inject
 		public TestClassA(String value1, String value2) {
 			this.value1 = value1;
 			this.value2 = value2;
@@ -116,6 +129,7 @@ public class ContainerTests {
 	}
 	
 	public static class TestClassB implements TestInterfaceB {
+		@Inject
 		public TestClassB() {
 			// Empty
 		}
@@ -126,6 +140,7 @@ public class ContainerTests {
 		public TestInterfaceB b;
 		public String str;
 		
+		@Inject
 		public TestClassC(TestInterfaceA a, TestInterfaceB b, String str) {
 			this.a = a;
 			this.b = b;
@@ -136,8 +151,27 @@ public class ContainerTests {
 	public static class TestClassD<T> {
 		public T value;
 		
+		@Inject
 		public TestClassD(T value) {
 			this.value = value;
+		}
+	}
+	
+	public static class TestClassE {
+		public TestInterfaceB b;
+		
+		public TestClassE() {
+		}
+		
+		public TestClassE(int v) {
+		}
+		
+		@Inject
+		public TestClassE(TestInterfaceB b) {
+			this.b = b;
+		}
+		
+		public TestClassE(String v) {
 		}
 	}
 }

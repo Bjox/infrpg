@@ -1,9 +1,8 @@
 package lib;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import java.util.HashMap;
 import java.util.Map;
+import lib.di.Inject;
 
 /**
  * Very simple argument parser. Options must start with dash: "-".
@@ -18,8 +17,7 @@ public class ArgumentParser<T extends Enum<T>> {
 	 * 
 	 * @param args The String[] arguement passed to the main method.
 	 */
-	@Inject
-	public ArgumentParser(@Named("command line args") String[] args) {
+	public ArgumentParser(String[] args) {
 		this.map = new HashMap<>();
 		
 		for (int i = 0; i < args.length; i++) {

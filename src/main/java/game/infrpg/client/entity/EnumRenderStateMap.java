@@ -32,7 +32,7 @@ public class EnumRenderStateMap<T extends Enum<T>> {
 		//this.states = new Renderable[initialSize];
 		//Arrays.fill(states, Renderable.NULL_RENDERABLE);
 		this.stateKeyType = stateKeyType;
-		this.states = new EnumMap(stateKeyType);
+		this.states = new EnumMap<>(stateKeyType);
 		this.renderStateCounter = 0;
 	}
 	

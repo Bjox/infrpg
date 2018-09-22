@@ -1,4 +1,4 @@
-package game.infrpg.common.console.logging;
+package lib.logger;
 
 import java.util.Date;
 
@@ -12,16 +12,16 @@ public class LogRecord {
 	private final String prefix;
 	private final String message;
 	private final String suffix;
-	private final Level level;
+	private final LoggerLevel level;
 	private final StackTraceElement stackTrace;
 
 
-	public LogRecord(String prefix, String message, String suffix, Level level, StackTraceElement stackTrace) {
+	public LogRecord(String prefix, String message, String suffix, LoggerLevel level, StackTraceElement stackTrace) {
 		this.timestamp = new Date();
 		this.prefix = prefix == null ? "" : prefix;
 		this.message = message == null ? "" : message;
 		this.suffix = suffix == null ? "" : suffix;
-		this.level = level == null ? Level.INFO : level;
+		this.level = level == null ? LoggerLevel.INFO : level;
 		this.stackTrace = stackTrace == null ? new StackTraceElement("", "", "", -1) : stackTrace;
 	}
 
@@ -41,7 +41,7 @@ public class LogRecord {
 		return suffix;
 	}
 
-	public Level getLevel() {
+	public LoggerLevel getLevel() {
 		return level;
 	}
 	
@@ -69,7 +69,7 @@ public class LogRecord {
 	@Override
 	public String toString() {
 		String str = String.format("[%s] %s %s %s", level.name(), prefix, message, suffix);
-		if (level.check(Level.DEBUG)) {
+		if (level.check(LoggerLevel.DEBUG)) {
 			str += String.format("(%s:%d)", getFileName(), getLine());
 		}
 		return str;

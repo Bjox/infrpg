@@ -97,7 +97,7 @@ public class GraphicsAssetLoader {
 	public static Animation<TextureRegion> loadAnimationIndexed(TextureAtlas atlas, String name) {
 		Array<TextureAtlas.AtlasRegion> regions = atlas.findRegions(name);
 		if (regions.size == 0) warnNotFound(name);
-		Animation<TextureRegion> animation = new Animation(
+		Animation<TextureRegion> animation = new Animation<>(
 				FRAME_DURATION(Constants.DEFAULT_ANIMATION_FRAMERATE), regions, Constants.DEFAULT_ANIMATION_PLAYMODE);
 		return animation;
 	}
@@ -122,8 +122,8 @@ public class GraphicsAssetLoader {
 			warnNotFound(name);
 			return null;
 		}
-		Array<TextureRegion> arr = new Array((Object[])trs);
-		Animation<TextureRegion> animation = new Animation(
+		Array<TextureRegion> arr = new Array<>(trs);
+		Animation<TextureRegion> animation = new Animation<>(
 				FRAME_DURATION(Constants.DEFAULT_ANIMATION_FRAMERATE), arr, Constants.DEFAULT_ANIMATION_PLAYMODE);
 		return animation;
 	}
@@ -142,8 +142,9 @@ public class GraphicsAssetLoader {
 	 * @param columns
 	 * @return 
 	 */
+	@SuppressWarnings("unchecked")
 	public static Animation<TextureRegion>[] loadAnimationSheetDirectional(TextureAtlas atlas, String name, int rows, int columns) {
-		Animation<TextureRegion>[] anis = new Animation[Dir.NUM_DIRECTIONS];
+		Animation[] anis = new Animation[Dir.NUM_DIRECTIONS];
 		forEachDirName(name, (dir, fullName) -> {
 			Animation<TextureRegion> an = loadAnimationSheet(atlas, fullName, rows, columns);
 			anis[dir.index] = an;

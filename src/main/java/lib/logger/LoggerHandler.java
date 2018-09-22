@@ -1,15 +1,15 @@
-package game.infrpg.common.console.logging;
+package lib.logger;
 
 /**
  *
  * @author Bjørnar W. Alvestad
  */
-public abstract class Handler {
+public abstract class LoggerHandler {
 	
 	private boolean enabled;
 	
 	
-	public Handler() {
+	public LoggerHandler() {
 		enabled = true;
 	}
 	

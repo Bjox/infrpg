@@ -1,4 +1,4 @@
-package game.infrpg.common.console.logging;
+package lib.logger;
 
 import java.io.PrintStream;
 
@@ -6,12 +6,12 @@ import java.io.PrintStream;
  *
  * @author Bjørnar W. Alvestad
  */
-public class PrintStreamHandler extends Handler {
+public class PrintStreamLoggerHandler extends LoggerHandler {
 	
 	private final PrintStream stream;
 	private final boolean autoCloseStream;
 	
-	public PrintStreamHandler(PrintStream stream, boolean autoCloseStream) {
+	public PrintStreamLoggerHandler(PrintStream stream, boolean autoCloseStream) {
 		this.stream = stream;
 		this.autoCloseStream = autoCloseStream;
 	}

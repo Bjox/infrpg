@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import game.infrpg.client.logic.AbstractScreen;
-import game.infrpg.common.console.logging.Logger;
+import lib.logger.Logger;
 import game.infrpg.client.util.Constants;
 import game.infrpg.client.rendering.DebugTextRenderer;
 

@@ -1,14 +1,16 @@
-package game.infrpg.common.console.logging;
+package game.infrpg.common.console;
 
-import game.infrpg.common.console.Console;
+import lib.logger.LogRecord;
+import lib.logger.Logger;
+import lib.logger.LoggerLevel;
+import lib.logger.LoggerHandler;
 import java.awt.Color;
-import java.util.EnumMap;
 
 /**
  *
  * @author Bjørnar W. Alvestad
  */
-public class ConsoleHandler extends Handler {
+public class ConsoleLoggerHandler extends LoggerHandler {
 
 	private static class Palette {
 
@@ -40,7 +42,7 @@ public class ConsoleHandler extends Handler {
 			this.palette = palette;
 		}
 
-		public Color getColor(Level level) {
+		public Color getColor(LoggerLevel level) {
 			switch (level) {
 				case DEBUG:
 					return palette.debugColor;
@@ -67,7 +69,7 @@ public class ConsoleHandler extends Handler {
 		Console.print(record.getMessage() + " ", Color.WHITE);
 		Console.print(record.getSuffix() + " ", Color.GRAY);
 
-		if (logger.getCurrentLevel().check(Level.DEBUG)) {
+		if (logger.getCurrentLevel().check(LoggerLevel.DEBUG)) {
 			Console.print("(" + record.getFileName() + ":" + record.getLine() + ")", Color.GRAY);
 		}
 
