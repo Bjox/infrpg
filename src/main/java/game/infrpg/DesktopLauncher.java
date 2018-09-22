@@ -1,6 +1,5 @@
 package game.infrpg;
 
-import com.google.inject.Stage;
 import game.infrpg.common.util.Arguments;
 import game.infrpg.client.ClientInstance;
 import game.infrpg.client.util.Constants;
@@ -75,8 +74,6 @@ public class DesktopLauncher {
 	}
 	
 	private static void InitializeGlobals(String[] args) {
-//		boolean debug = Stream.of(args).anyMatch(arg -> "-debug".equals(arg));
-//		Stage stage = debug ? Stage.DEVELOPMENT : Stage.PRODUCTION;
-//		Globals.setupInjector(stage, new CommonModule(args));
+		
 	}
 }
