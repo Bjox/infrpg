@@ -1,6 +1,6 @@
 package game.infrpg.server.service.map;
 
-import game.infrpg.common.console.logging.Logger;
+import lib.logger.Logger;
 import game.infrpg.server.map.IMapStorage;
 import game.infrpg.server.map.memory.MemoryMapStorage;
 import game.infrpg.server.map.sqlite.SQLiteMapStorage;

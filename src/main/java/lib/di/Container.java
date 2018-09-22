@@ -72,12 +72,13 @@ public class Container implements IContainer {
 
 	private <T> T resolveRecursive(Class<T> type, Set<Class<?>> typesTriedConstructing) {
 		if (instances.containsKey(type)) {
-			return (T) instances.get(type);
+			return type.cast(instances.get(type));
 		}
 
 		if (type.isInterface()) {
 			if (typeRegistrations.containsKey(type)) {
-				return (T) constructInstanceOfType(typeRegistrations.get(type), typesTriedConstructing);
+				Object instance = constructInstanceOfType(typeRegistrations.get(type), typesTriedConstructing);
+				return type.cast(instance);
 			}
 			else {
 				throw new DIResolutionException(type, "type is not registered.");
@@ -109,7 +110,8 @@ public class Container implements IContainer {
 						resolveRecursive(t, typesTriedConstructing)).toArray();
 				
 				try {
-					return (T) constructor.newInstance(paramArgs);
+					Object instance = constructor.newInstance(paramArgs);
+					return type.cast(instance);
 				}
 				finally {
 					typesTriedConstructing.remove(type);

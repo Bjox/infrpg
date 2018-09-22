@@ -1,10 +1,11 @@
-package game.infrpg.common.console.logging;
+package lib.logger;
 
 /**
  *
  * @author Bjørnar W. Alvestad
  */
-public enum Level {
+public enum LoggerLevel {
+	
 	/** Specifies that all messages should be logged (INF). */
 	ALL(Integer.MAX_VALUE),
 	/** Detailed message, useful when debugging (400). */
@@ -21,14 +22,14 @@ public enum Level {
 	
 	
 	/** The default logging level (INFO). */
-	public static final Level DEFAULT = INFO;
+	public static final LoggerLevel DEFAULT = INFO;
 	public final int value;
 	
-	private Level(int value) {
+	private LoggerLevel(int value) {
 		this.value = value;
 	}
 	
-	public boolean check(Level level) {
+	public boolean check(LoggerLevel level) {
 		return this.value >= level.value;
 	}
 }

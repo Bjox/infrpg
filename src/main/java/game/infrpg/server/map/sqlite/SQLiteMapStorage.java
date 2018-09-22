@@ -3,7 +3,7 @@ package game.infrpg.server.map.sqlite;
 import com.badlogic.gdx.Gdx;
 import game.infrpg.server.map.IMapStorage;
 import game.infrpg.server.map.Region;
-import game.infrpg.common.console.logging.Logger;
+import lib.logger.Logger;
 import game.infrpg.server.map.SerializedMapStorage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;

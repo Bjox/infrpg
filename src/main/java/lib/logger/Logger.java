@@ -1,4 +1,4 @@
-package game.infrpg.common.console.logging;
+package lib.logger;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,13 +9,14 @@ import java.util.ArrayList;
  *
  * @author Bjørnar W. Alvestad
  */
-public class Logger {
+public class Logger implements ILogger {
 
 	private static Logger publicLogger;
 
-	private Level currentLevel;
-	private final ArrayList<Handler> handlers;
-
+	private LoggerLevel currentLevel;
+	private final ArrayList<LoggerHandler> handlers;
+	
+	@Deprecated
 	public static Logger getPublicLogger() {
 		if (publicLogger == null) {
 			publicLogger = new Logger();
@@ -24,24 +25,27 @@ public class Logger {
 	}
 
 	public Logger() {
-		currentLevel = Level.OFF;
+		currentLevel = LoggerLevel.OFF;
 		handlers = new ArrayList<>();
 	}
 
-	public Level getCurrentLevel() {
+	@Override
+	public LoggerLevel getCurrentLevel() {
 		return currentLevel;
 	}
 
-	public void setCurrentLevel(Level currentLevel) {
+	@Override
+	public void setCurrentLevel(LoggerLevel currentLevel) {
 		this.currentLevel = currentLevel;
 	}
 
-	public void addHandler(Handler handler) {
+	@Override
+	public void addHandler(LoggerHandler handler) {
 		handlers.add(handler);
 	}
 
 	public void log(LogRecord record) {
-		if (currentLevel == Level.OFF) {
+		if (currentLevel == LoggerLevel.OFF) {
 			return;
 		}
 
@@ -58,6 +62,7 @@ public class Logger {
 		return Thread.currentThread().getStackTrace()[stackMovement];
 	}
 
+	@Override
 	public void debug(String message) {
 		debug(message, 1);
 	}
@@ -67,9 +72,10 @@ public class Logger {
 	}
 
 	public void debug(String message, int stackMovement) {
-		log(new LogRecord("", message, "", Level.DEBUG, getStackTraceElement(stackMovement + 3)));
+		log(new LogRecord("", message, "", LoggerLevel.DEBUG, getStackTraceElement(stackMovement + 3)));
 	}
 
+	@Override
 	public void info(String message) {
 		info(message, 1);
 	}
@@ -79,9 +85,10 @@ public class Logger {
 	}
 
 	public void info(String message, int stackMovement) {
-		log(new LogRecord("", message, "", Level.INFO, getStackTraceElement(stackMovement + 3)));
+		log(new LogRecord("", message, "", LoggerLevel.INFO, getStackTraceElement(stackMovement + 3)));
 	}
 
+	@Override
 	public void warning(String message) {
 		warning(message, 1);
 	}
@@ -91,9 +98,10 @@ public class Logger {
 	}
 
 	public void warning(String message, int stackMovement) {
-		log(new LogRecord("", message, "", Level.WARNING, getStackTraceElement(stackMovement + 3)));
+		log(new LogRecord("", message, "", LoggerLevel.WARNING, getStackTraceElement(stackMovement + 3)));
 	}
 
+	@Override
 	public void error(String message) {
 		error(message, 1);
 	}
@@ -103,11 +111,12 @@ public class Logger {
 	}
 
 	public void error(String message, int stackMovement) {
-		log(new LogRecord("", message, "", Level.ERROR, getStackTraceElement(stackMovement + 3)));
+		log(new LogRecord("", message, "", LoggerLevel.ERROR, getStackTraceElement(stackMovement + 3)));
 	}
 
+	@Override
 	public void logException(Throwable throwable) {
-		if (currentLevel.check(Level.DEBUG)) {
+		if (currentLevel.check(LoggerLevel.DEBUG)) {
 			try (
 					StringWriter stringWriter = new StringWriter();
 					PrintWriter printWriter = new PrintWriter(stringWriter)) {

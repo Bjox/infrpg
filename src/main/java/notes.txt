@@ -10,13 +10,17 @@ TexturePacker.Settings texSettings = new TexturePacker.Settings();
 TexturePacker.process(texSettings, "raw/", "packed/", "pack");
 
 
-Config:
-1. Engine config (compile)
-2. Game config (compile)
-3. Runtime config
-
 Config source:
 1. Constants (compile)
 2. Computed (run)
 3. Config file (run)
 4. Command line arguments (run)
+
+
+
+Data to send between client and server:
+Map chunks
+Client has connected/disconnected
+Entities
+Entity positions
+Chat messages

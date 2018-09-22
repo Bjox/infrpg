@@ -1,6 +1,6 @@
 package game.infrpg.server.util;
 
-import game.infrpg.common.console.logging.Logger;
+import lib.logger.Logger;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
