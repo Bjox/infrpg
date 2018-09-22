@@ -21,13 +21,10 @@ public class Container implements IContainer {
 	
 	private final Map<Class<?>, Object> instances;
 	private final Map<Class<?>, Class<?>> typeRegistrations;
-	@Deprecated
-	private final Set<Class<?>> failedTypes;
 
 	public Container() {
 		instances = new HashMap<>();
 		typeRegistrations = new HashMap<>();
-		failedTypes = new HashSet<>();
 	}
 
 	@Override
@@ -46,7 +43,6 @@ public class Container implements IContainer {
 		}
 
 		typeRegistrations.put(interfaceType, implementationType);
-		failedTypes.remove(interfaceType);
 	}
 
 	@Override
@@ -58,7 +54,6 @@ public class Container implements IContainer {
 		}
 
 		instances.put(type, instance);
-		failedTypes.remove(type);
 		
 		return instance;
 	}
@@ -76,30 +71,20 @@ public class Container implements IContainer {
 	}
 
 	private <T> T resolveRecursive(Class<T> type, Set<Class<?>> typesTriedConstructing) {
-		if (failedTypes.contains(type)) {
-			throw new DIException("Cannot construct type " + type.getName() + ". Registration was not found.");
-		}
-
 		if (instances.containsKey(type)) {
 			return (T) instances.get(type);
 		}
 
-		try {
-			if (type.isInterface()) {
-				if (typeRegistrations.containsKey(type)) {
-					return (T) constructInstanceOfType(typeRegistrations.get(type), typesTriedConstructing);
-				}
-				else {
-					throw new DIResolutionException(type, "type is not registered.");
-				}
+		if (type.isInterface()) {
+			if (typeRegistrations.containsKey(type)) {
+				return (T) constructInstanceOfType(typeRegistrations.get(type), typesTriedConstructing);
 			}
+			else {
+				throw new DIResolutionException(type, "type is not registered.");
+			}
+		}
 
-			return constructInstanceOfType(type, typesTriedConstructing);
-		}
-		catch (DIException e) {
-			failedTypes.add(type);
-			throw e;
-		}
+		return constructInstanceOfType(type, typesTriedConstructing);
 	}
 
 	private <T> T constructInstanceOfType(Class<T> type, Set<Class<?>> typesTriedConstructing) {
