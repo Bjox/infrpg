@@ -64,12 +64,8 @@ public class Logger implements ILogger {
 	}
 
 	@Override
-	public void debug(String message) {
-		debug(message, 1);
-	}
-
-	public void debug(Object o) {
-		debug(String.valueOf(o));
+	public void debug(Object message) {
+		debug(String.valueOf(message), 1);
 	}
 
 	public void debug(String message, int stackMovement) {
@@ -77,12 +73,8 @@ public class Logger implements ILogger {
 	}
 
 	@Override
-	public void info(String message) {
-		info(message, 1);
-	}
-
-	public void info(Object o) {
-		info(String.valueOf(o));
+	public void info(Object message) {
+		info(String.valueOf(message), 1);
 	}
 
 	public void info(String message, int stackMovement) {
@@ -90,12 +82,8 @@ public class Logger implements ILogger {
 	}
 
 	@Override
-	public void warning(String message) {
-		warning(message, 1);
-	}
-
-	public void warning(Object o) {
-		warning(String.valueOf(o));
+	public void warning(Object message) {
+		warning(String.valueOf(message), 1);
 	}
 
 	public void warning(String message, int stackMovement) {
@@ -103,12 +91,8 @@ public class Logger implements ILogger {
 	}
 
 	@Override
-	public void error(String message) {
-		error(message, 1);
-	}
-
-	public void error(Object o) {
-		error(String.valueOf(o));
+	public void error(Object message) {
+		error(String.valueOf(message), 1);
 	}
 
 	public void error(String message, int stackMovement) {

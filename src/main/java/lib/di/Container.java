@@ -18,6 +18,7 @@ import lib.di.exceptions.DIResolutionException;
 public class Container implements IContainer {
 
 	// TODO: when constructing, check accessability (public etc.) cannot construct unaccessable types.
+	public static final ContainerLifetime DEFAULT_CONTAINER_LIFETIME = ContainerLifetime.PER_RESOLVE;
 	
 	private final Map<Class<?>, Object> instances;
 	private final Map<Class<?>, Class<?>> typeRegistrations;
@@ -130,7 +131,6 @@ public class Container implements IContainer {
 		
 		throw new DIResolutionException(type, "resolution of type dependencies failed.");
 	}
-
 	
 
 }

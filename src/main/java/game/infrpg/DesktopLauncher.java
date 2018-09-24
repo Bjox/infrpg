@@ -1,10 +1,11 @@
 package game.infrpg;
 
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import static game.infrpg.Globals.resolve;
 import game.infrpg.common.util.Arguments;
-import game.infrpg.client.ClientInstance;
+import game.infrpg.client.InfrpgGame;
 import game.infrpg.client.util.Constants;
-import game.infrpg.client.util.ClientConfig;
 import game.infrpg.common.Instance;
 import game.infrpg.common.console.Console;
 import game.infrpg.common.console.ConsoleLoggerHandler;
@@ -13,8 +14,9 @@ import lib.logger.LoggerLevel;
 import lib.logger.Logger;
 import lib.logger.PrintStreamLoggerHandler;
 import lib.ArgumentParser;
-import game.infrpg.server.ServerInstance;
+import game.infrpg.server.InfrpgServer;
 import java.io.IOException;
+import lib.logger.ILogger;
 
 public class DesktopLauncher {
 	
@@ -28,19 +30,18 @@ public class DesktopLauncher {
 		setupConsole(logger);
 		
 		logger.info(arguments);
+		
+		if (Constants.DEBUG) {
+			Console.showConsole();
+		}
 
 		try {
-			Instance instance;
-			
 			if (Constants.SERVER) {
-				instance = new ServerInstance(args);
+				startServer();
 			}
 			else {
-				ClientConfig clientConfig = new ClientConfig();
-				instance = new ClientInstance(args, clientConfig);
+				startClient();
 			}
-			
-			instance.start();
 		}
 		catch (Exception e) {
 			logger.logException(e);
@@ -80,8 +81,27 @@ public class DesktopLauncher {
 			Console.createConsole("Infrpg console");
 			Console.attachToOut();
 			Console.attachToErr();
-			Console.showConsole();
 			logger.addHandler(new ConsoleLoggerHandler());
 		}
+	}
+	
+	private static void startClient() {
+		LwjglApplicationConfiguration lwjglAppConfig = new LwjglApplicationConfiguration();
+		
+		lwjglAppConfig.width = 1000;
+		lwjglAppConfig.height = 800;
+		lwjglAppConfig.title = "Infrpg";
+		lwjglAppConfig.vSyncEnabled = false;
+		lwjglAppConfig.foregroundFPS = Constants.DEBUG ? 0 : 200;
+		lwjglAppConfig.backgroundFPS = 30;
+		
+		Globals.container.registerInstance(lwjglAppConfig);
+		
+		// Bootstraps the game
+		new LwjglApplication(resolve(InfrpgGame.class), lwjglAppConfig);
+	}
+	
+	private static void startServer() {
+		resolve(InfrpgServer.class).start();
 	}
 }

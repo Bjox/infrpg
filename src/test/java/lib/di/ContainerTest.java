@@ -101,6 +101,17 @@ public class ContainerTest {
 		assertTrue(resolvedInstance.b instanceof TestClassB);
 	}
 	
+//	@Test
+//	public void testRegisterInstanceWithType() {
+//		TestClassA instance = new TestClassA("test", "hei");
+//		container.registerInstance(TestInterfaceA.class, instance);
+//		
+//		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
+//		assertNotNull(resolvedInstance);
+//		assertSame(instance, resolvedInstance);
+//		assertEquals(resolvedInstance.getValue(), "testhei");
+//	}
+	
 	/*
 	Test interfaces and classes
 	*/

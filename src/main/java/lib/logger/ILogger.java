@@ -12,13 +12,13 @@ public interface ILogger {
 
 	void addHandler(LoggerHandler handler);
 
-	void debug(String message);
+	void debug(Object message);
 
-	void info(String message);
+	void info(Object message);
 
-	void warning(String message);
+	void warning(Object message);
 
-	void error(String message);
+	void error(Object message);
 
 	void logException(Throwable throwable);
 	

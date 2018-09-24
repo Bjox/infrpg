@@ -19,6 +19,7 @@ import game.infrpg.client.logic.AbstractScreen;
 import lib.logger.Logger;
 import game.infrpg.client.util.Constants;
 import game.infrpg.client.rendering.DebugTextRenderer;
+import lib.di.Inject;
 
 public class InfrpgGame extends Game {
 
@@ -40,6 +41,7 @@ public class InfrpgGame extends Game {
 	 *
 	 * @param config LwjglApplication configuration.
 	 */
+	@Inject
 	public InfrpgGame(LwjglApplicationConfiguration config) {
 		this.elapsed_t = 0;
 		this.config = config;
