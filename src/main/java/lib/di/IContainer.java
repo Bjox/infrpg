@@ -1,5 +1,7 @@
 package lib.di;
 
+import java.util.function.Consumer;
+
 /**
  *
  * @author Bjørnar W. Alvestad

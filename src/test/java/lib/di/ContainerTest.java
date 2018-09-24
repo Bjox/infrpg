@@ -1,4 +1,4 @@
-package test.lib.di;
+package lib.di;
 
 import lib.di.Container;
 import lib.di.Inject;
@@ -10,11 +10,11 @@ import static org.junit.Assert.*;
  *
  * @author Bjørnar W. Alvestad
  */
-public class ContainerTests {
+public class ContainerTest {
 	
 	public Container container;
 	
-	public ContainerTests() {
+	public ContainerTest() {
 	}
 	
 	@Before
@@ -67,6 +67,7 @@ public class ContainerTests {
 	}
 	
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testRegisterAndResolveGenericInstance() {
 		String str = "test";
 		TestClassD<String> testInstance = new TestClassD<>(str);

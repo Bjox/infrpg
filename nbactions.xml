@@ -47,10 +47,6 @@
             </properties>
         </action>
         <action>
-            <actionName>CUSTOM-Pack textures</actionName>
-            <displayName>Pack textures</displayName>
-        </action>
-        <action>
             <actionName>build</actionName>
             <packagings>
                 <packaging>*</packaging>

@@ -131,4 +131,6 @@ public class Container implements IContainer {
 		throw new DIResolutionException(type, "resolution of type dependencies failed.");
 	}
 
+	
+
 }

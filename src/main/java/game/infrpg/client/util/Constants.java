@@ -41,6 +41,7 @@ public final class Constants {
 	/** Default playmode used when loading animations. */
 	public static Animation.PlayMode DEFAULT_ANIMATION_PLAYMODE = Animation.PlayMode.LOOP;
 	
+	public static final String LOGFILE = "last_run.log";
 	
 	private Constants() {
 	}
