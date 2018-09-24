@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
+import game.infrpg.Globals;
 import game.infrpg.client.logic.RenderCallCounter;
-import static game.infrpg.client.InfrpgGame.logger;
 import game.infrpg.client.logic.Camera;
 import static game.infrpg.client.util.Constants.CHUNK_SIZE;
 import static game.infrpg.client.util.Constants.TILE_SIZE;
@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import lib.logger.ILogger;
 import org.lwjgl.util.Point;
 
 /**
@@ -40,6 +41,7 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 	private transient Vector2 isoCamPosBuffer;
 	private transient Tileset tileset;
 	
+	private final ILogger logger;
 	private final HashMap<Integer, Region> regions;
 	public final long seed;
 	private int chunkCounter;
@@ -49,8 +51,10 @@ public class Map implements Disposable, RenderCallCounter, Serializable {
 		this.seed = seed;
 		this.regions = new HashMap<>(32);
 		this.chunkCounter = 0;
+		this.logger = Globals.logger();
 		
 		setupTransientFields();
+		
 		
 		// create test chunks
 //		for (int i = -20; i <= 20; i++) {

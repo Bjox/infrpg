@@ -1,5 +1,6 @@
 package game.infrpg.server.util;
 
+import game.infrpg.Globals;
 import lib.logger.Logger;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -12,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Properties;
+import lib.logger.ILogger;
 
 /**
  *
@@ -23,10 +25,10 @@ public class ServerProperties {
 
 	private final Properties prop;
 	private final File file;
-	private final Logger logger;
+	private final ILogger logger;
 
 	public ServerProperties(File file) throws IOException {
-		this.logger = Logger.getPublicLogger();
+		this.logger = Globals.logger();
 		
 		if (file.isDirectory()) {
 			throw new IOException("The specified server properties file is denoting a directory.");

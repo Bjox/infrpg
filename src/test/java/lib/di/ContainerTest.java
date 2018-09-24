@@ -1,4 +1,4 @@
-package test.lib.di;
+package lib.di;
 
 import lib.di.Container;
 import lib.di.Inject;
@@ -10,11 +10,11 @@ import static org.junit.Assert.*;
  *
  * @author Bjørnar W. Alvestad
  */
-public class ContainerTests {
+public class ContainerTest {
 	
 	public Container container;
 	
-	public ContainerTests() {
+	public ContainerTest() {
 	}
 	
 	@Before
@@ -67,6 +67,7 @@ public class ContainerTests {
 	}
 	
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testRegisterAndResolveGenericInstance() {
 		String str = "test";
 		TestClassD<String> testInstance = new TestClassD<>(str);
@@ -99,6 +100,17 @@ public class ContainerTests {
 		assertNotNull(resolvedInstance.b);
 		assertTrue(resolvedInstance.b instanceof TestClassB);
 	}
+	
+//	@Test
+//	public void testRegisterInstanceWithType() {
+//		TestClassA instance = new TestClassA("test", "hei");
+//		container.registerInstance(TestInterfaceA.class, instance);
+//		
+//		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
+//		assertNotNull(resolvedInstance);
+//		assertSame(instance, resolvedInstance);
+//		assertEquals(resolvedInstance.getValue(), "testhei");
+//	}
 	
 	/*
 	Test interfaces and classes

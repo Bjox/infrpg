@@ -2,7 +2,7 @@ package game.infrpg.client.logic.mapold;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import static game.infrpg.client.InfrpgGame.logger;
+import game.infrpg.Globals;
 import java.util.HashMap;
 
 /**
@@ -59,11 +59,11 @@ public class Tileset {
 	 * @param atlas 
 	 */
 	public static void loadTilesets(TextureAtlas atlas) {
-		logger.debug("Loading tilesets...");
+		Globals.logger().debug("Loading tilesets...");
 		tilesets = new HashMap<>();
 		for (Tilesets tilesets_enum : Tilesets.values()) {
 			String tilesetname = tilesets_enum.name().toLowerCase();
-			logger.debug(String.format("Adding tileset %s...", tilesets_enum.name()));
+			Globals.logger().debug(String.format("Adding tileset %s...", tilesets_enum.name()));
 			tilesets.put(tilesetname, new Tileset(tilesets_enum, tilesetname, atlas));
 		}
 	}
@@ -75,11 +75,11 @@ public class Tileset {
 	 */
 	public static Tileset getTileset(String name) {
 		if (tilesets == null) {
-			logger.error("Tilesets has not been loaded!");
+			Globals.logger().error("Tilesets has not been loaded!");
 			return null;
 		}
 		Tileset t = tilesets.get(name);
-		if (t == null) logger.warning(String.format("Missing tileset \"%s\".", name));
+		if (t == null) Globals.logger().warning(String.format("Missing tileset \"%s\".", name));
 		return t;
 	}
 	
@@ -115,7 +115,7 @@ public class Tileset {
 		for (Tiles tile : Tiles.values()) {
 			String tilename = tile.name().toLowerCase();
 			TextureRegion tex = atlas.findRegion(String.format("tilesets/%s/%s", name, tilename));
-			if (tex == null) logger.warning(String.format("Missing tile \"%s\" in tileset \"%s\".", tilename, name));
+			if (tex == null) Globals.logger().warning(String.format("Missing tile \"%s\" in tileset \"%s\".", tilename, name));
 			textures[tile.index] = tex;
 		}
 	}

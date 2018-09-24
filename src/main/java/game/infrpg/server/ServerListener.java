@@ -3,8 +3,10 @@ package game.infrpg.server;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import game.infrpg.Globals;
 import lib.logger.Logger;
 import java.io.IOException;
+import lib.logger.ILogger;
 
 
 /**
@@ -13,12 +15,12 @@ import java.io.IOException;
  */
 public class ServerListener extends Listener {
 	
-	private final Logger logger;
+	private final ILogger logger;
 	private final Server server;
 	public final int port;
 	
 	public ServerListener(int port) {
-		this.logger = Logger.getPublicLogger();
+		this.logger = Globals.logger();
 		this.server = new Server();
 		this.port = port;
 	}

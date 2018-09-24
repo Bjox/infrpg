@@ -7,29 +7,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import game.infrpg.client.util.Constants;
-import game.infrpg.server.map.IMapStorage;
-import game.infrpg.server.map.sqlite.SQLiteMapStorage;
-import game.infrpg.common.Instance;
 import game.infrpg.common.console.Console;
-import lib.ArgumentParser;
-import game.infrpg.server.map.Region;
 import game.infrpg.server.service.map.MapService;
 import java.io.File;
+import lib.di.Inject;
+import lib.logger.Logger;
 
 /**
  *
  * @author Bjørnar W. Alvestad
  */
-public class ServerInstance extends Instance implements ApplicationListener {
-
+public class InfrpgServer implements ApplicationListener {
+	
 	private static final int TICKRATE = 20;
 	
-	public ServerInstance(String[] args) {
-		super(args);
-		logger.info("Infrpg Server");
+	private final Logger logger;
+	
+	@Inject
+	public InfrpgServer(Logger logger) {
+		this.logger = logger;
 	}
 
-	@Override
 	public void start() {
 		logger.info("Setting up server...");
 		

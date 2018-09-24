@@ -1,23 +1,21 @@
 package game.infrpg.server.map.sqlite;
 
 import com.badlogic.gdx.Gdx;
-import game.infrpg.server.map.IMapStorage;
-import game.infrpg.server.map.Region;
+import game.infrpg.Globals;
 import lib.logger.Logger;
 import game.infrpg.server.map.SerializedMapStorage;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import lib.logger.ILogger;
 import org.sqlite.SQLiteConfig;
 
 /**
@@ -39,13 +37,13 @@ public class SQLiteMapStorage extends SerializedMapStorage {
 			= "UPDATE Regions SET data = ? WHERE x = ? AND y = ?";
 
 	private final Connection connection;
-	private final Logger logger;
+	private final ILogger logger;
 	private final PreparedStatement selectRegionStatement;
 	private final PreparedStatement insertRegionStatement;
 	private final PreparedStatement updateRegionStatement;
 
 	public SQLiteMapStorage(File dbFile) throws SQLException, IOException {
-		logger = Logger.getPublicLogger();
+		this.logger = Globals.logger();
 
 		String connectionUrl = String.format("jdbc:sqlite:%s", dbFile.getAbsolutePath());
 		logger.debug("Setting up SQLite connection: " + connectionUrl);

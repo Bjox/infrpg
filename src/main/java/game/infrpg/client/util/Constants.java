@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
  */
 public final class Constants {
 	
-	public static final float DEBUG_MOVEMENT_SPEED = 120;
+	public static final float DEBUG_MOVEMENT_SPEED = 300;//120;
 	
 	public static final boolean ENABLE_ZOOM = true;
 	
@@ -27,6 +27,7 @@ public final class Constants {
 	
 	public static final boolean VSYNC = false;
 	
+	// TODO: move these as they are not constants
 	public static int SCREEN_WIDTH;
 	public static int SCREEN_HEIGHT;
 	public static boolean DEBUG;
@@ -39,8 +40,9 @@ public final class Constants {
 	/** Default FPS used when loding animations. */
 	public static final float DEFAULT_ANIMATION_FRAMERATE = 20;
 	/** Default playmode used when loading animations. */
-	public static Animation.PlayMode DEFAULT_ANIMATION_PLAYMODE = Animation.PlayMode.LOOP;
+	public static final Animation.PlayMode DEFAULT_ANIMATION_PLAYMODE = Animation.PlayMode.LOOP;
 	
+	public static final String LOGFILE = "last_run.log";
 	
 	private Constants() {
 	}

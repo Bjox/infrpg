@@ -71,8 +71,8 @@ public final class Console extends JFrame {
 	/** Decides whether or not to also print the log to standard output stream. */
 	public static final boolean PRINT_TO_STANDARD_OUT = false;
 	
-	/** Decides whether or not to also print the log to standard error output stream. */
-	public static final boolean PRINT_TO_STANDARD_ERR = false;
+	/** If true, don't forward data when attached to either standard out or standard err. */
+	public static final boolean CONSUME_STANDARD_STREAMS = false;
 	
 	/** Original System.out assignment. */
 	private static final PrintStream STANDARD_OUT = System.out;
@@ -797,17 +797,20 @@ public final class Console extends JFrame {
 	 * Intercept the standard error output to also print to the console.
 	 */
 	public static void attachToErr() {
-		if (PRINT_TO_STANDARD_ERR)
-			System.setErr(new PrintStreamInterceptor(STANDARD_ERR, ERROR_MSG));
-		else
+		if (CONSUME_STANDARD_STREAMS)
 			System.setErr(new PrintStreamInterceptor(ERROR_MSG));
+		else
+			System.setErr(new PrintStreamInterceptor(STANDARD_ERR, ERROR_MSG));
 	}
 	
 	/**
 	 * Intercept the standard output to also print to the console.
 	 */
 	public static void attachToOut() {
-		System.setOut(new PrintStreamInterceptor(DEFAULT_COLOR));
+		if (CONSUME_STANDARD_STREAMS)
+			System.setOut(new PrintStreamInterceptor(DEFAULT_COLOR));
+		else
+			System.setOut(new PrintStreamInterceptor(STANDARD_OUT, DEFAULT_COLOR));
 	}
 	
 	
