@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
-import static game.infrpg.client.InfrpgGame.logger;
+import game.infrpg.Globals;
 import game.infrpg.client.util.Constants;
 import game.infrpg.client.logic.Dir;
 import java.util.function.BiConsumer;
@@ -32,7 +32,7 @@ public class GraphicsAssetLoader {
 	 * @param name 
 	 */
 	private static void warnNotFound(String name) {
-		logger.error(String.format("Asset \"%s\" not found!", name));
+		Globals.logger().error(String.format("Asset \"%s\" not found!", name));
 	}
 	
 	/**
@@ -181,7 +181,7 @@ public class GraphicsAssetLoader {
 		int tileHeight = tex.getRegionHeight() / rows;
 		
 		if (tex.getRegionWidth() % columns != 0 || tex.getRegionHeight() % rows != 0)
-			logger.warning("Spritesheet \"" + textureName + "\" dimensions are not evenly divided by specified rows:columns (" + rows + ":" + columns + ").");
+			Globals.logger().warning("Spritesheet \"" + textureName + "\" dimensions are not evenly divided by specified rows:columns (" + rows + ":" + columns + ").");
 		
 		return tex.split(tileWidth, tileHeight);
 	}

@@ -3,15 +3,15 @@ package game.infrpg.client.entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Matrix4;
+import game.infrpg.Globals;
 import game.infrpg.client.InfrpgGame;
-import static game.infrpg.client.InfrpgGame.logger;
 import game.infrpg.client.rendering.renderable.Renderable;
 import game.infrpg.client.util.Constants;
 import game.infrpg.client.rendering.shapes.RenderUtils;
 import game.infrpg.client.rendering.shapes.Shape;
+import lib.logger.ILogger;
 
 /**
  *
@@ -38,17 +38,22 @@ public abstract class Entity {
 	/** Current render state. */
 	private int renderState;
 	
+	private final ILogger logger;
+	
 	
 	/**
 	 * Entity constructor.
 	 */
 	public Entity() {
 		this.stateMap = new RenderStateMap(1);
+		this.logger = Globals.logger();
+		
 		RS_DEFAULT = registerRenderState(Renderable.NULL_RENDERABLE);
 		renderState = RS_DEFAULT;
 		
 		scale_x = 1f;
 		scale_y = 1f;
+		
 	}
 	
 	/**

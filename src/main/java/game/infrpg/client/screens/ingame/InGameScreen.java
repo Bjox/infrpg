@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import game.infrpg.Globals;
 import game.infrpg.client.logic.mapold.Map;
 import game.infrpg.client.InfrpgGame;
 import static game.infrpg.client.InfrpgGame.*;
@@ -20,7 +21,7 @@ import game.infrpg.client.logic.mapold.Tileset;
 import game.infrpg.client.rendering.shapes.RenderUtils;
 import game.infrpg.client.entities.SwieteniaTree;
 import game.infrpg.client.logic.AbstractScreen;
-import java.util.Arrays;
+import lib.logger.ILogger;
 import org.lwjgl.util.Point;
 
 /**
@@ -37,6 +38,7 @@ public class InGameScreen extends AbstractScreen {
 
 	private final SpriteBatch batch;
 	private final Vector2 isoCamPosBuffer;
+	private final ILogger logger;
 
 	private Spearman player;
 	private SwieteniaTree tree;
@@ -45,7 +47,8 @@ public class InGameScreen extends AbstractScreen {
 
 	public InGameScreen(InfrpgGame game) {
 		super(game);
-
+		this.logger = Globals.logger();
+		
 		TextureAtlas atlas = getAtlas();
 
 		this.isoCamPosBuffer = new Vector2();

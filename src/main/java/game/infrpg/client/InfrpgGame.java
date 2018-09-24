@@ -24,12 +24,12 @@ import lib.di.Inject;
 public class InfrpgGame extends Game {
 
 	private static InfrpgGame instance;
-	public static Logger logger = Logger.getPublicLogger();
 	
 	private float elapsed_t;
 	private float delta_t;
 	
 	public final LwjglApplicationConfiguration config;
+	private final Logger logger;
 
 	private BitmapFont consolaFont;
 	private FPSCounter fpsCounter;
@@ -40,11 +40,14 @@ public class InfrpgGame extends Game {
 	/**
 	 *
 	 * @param config LwjglApplication configuration.
+	 * @param logger
 	 */
 	@Inject
-	public InfrpgGame(LwjglApplicationConfiguration config) {
-		this.elapsed_t = 0;
+	public InfrpgGame(LwjglApplicationConfiguration config, Logger logger) {
 		this.config = config;
+		this.logger = logger;
+		
+		this.elapsed_t = 0;
 		
 		Constants.RENDER_DEBUG_TEXT = Constants.DEBUG;
 		Locale.setDefault(Locale.ENGLISH);

@@ -10,20 +10,9 @@ import java.util.ArrayList;
  * @author Bjørnar W. Alvestad
  */
 public class Logger implements ILogger {
-	
-	@Deprecated
-	private static Logger publicLogger;
 
 	private LoggerLevel currentLevel;
 	private final ArrayList<LoggerHandler> handlers;
-	
-	@Deprecated
-	public static Logger getPublicLogger() {
-		if (publicLogger == null) {
-			publicLogger = new Logger();
-		}
-		return publicLogger;
-	}
 
 	public Logger() {
 		currentLevel = LoggerLevel.OFF;

@@ -1,5 +1,6 @@
 package game.infrpg.server.map;
 
+import game.infrpg.Globals;
 import game.infrpg.client.util.Constants;
 import lib.logger.Logger;
 import java.io.ByteArrayInputStream;
@@ -10,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import lib.logger.ILogger;
 
 /**
  *
@@ -28,13 +30,13 @@ public abstract class SerializedMapStorage implements IMapStorage {
 	
 	
 	/** The global logger object. */
-	private final Logger logger;
+	private final ILogger logger;
 	
 	/** Deserialization buffer. */
 	private final byte[] readBuffer;
 
 	public SerializedMapStorage() {
-		this.logger = Logger.getPublicLogger();
+		this.logger = Globals.logger();
 		this.readBuffer = new byte[calcBufferSize()];
 	}
 

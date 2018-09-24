@@ -1,5 +1,6 @@
 package game.infrpg.server.service.map;
 
+import game.infrpg.Globals;
 import lib.logger.Logger;
 import game.infrpg.server.map.IMapStorage;
 import game.infrpg.server.map.memory.MemoryMapStorage;
@@ -7,6 +8,7 @@ import game.infrpg.server.map.sqlite.SQLiteMapStorage;
 import game.infrpg.server.service.Service;
 import game.infrpg.server.util.Constants;
 import java.io.File;
+import lib.logger.ILogger;
 
 /**
  *
@@ -16,10 +18,10 @@ public class MapService extends Service {
 
 	private final IMapStorage storage;
 	private final File mapdir;
-	private final Logger logger;
+	private final ILogger logger;
 	
 	public MapService(File mapdir) throws MapServiceException {
-		this.logger = Logger.getPublicLogger();
+		this.logger = Globals.logger();
 		
 		if (mapdir.isFile()) {
 			throw new MapServiceException("The supplied map directory is pointing to a file.");

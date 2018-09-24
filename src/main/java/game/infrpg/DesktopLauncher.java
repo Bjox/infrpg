@@ -6,7 +6,6 @@ import static game.infrpg.Globals.resolve;
 import game.infrpg.common.util.Arguments;
 import game.infrpg.client.InfrpgGame;
 import game.infrpg.client.util.Constants;
-import game.infrpg.common.Instance;
 import game.infrpg.common.console.Console;
 import game.infrpg.common.console.ConsoleLoggerHandler;
 import lib.logger.FileLoggerHandler;
@@ -16,7 +15,6 @@ import lib.logger.PrintStreamLoggerHandler;
 import lib.ArgumentParser;
 import game.infrpg.server.InfrpgServer;
 import java.io.IOException;
-import lib.logger.ILogger;
 
 public class DesktopLauncher {
 	
@@ -35,16 +33,11 @@ public class DesktopLauncher {
 			Console.showConsole();
 		}
 
-		try {
-			if (Constants.SERVER) {
-				startServer();
-			}
-			else {
-				startClient();
-			}
+		if (Constants.SERVER) {
+			startServer();
 		}
-		catch (Exception e) {
-			logger.logException(e);
+		else {
+			startClient();
 		}
 	}
 	

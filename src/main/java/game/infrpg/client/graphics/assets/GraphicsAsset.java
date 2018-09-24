@@ -1,8 +1,8 @@
 package game.infrpg.client.graphics.assets;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import game.infrpg.Globals;
 import game.infrpg.client.InfrpgGame;
-import static game.infrpg.client.InfrpgGame.logger;
 import game.infrpg.client.rendering.renderable.Renderable;
 
 /**
@@ -62,6 +62,6 @@ public abstract class GraphicsAsset {
 	 * @param name 
 	 */
 	protected static void warnNotFound(String name) {
-		logger.error(String.format("Asset \"%s\" not found!", name));
+		Globals.logger().error(String.format("Asset \"%s\" not found!", name));
 	}
 }
