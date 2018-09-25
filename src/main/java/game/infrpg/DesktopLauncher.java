@@ -12,7 +12,7 @@ import lib.logger.FileLoggerHandler;
 import lib.logger.LoggerLevel;
 import lib.logger.Logger;
 import lib.logger.PrintStreamLoggerHandler;
-import lib.ArgumentParser;
+import lib.util.ArgumentParser;
 import game.infrpg.server.InfrpgServer;
 import java.io.IOException;
 
