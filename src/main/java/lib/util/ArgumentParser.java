@@ -2,7 +2,6 @@ package lib.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import lib.di.Inject;
 
 /**
  * Very simple argument parser. Options must start with dash: "-".

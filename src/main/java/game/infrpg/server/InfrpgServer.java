@@ -1,17 +1,16 @@
 package game.infrpg.server;
 
-import game.infrpg.server.util.ServerProperty;
-import game.infrpg.server.util.ServerProperties;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
-import game.infrpg.client.util.Constants;
 import game.infrpg.common.console.Console;
+import game.infrpg.common.util.Globals;
 import game.infrpg.server.service.map.MapService;
+import game.infrpg.server.util.ServerConfig;
 import java.io.File;
 import lib.di.Inject;
-import lib.logger.Logger;
+import lib.logger.ILogger;
 
 /**
  *
@@ -21,33 +20,33 @@ public class InfrpgServer implements ApplicationListener {
 	
 	private static final int TICKRATE = 20;
 	
-	private final Logger logger;
+	private final ILogger logger;
+	private final ServerConfig serverConfig;
 	
 	@Inject
-	public InfrpgServer(Logger logger) {
+	public InfrpgServer(ILogger logger, ServerConfig config) {
 		this.logger = logger;
+		this.serverConfig = config;
 	}
 
 	public void start() {
 		logger.info("Setting up server...");
 		
-		HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
-		config.renderInterval = 1f / TICKRATE;
+		HeadlessApplicationConfiguration headlessAppConfig = new HeadlessApplicationConfiguration();
+		headlessAppConfig.renderInterval = 1f / TICKRATE;
 		
-		new HeadlessApplication(this, config);
+		new HeadlessApplication(this, headlessAppConfig);
 		
-		if (!Constants.HEADLESS) {
+		if (!Globals.HEADLESS) {
 			Console.addShutdownHook(() -> Gdx.app.exit());
 		}
 
 		try {
-			ServerProperties properties = new ServerProperties(new File("server.properties"));
-			
-			if (Constants.DEBUG) {
-				logger.debug(properties);
+			if (Globals.DEBUG) {
+				logger.debug(headlessAppConfig);
 			}
 			
-			MapService mapservice = new MapService(new File(properties.getProperty(ServerProperty.MAP_DIRECTORY)));
+			MapService mapservice = new MapService(new File(serverConfig.mapDirectory));
 		}
 		catch (Exception e) {
 			logger.logException(e);

@@ -1,7 +1,5 @@
 package lib.di;
 
-import java.util.function.Consumer;
-
 /**
  *
  * @author Bjørnar W. Alvestad
@@ -9,6 +7,10 @@ import java.util.function.Consumer;
 public interface IContainer {
 	
 	<I, T extends I> void registerType(Class<I> interfaceType, Class<T> implementationType);
+	
+	<I, T extends I> void registerSingleton(Class<I> interfaceType, Class<T> implementationType);
+	
+	<I, T extends I> T registerSingleton(Class<I> interfaceType, T instance);
 	
 	<T> T registerInstance(T instance);
 	

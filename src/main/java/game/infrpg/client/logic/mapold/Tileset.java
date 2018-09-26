@@ -2,7 +2,7 @@ package game.infrpg.client.logic.mapold;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import game.infrpg.Globals;
+import game.infrpg.common.util.Globals;
 import java.util.HashMap;
 
 /**

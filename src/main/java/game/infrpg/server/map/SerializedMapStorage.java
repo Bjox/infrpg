@@ -1,7 +1,7 @@
 package game.infrpg.server.map;
 
-import game.infrpg.Globals;
-import game.infrpg.client.util.Constants;
+import game.infrpg.common.util.Globals;
+import game.infrpg.common.util.Constants;
 import lib.logger.Logger;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

@@ -18,7 +18,7 @@ import lib.di.exceptions.DIResolutionException;
 public class Container implements IContainer {
 
 	// TODO: when constructing, check accessability (public etc.) cannot construct unaccessable types.
-	public static final ContainerLifetime DEFAULT_CONTAINER_LIFETIME = ContainerLifetime.PER_RESOLVE;
+	//public static final ContainerLifetime DEFAULT_CONTAINER_LIFETIME = ContainerLifetime.PER_RESOLVE;
 	
 	private final Map<Class<?>, Object> instances;
 	private final Map<Class<?>, Class<?>> typeRegistrations;
@@ -44,6 +44,35 @@ public class Container implements IContainer {
 		}
 
 		typeRegistrations.put(interfaceType, implementationType);
+	}
+	
+	@Override
+	public <I, T extends I> void registerSingleton(Class<I> interfaceType, Class<T> implementationType) {
+		if (instances.containsKey(implementationType)) {
+			throw new DIRegistrationException(interfaceType, implementationType,
+					"implementationType is already mapped to instance of type " + instances.get(implementationType).getClass().getName());
+		}
+		
+		registerType(interfaceType, implementationType);
+		instances.put(implementationType, new Singleton());
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <I, T extends I> T registerSingleton(Class<I> interfaceType, T instance) {
+		Class<T> implementationType;
+		
+		try {
+			implementationType = (Class<T>)instance.getClass();
+		}
+		catch (Exception e) {
+			throw new DIRegistrationException(interfaceType, instance.getClass(), "cannot determine implementationType from instance.", e);
+		}
+		
+		registerSingleton(interfaceType, implementationType);
+		instances.put(implementationType, instance);
+		
+		return instance;
 	}
 
 	@Override
@@ -77,13 +106,20 @@ public class Container implements IContainer {
 		}
 
 		if (type.isInterface()) {
-			if (typeRegistrations.containsKey(type)) {
-				Object instance = constructInstanceOfType(typeRegistrations.get(type), typesTriedConstructing);
-				return type.cast(instance);
-			}
-			else {
+			Class<?> mappedType = typeRegistrations.get(type);
+			if (mappedType == null) {
 				throw new DIResolutionException(type, "type is not registered.");
 			}
+			
+			if (instances.containsKey(mappedType)) {
+				if (instances.get(mappedType) instanceof Singleton) {
+					instances.put(mappedType, constructInstanceOfType(mappedType, typesTriedConstructing));
+				}
+				return type.cast(instances.get(mappedType));
+			}
+			
+			Object instance = constructInstanceOfType(mappedType, typesTriedConstructing);
+			return type.cast(instance);
 		}
 
 		return constructInstanceOfType(type, typesTriedConstructing);
@@ -132,5 +168,7 @@ public class Container implements IContainer {
 		throw new DIResolutionException(type, "resolution of type dependencies failed.");
 	}
 	
+	private static class Singleton {
+	}
 
 }

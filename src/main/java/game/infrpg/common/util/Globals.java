@@ -1,4 +1,4 @@
-package game.infrpg;
+package game.infrpg.common.util;
 
 import lib.di.Container;
 import lib.di.IContainer;
@@ -34,6 +34,13 @@ public final class Globals {
 	public static ILogger logger() {
 		return resolve(Logger.class);
 	}
+	
+	public static boolean DEBUG;
+	public static boolean SERVER;
+	public static boolean HEADLESS;
+	public static boolean RENDER_DEBUG_TEXT;
+	public static boolean RENDER_ENTITY_OUTLINE;
+	public static boolean RENDER_ENTITY_ORIGIN;
 	
 	/**
 	 * Private constructor.

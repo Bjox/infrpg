@@ -1,6 +1,6 @@
 package game.infrpg.client.logic.mapold;
 
-import static game.infrpg.client.util.Constants.REGION_SIZE;
+import static game.infrpg.common.util.Constants.REGION_SIZE;
 import java.io.Serializable;
 
 /**

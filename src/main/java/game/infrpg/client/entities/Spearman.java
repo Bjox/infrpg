@@ -2,7 +2,7 @@ package game.infrpg.client.entities;
 
 import game.infrpg.client.entity.MovingDirEntity;
 import game.infrpg.client.graphics.assets.Assets;
-import game.infrpg.client.util.Constants;
+import game.infrpg.common.util.Constants;
 
 /**
  *

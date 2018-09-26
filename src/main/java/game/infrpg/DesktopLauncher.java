@@ -1,42 +1,45 @@
 package game.infrpg;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import static game.infrpg.Globals.resolve;
+import static game.infrpg.common.util.Globals.resolve;
+import game.infrpg.common.util.Globals;
 import game.infrpg.common.util.Arguments;
 import game.infrpg.client.InfrpgGame;
-import game.infrpg.client.util.Constants;
+import game.infrpg.common.util.Constants;
 import game.infrpg.common.console.Console;
 import game.infrpg.common.console.ConsoleLoggerHandler;
+import game.infrpg.server.InfrpgServer;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import lib.logger.FileLoggerHandler;
 import lib.logger.LoggerLevel;
 import lib.logger.Logger;
 import lib.logger.PrintStreamLoggerHandler;
 import lib.util.ArgumentParser;
-import game.infrpg.server.InfrpgServer;
 import java.io.IOException;
+import lib.logger.ILogger;
 
 public class DesktopLauncher {
 	
 	public static void main(String[] args) {
 		setupArguments(args);
 		setupLogger();
-		
-		Logger logger = resolve(Logger.class);
-		ArgumentParser<Arguments> arguments = resolve(ArgumentParser.class);
-		
+		ILogger logger = Globals.logger();
 		setupConsole(logger);
 		
-		logger.info(arguments);
+		logger.debug(resolve(ArgumentParser.class));
 		
-		if (Constants.DEBUG) {
+		if (Globals.DEBUG) {
 			Console.showConsole();
 		}
 
-		if (Constants.SERVER) {
+		if (Globals.SERVER) {
+			logger.info("Infrpg server");
+			serverRegistrations();
 			startServer();
 		}
 		else {
+			logger.info("Infrpg client");
+			clientRegistrations();
 			startClient();
 		}
 	}
@@ -44,16 +47,16 @@ public class DesktopLauncher {
 	private static void setupArguments(String[] args) {
 		ArgumentParser<Arguments> arguments = Globals.container.registerInstance(new ArgumentParser<>(args));
 
-		Constants.DEBUG = arguments.isPresent(Arguments.DEBUG);
-		Constants.SERVER = arguments.isPresent(Arguments.SERVER);
-		Constants.HEADLESS = arguments.isPresent(Arguments.HEADLESS);
+		Globals.DEBUG = arguments.isPresent(Arguments.DEBUG);
+		Globals.SERVER = arguments.isPresent(Arguments.SERVER);
+		Globals.HEADLESS = arguments.isPresent(Arguments.HEADLESS);
 	}
 	
 	private static void setupLogger() {
 		Logger logger = Globals.container.registerInstance(new Logger());
 		
 		logger.addHandler(new PrintStreamLoggerHandler(System.out, false));
-		logger.setCurrentLevel(Constants.DEBUG ? LoggerLevel.ALL : LoggerLevel.DEFAULT);
+		logger.setCurrentLevel(Globals.DEBUG ? LoggerLevel.ALL : LoggerLevel.DEFAULT);
 
 		try {
 			logger.addHandler(new FileLoggerHandler(Constants.LOGFILE));
@@ -63,10 +66,10 @@ public class DesktopLauncher {
 		}
 	}
 	
-	private static void setupConsole(Logger logger) {
-		if (Constants.HEADLESS) {
+	private static void setupConsole(ILogger logger) {
+		if (Globals.HEADLESS) {
 			logger.info("Running in headless mode");
-			if (!Constants.SERVER) {
+			if (!Globals.SERVER) {
 				logger.warning("Headless flag is not applicable on a client instance");
 			}
 		}
@@ -78,6 +81,14 @@ public class DesktopLauncher {
 		}
 	}
 	
+	private static void clientRegistrations() {
+		
+	}
+	
+	private static void serverRegistrations() {
+		
+	}
+	
 	private static void startClient() {
 		LwjglApplicationConfiguration lwjglAppConfig = new LwjglApplicationConfiguration();
 		
@@ -85,12 +96,11 @@ public class DesktopLauncher {
 		lwjglAppConfig.height = 800;
 		lwjglAppConfig.title = "Infrpg";
 		lwjglAppConfig.vSyncEnabled = false;
-		lwjglAppConfig.foregroundFPS = Constants.DEBUG ? 0 : 200;
+		lwjglAppConfig.foregroundFPS = Globals.DEBUG ? 0 : 200;
 		lwjglAppConfig.backgroundFPS = 30;
 		
 		Globals.container.registerInstance(lwjglAppConfig);
 		
-		// Bootstraps the game
 		new LwjglApplication(resolve(InfrpgGame.class), lwjglAppConfig);
 	}
 	

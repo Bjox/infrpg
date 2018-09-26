@@ -17,8 +17,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import game.infrpg.client.logic.AbstractScreen;
 import lib.logger.Logger;
-import game.infrpg.client.util.Constants;
+import game.infrpg.common.util.Constants;
 import game.infrpg.client.rendering.DebugTextRenderer;
+import game.infrpg.common.util.Globals;
 import lib.di.Inject;
 
 public class InfrpgGame extends Game {
@@ -49,7 +50,7 @@ public class InfrpgGame extends Game {
 		
 		this.elapsed_t = 0;
 		
-		Constants.RENDER_DEBUG_TEXT = Constants.DEBUG;
+		Globals.RENDER_DEBUG_TEXT = Globals.DEBUG;
 		Locale.setDefault(Locale.ENGLISH);
 
 		new ConsoleCmds().registerCommands();
@@ -126,7 +127,7 @@ public class InfrpgGame extends Game {
 		super.render();
 
 		double fps = fpsCounter.getFps();
-		if (Constants.RENDER_DEBUG_TEXT) {
+		if (Globals.RENDER_DEBUG_TEXT) {
 			int renderCalls = getScreen().getRenderCalls();
 			long totalMemory = Runtime.getRuntime().totalMemory();
 			long maxMemory = Runtime.getRuntime().maxMemory();

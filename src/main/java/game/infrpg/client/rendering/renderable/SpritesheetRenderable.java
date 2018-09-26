@@ -1,7 +1,7 @@
 package game.infrpg.client.rendering.renderable;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import game.infrpg.Globals;
+import game.infrpg.common.util.Globals;
 import lib.logger.Logger;
 
 /**

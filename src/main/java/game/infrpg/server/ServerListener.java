@@ -3,7 +3,7 @@ package game.infrpg.server;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import game.infrpg.Globals;
+import game.infrpg.common.util.Globals;
 import lib.logger.Logger;
 import java.io.IOException;
 import lib.logger.ILogger;

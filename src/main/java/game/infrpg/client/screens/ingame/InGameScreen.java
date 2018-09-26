@@ -9,14 +9,14 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import game.infrpg.Globals;
+import game.infrpg.common.util.Globals;
 import game.infrpg.client.logic.mapold.Map;
 import game.infrpg.client.InfrpgGame;
 import static game.infrpg.client.InfrpgGame.*;
 import game.infrpg.client.logic.Camera;
 import game.infrpg.client.entities.Spearman;
 import game.infrpg.client.logic.Dir;
-import game.infrpg.client.util.Constants;
+import game.infrpg.common.util.Constants;
 import game.infrpg.client.logic.mapold.Tileset;
 import game.infrpg.client.rendering.shapes.RenderUtils;
 import game.infrpg.client.entities.SwieteniaTree;
@@ -212,15 +212,15 @@ public class InGameScreen extends AbstractScreen {
 		public boolean keyDown(int keycode) {
 			switch (keycode) {
 				case Input.Keys.F1:
-					Constants.RENDER_DEBUG_TEXT = !Constants.RENDER_DEBUG_TEXT;
+					Globals.RENDER_DEBUG_TEXT = !Globals.RENDER_DEBUG_TEXT;
 					return true;
 
 				case Input.Keys.F2:
-					Constants.RENDER_ENTITY_ORIGIN = !Constants.RENDER_ENTITY_ORIGIN;
+					Globals.RENDER_ENTITY_ORIGIN = !Globals.RENDER_ENTITY_ORIGIN;
 					return true;
 
 				case Input.Keys.F3:
-					Constants.RENDER_ENTITY_OUTLINE = !Constants.RENDER_ENTITY_OUTLINE;
+					Globals.RENDER_ENTITY_OUTLINE = !Globals.RENDER_ENTITY_OUTLINE;
 					return true;
 					
 				case Input.Keys.Q:
