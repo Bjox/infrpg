@@ -5,10 +5,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Matrix4;
-import game.infrpg.Globals;
+import game.infrpg.common.util.Globals;
 import game.infrpg.client.InfrpgGame;
 import game.infrpg.client.rendering.renderable.Renderable;
-import game.infrpg.client.util.Constants;
 import game.infrpg.client.rendering.shapes.RenderUtils;
 import game.infrpg.client.rendering.shapes.Shape;
 import lib.logger.ILogger;
@@ -206,11 +205,11 @@ public abstract class Entity {
 		
 		batch.draw(tr, width, height, RENDER_MAT);
 		
-		if (Constants.RENDER_ENTITY_OUTLINE) {
+		if (Globals.RENDER_ENTITY_OUTLINE) {
 			RenderUtils.queueOutlinedShape(new Shape.Rect(0, 0, width, height, Color.RED, new Matrix4().set(RENDER_MAT)));
 		}
 		
-		if (Constants.RENDER_ENTITY_ORIGIN) {
+		if (Globals.RENDER_ENTITY_ORIGIN) {
 			RenderUtils.queueFilledShape(new Shape.Point(getScreenX(), getScreenY(), Color.CYAN));
 		}
 	}

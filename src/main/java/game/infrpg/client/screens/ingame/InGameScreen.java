@@ -9,18 +9,21 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import game.infrpg.Globals;
+import game.infrpg.common.util.Globals;
 import game.infrpg.client.logic.mapold.Map;
 import game.infrpg.client.InfrpgGame;
 import static game.infrpg.client.InfrpgGame.*;
 import game.infrpg.client.logic.Camera;
 import game.infrpg.client.entities.Spearman;
 import game.infrpg.client.logic.Dir;
-import game.infrpg.client.util.Constants;
+import game.infrpg.common.util.Constants;
 import game.infrpg.client.logic.mapold.Tileset;
 import game.infrpg.client.rendering.shapes.RenderUtils;
 import game.infrpg.client.entities.SwieteniaTree;
 import game.infrpg.client.logic.AbstractScreen;
+import game.infrpg.client.util.ClientConfig;
+import game.infrpg.common.console.Console;
+import lib.di.Inject;
 import lib.logger.ILogger;
 import org.lwjgl.util.Point;
 
@@ -30,24 +33,26 @@ import org.lwjgl.util.Point;
  */
 public class InGameScreen extends AbstractScreen {
 
+	private final ILogger logger;
+	private final ClientConfig config;
 	private final Map map;
 	private final Camera cam;
 	private final TilesetCycler tilesetCycler;
-	private float zoomacc = 0.0f;
-	private int renderCalls;
-
 	private final SpriteBatch batch;
 	private final Vector2 isoCamPosBuffer;
-	private final ILogger logger;
+	private final ShapeRenderer shapeRenderer;
 
 	private Spearman player;
 	private SwieteniaTree tree;
+	private float zoomacc = 0.0f;
+	private int renderCalls;
 
-	private ShapeRenderer shapeRenderer;
 
-	public InGameScreen(InfrpgGame game) {
+	@Inject
+	public InGameScreen(InfrpgGame game, ILogger logger, ClientConfig config) {
 		super(game);
-		this.logger = Globals.logger();
+		this.logger = logger;
+		this.config = config;
 		
 		TextureAtlas atlas = getAtlas();
 
@@ -59,7 +64,7 @@ public class InGameScreen extends AbstractScreen {
 
 		tilesetCycler = new TilesetCycler(map);
 
-		cam = new Camera(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
+		cam = new Camera(config.screenWidth, config.screenHeight);
 		cam.zoom = 0.5f;
 
 		cam.update();
@@ -212,15 +217,15 @@ public class InGameScreen extends AbstractScreen {
 		public boolean keyDown(int keycode) {
 			switch (keycode) {
 				case Input.Keys.F1:
-					Constants.RENDER_DEBUG_TEXT = !Constants.RENDER_DEBUG_TEXT;
+					Globals.RENDER_DEBUG_TEXT = !Globals.RENDER_DEBUG_TEXT;
 					return true;
 
 				case Input.Keys.F2:
-					Constants.RENDER_ENTITY_ORIGIN = !Constants.RENDER_ENTITY_ORIGIN;
+					Globals.RENDER_ENTITY_ORIGIN = !Globals.RENDER_ENTITY_ORIGIN;
 					return true;
 
 				case Input.Keys.F3:
-					Constants.RENDER_ENTITY_OUTLINE = !Constants.RENDER_ENTITY_OUTLINE;
+					Globals.RENDER_ENTITY_OUTLINE = !Globals.RENDER_ENTITY_OUTLINE;
 					return true;
 					
 				case Input.Keys.Q:
@@ -230,6 +235,13 @@ public class InGameScreen extends AbstractScreen {
 				case Input.Keys.E:
 					map.setTileset(tilesetCycler.getPreviousTileset());
 					return true;
+					
+				case Input.Keys.BACKSLASH:
+					Console.showConsole();
+					return true;
+					
+				default:
+					if (Globals.DEBUG && Constants.LOG_INPUT_KEYCODES) logger.debug("Keycode: " + keycode);
 			}
 
 			return false;

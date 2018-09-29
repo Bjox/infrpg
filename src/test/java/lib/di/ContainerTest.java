@@ -101,16 +101,76 @@ public class ContainerTest {
 		assertTrue(resolvedInstance.b instanceof TestClassB);
 	}
 	
-//	@Test
-//	public void testRegisterInstanceWithType() {
-//		TestClassA instance = new TestClassA("test", "hei");
-//		container.registerInstance(TestInterfaceA.class, instance);
-//		
-//		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
-//		assertNotNull(resolvedInstance);
-//		assertSame(instance, resolvedInstance);
-//		assertEquals(resolvedInstance.getValue(), "testhei");
-//	}
+	@Test
+	public void testRegisterSingleton() {
+		String str = "test";
+		container.registerInstance(str);
+		container.registerSingleton(TestInterfaceA.class, TestClassA.class);
+		
+		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
+		assertNotNull(resolvedInstance);
+		assertEquals(str + str, resolvedInstance.getValue());
+		
+		TestInterfaceA anotherResolvedInstance = container.resolve(TestInterfaceA.class);
+		assertNotNull(anotherResolvedInstance);
+		assertSame(resolvedInstance, anotherResolvedInstance);
+	}
+	
+	@Test
+	public void testRegisterSingletonFromInstance() {
+		String str = "test";
+		TestClassA instance = new TestClassA(str, str);
+		container.registerSingleton(TestInterfaceA.class, instance);
+		
+		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
+		assertNotNull(resolvedInstance);
+		assertEquals(str + str, resolvedInstance.getValue());
+		assertSame(instance, resolvedInstance);
+		
+		TestInterfaceA anotherResolvedInstance = container.resolve(TestInterfaceA.class);
+		assertNotNull(anotherResolvedInstance);
+		assertEquals(str + str, resolvedInstance.getValue());
+		assertSame(instance, anotherResolvedInstance);
+	}
+	
+	@Test
+	public void testRegisterTypeAndInstance() {
+		String str = "test";
+		TestClassA instance = new TestClassA(str, str);
+		container.registerType(TestInterfaceA.class, TestClassA.class);
+		container.registerInstance(instance);
+		
+		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
+		assertNotNull(resolvedInstance);
+		assertEquals(str + str, resolvedInstance.getValue());
+		assertSame(instance, resolvedInstance);
+	}
+	
+	@Test
+	public void testRegisterSingletonAndInstance() {
+		String str = "test";
+		TestClassA instance = new TestClassA(str, str);
+		container.registerSingleton(TestInterfaceA.class, TestClassA.class);
+		container.registerInstance(instance);
+		
+		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
+		assertNotNull(resolvedInstance);
+		assertEquals(str + str, resolvedInstance.getValue());
+		assertSame(instance, resolvedInstance);
+	}
+	
+	@Test
+	public void testRegisterInstanceAndSingleton() {
+		String str = "test";
+		TestClassA instance = new TestClassA(str, str);
+		container.registerInstance(instance);
+		container.registerSingleton(TestInterfaceA.class, TestClassA.class);
+		
+		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
+		assertNotNull(resolvedInstance);
+		assertEquals(str + str, resolvedInstance.getValue());
+		assertSame(instance, resolvedInstance);
+	}
 	
 	/*
 	Test interfaces and classes

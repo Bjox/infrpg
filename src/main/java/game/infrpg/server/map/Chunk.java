@@ -1,6 +1,6 @@
 package game.infrpg.server.map;
 
-import game.infrpg.client.util.Constants;
+import game.infrpg.common.util.Constants;
 import java.io.Serializable;
 
 /**

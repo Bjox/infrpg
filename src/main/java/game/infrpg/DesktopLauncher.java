@@ -1,59 +1,79 @@
 package game.infrpg;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import static game.infrpg.Globals.resolve;
+import static game.infrpg.common.util.Globals.resolve;
+import game.infrpg.common.util.Globals;
 import game.infrpg.common.util.Arguments;
 import game.infrpg.client.InfrpgGame;
-import game.infrpg.client.util.Constants;
+import game.infrpg.common.util.Constants;
 import game.infrpg.common.console.Console;
 import game.infrpg.common.console.ConsoleLoggerHandler;
+import game.infrpg.server.InfrpgServer;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import game.infrpg.client.util.ClientConfig;
+import game.infrpg.common.util.Helpers;
 import lib.logger.FileLoggerHandler;
 import lib.logger.LoggerLevel;
 import lib.logger.Logger;
 import lib.logger.PrintStreamLoggerHandler;
-import lib.ArgumentParser;
-import game.infrpg.server.InfrpgServer;
+import lib.util.ArgumentParser;
 import java.io.IOException;
+import java.util.Locale;
+import lib.config.IConfigStore;
+import lib.config.PropertiesConfigStore;
+import lib.logger.ILogger;
+import lib.storage.FileStorage;
+import lib.storage.IStorage;
+import lib.util.IArgumentParser;
 
 public class DesktopLauncher {
-	
+
 	public static void main(String[] args) {
 		setupArguments(args);
 		setupLogger();
-		
-		Logger logger = resolve(Logger.class);
-		ArgumentParser<Arguments> arguments = resolve(ArgumentParser.class);
-		
+		ILogger logger = Globals.logger();
 		setupConsole(logger);
+		Locale.setDefault(Locale.ENGLISH);
 		
-		logger.info(arguments);
-		
-		if (Constants.DEBUG) {
+		logger.debug(resolve(ArgumentParser.class));
+
+		if (Globals.DEBUG) {
 			Console.showConsole();
 		}
 
-		if (Constants.SERVER) {
-			startServer();
+		try {
+			if (Globals.SERVER) {
+				logger.info("Infrpg server");
+				serverRegistrations();
+				startServer();
+			}
+			else {
+				logger.info("Infrpg client");
+				clientRegistrations();
+				startClient(resolve(ClientConfig.class));
+			}
 		}
-		else {
-			startClient();
+		catch (Exception e) {
+			logger.logException(e);
 		}
-	}
-	
-	private static void setupArguments(String[] args) {
-		ArgumentParser<Arguments> arguments = Globals.container.registerInstance(new ArgumentParser<>(args));
 
-		Constants.DEBUG = arguments.isPresent(Arguments.DEBUG);
-		Constants.SERVER = arguments.isPresent(Arguments.SERVER);
-		Constants.HEADLESS = arguments.isPresent(Arguments.HEADLESS);
 	}
-	
+
+	private static void setupArguments(String[] args) {
+		Globals.container.registerType(IArgumentParser.class, ArgumentParser.class);
+		IArgumentParser<Arguments> arguments = Globals.container.registerInstance(new ArgumentParser<>(args));
+
+		Globals.DEBUG = arguments.isPresent(Arguments.DEBUG);
+		Globals.SERVER = arguments.isPresent(Arguments.SERVER);
+		Globals.HEADLESS = arguments.isPresent(Arguments.HEADLESS);
+	}
+
 	private static void setupLogger() {
-		Logger logger = Globals.container.registerInstance(new Logger());
-		
+		Globals.container.registerSingleton(ILogger.class, Logger.class);
+		ILogger logger = Globals.container.resolve(ILogger.class);
+
 		logger.addHandler(new PrintStreamLoggerHandler(System.out, false));
-		logger.setCurrentLevel(Constants.DEBUG ? LoggerLevel.ALL : LoggerLevel.DEFAULT);
+		logger.setCurrentLevel(Globals.DEBUG ? LoggerLevel.ALL : LoggerLevel.DEFAULT);
 
 		try {
 			logger.addHandler(new FileLoggerHandler(Constants.LOGFILE));
@@ -62,11 +82,11 @@ public class DesktopLauncher {
 			logger.error("Unable to set up file logger: " + e.getMessage());
 		}
 	}
-	
-	private static void setupConsole(Logger logger) {
-		if (Constants.HEADLESS) {
+
+	private static void setupConsole(ILogger logger) {
+		if (Globals.HEADLESS) {
 			logger.info("Running in headless mode");
-			if (!Constants.SERVER) {
+			if (!Globals.SERVER) {
 				logger.warning("Headless flag is not applicable on a client instance");
 			}
 		}
@@ -77,23 +97,32 @@ public class DesktopLauncher {
 			logger.addHandler(new ConsoleLoggerHandler());
 		}
 	}
-	
-	private static void startClient() {
+
+	private static void clientRegistrations() throws Exception {
+		Globals.container.registerSingleton(IConfigStore.class, new PropertiesConfigStore("Infrpg client configuration"));
+		// TODO: registering generic IStorage to ClientConfig specific FileStorage
+		Globals.container.registerSingleton(IStorage.class, new FileStorage(Constants.CLIENT_CONFIG_PATHNAME)); 
+		Globals.container.resolveAndRegisterInstance(ClientConfig.class).initConfig();
+	}
+
+	private static void serverRegistrations() throws Exception {
+	}
+
+	private static void startClient(ClientConfig clientConfig) {
 		LwjglApplicationConfiguration lwjglAppConfig = new LwjglApplicationConfiguration();
 		
-		lwjglAppConfig.width = 1000;
-		lwjglAppConfig.height = 800;
-		lwjglAppConfig.title = "Infrpg";
-		lwjglAppConfig.vSyncEnabled = false;
-		lwjglAppConfig.foregroundFPS = Constants.DEBUG ? 0 : 200;
-		lwjglAppConfig.backgroundFPS = 30;
-		
+		lwjglAppConfig.width = clientConfig.screenWidth;
+		lwjglAppConfig.height = clientConfig.screenHeight;
+		lwjglAppConfig.title = Constants.CLIENT_WINDOW_TITLE;
+		lwjglAppConfig.vSyncEnabled = clientConfig.verticalSync;
+		lwjglAppConfig.foregroundFPS = Helpers.getClientForegroundFpsLimit();
+		lwjglAppConfig.backgroundFPS = Helpers.getClientBackgroundFpsLimit();
+
 		Globals.container.registerInstance(lwjglAppConfig);
-		
-		// Bootstraps the game
-		new LwjglApplication(resolve(InfrpgGame.class), lwjglAppConfig);
+
+		new LwjglApplication(Globals.container.resolveAndRegisterInstance(InfrpgGame.class), lwjglAppConfig);
 	}
-	
+
 	private static void startServer() {
 		resolve(InfrpgServer.class).start();
 	}

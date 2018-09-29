@@ -1,8 +1,8 @@
 package game.infrpg.client.rendering.renderable;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import game.infrpg.Globals;
-import lib.logger.Logger;
+import game.infrpg.common.util.Globals;
+import lib.logger.ILogger;
 
 /**
  *
@@ -28,7 +28,7 @@ public class SpritesheetRenderable implements Renderable {
 		int tileHeight = sheet.getRegionHeight() / rows;
 		
 		if (sheet.getRegionWidth() % columns != 0 || sheet.getRegionHeight() % rows != 0) {
-			Globals.resolve(Logger.class).warning("Spritesheet dimensions are not evenly divided by specified rows:columns (" + rows + ":" + columns + ").");
+			Globals.resolve(ILogger.class).warning("Spritesheet dimensions are not evenly divided by specified rows:columns (" + rows + ":" + columns + ").");
 		}
 		
 		this.regions = sheet.split(tileWidth, tileHeight);

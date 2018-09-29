@@ -1,6 +1,6 @@
 package game.infrpg.client;
 
-import game.infrpg.client.util.ConsoleCmds;
+import game.infrpg.client.util.ClientConsoleCmds;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -10,27 +10,27 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import game.infrpg.client.screens.ingame.InGameScreen;
 import game.infrpg.client.util.FPSCounter;
 import game.infrpg.common.console.Console;
-import java.util.Locale;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import game.infrpg.client.logic.AbstractScreen;
-import lib.logger.Logger;
-import game.infrpg.client.util.Constants;
 import game.infrpg.client.rendering.DebugTextRenderer;
+import game.infrpg.client.util.ClientConfig;
+import game.infrpg.common.util.Globals;
+import java.awt.Dimension;
 import lib.di.Inject;
+import lib.logger.ILogger;
 
 public class InfrpgGame extends Game {
 
 	private static InfrpgGame instance;
 	
+	private final ILogger logger;
+	private final ClientConfig config;
+	private final Dimension screenSize;
+
 	private float elapsed_t;
 	private float delta_t;
-	
-	public final LwjglApplicationConfiguration config;
-	private final Logger logger;
-
 	private BitmapFont consolaFont;
 	private FPSCounter fpsCounter;
 	private SpriteBatch batch;
@@ -39,20 +39,19 @@ public class InfrpgGame extends Game {
 
 	/**
 	 *
-	 * @param config LwjglApplication configuration.
 	 * @param logger
+	 * @param config
 	 */
 	@Inject
-	public InfrpgGame(LwjglApplicationConfiguration config, Logger logger) {
-		this.config = config;
+	public InfrpgGame(ILogger logger, ClientConfig config) {
 		this.logger = logger;
-		
+		this.config = config;
 		this.elapsed_t = 0;
+		this.screenSize = new Dimension(config.screenWidth, config.screenHeight);
 		
-		Constants.RENDER_DEBUG_TEXT = Constants.DEBUG;
-		Locale.setDefault(Locale.ENGLISH);
+		new ClientConsoleCmds().registerCommands();
 
-		new ConsoleCmds().registerCommands();
+		Globals.RENDER_DEBUG_TEXT = Globals.DEBUG;
 	}
 
 	public static InfrpgGame gameInstance() {
@@ -87,9 +86,6 @@ public class InfrpgGame extends Game {
 
 		instance = this;
 
-		Constants.SCREEN_WIDTH = Gdx.graphics.getWidth();
-		Constants.SCREEN_HEIGHT = Gdx.graphics.getHeight();
-		
 		atlas = new TextureAtlas(Gdx.files.internal("packed/pack.atlas"));
 
 		fpsCounter = new FPSCounter(1000);
@@ -109,12 +105,12 @@ public class InfrpgGame extends Game {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-		Gdx.graphics.setVSync(Constants.VSYNC);
+		Gdx.graphics.setVSync(config.verticalSync);
 
 //		AssetManager assman = new AssetManager();
 //		TextureLoader.TextureParameter texparams = new TextureLoader.TextureParameter();
 //		texparams.genMipMaps = true;
-		setScreen(new InGameScreen(this));
+		setScreen(Globals.resolve(InGameScreen.class));
 	}
 
 	@Override
@@ -126,7 +122,7 @@ public class InfrpgGame extends Game {
 		super.render();
 
 		double fps = fpsCounter.getFps();
-		if (Constants.RENDER_DEBUG_TEXT) {
+		if (Globals.RENDER_DEBUG_TEXT) {
 			int renderCalls = getScreen().getRenderCalls();
 			long totalMemory = Runtime.getRuntime().totalMemory();
 			long maxMemory = Runtime.getRuntime().maxMemory();
@@ -139,9 +135,9 @@ public class InfrpgGame extends Game {
 			debugText.setLine(4, getScreen().debugRenderText());
 
 			batch.begin();
-			debugText.render(batch, 5, Constants.SCREEN_HEIGHT - 5);
+			debugText.render(batch, 5, screenSize.height - 5);
 			batch.end();
-			
+
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 		}
 	}

@@ -18,7 +18,7 @@ public class FileLoggerHandler extends LoggerHandler {
 	}
 
 	@Override
-	public void handle(LogRecord record, Logger logger) {
+	public void handle(LogRecord record, ILogger logger) {
 
 		writer.printf("[%s] %s %s %s", record.getLevel().name(), record.getPrefix(), record.getMessage(), record.getSuffix());
 

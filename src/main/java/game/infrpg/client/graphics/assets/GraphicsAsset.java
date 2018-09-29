@@ -1,7 +1,7 @@
 package game.infrpg.client.graphics.assets;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import game.infrpg.Globals;
+import game.infrpg.common.util.Globals;
 import game.infrpg.client.InfrpgGame;
 import game.infrpg.client.rendering.renderable.Renderable;
 

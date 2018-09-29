@@ -1,12 +1,11 @@
 package game.infrpg.server.service.map;
 
-import game.infrpg.Globals;
-import lib.logger.Logger;
+import game.infrpg.common.util.Globals;
+import game.infrpg.common.util.Constants;
 import game.infrpg.server.map.IMapStorage;
 import game.infrpg.server.map.memory.MemoryMapStorage;
 import game.infrpg.server.map.sqlite.SQLiteMapStorage;
 import game.infrpg.server.service.Service;
-import game.infrpg.server.util.Constants;
 import java.io.File;
 import lib.logger.ILogger;
 

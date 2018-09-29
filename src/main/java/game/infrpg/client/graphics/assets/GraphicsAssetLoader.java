@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
-import game.infrpg.Globals;
-import game.infrpg.client.util.Constants;
+import game.infrpg.common.util.Globals;
+import game.infrpg.common.util.Constants;
 import game.infrpg.client.logic.Dir;
 import java.util.function.BiConsumer;
 

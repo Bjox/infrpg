@@ -1,10 +1,10 @@
 package game.infrpg.common.console;
 
 import lib.logger.LogRecord;
-import lib.logger.Logger;
 import lib.logger.LoggerLevel;
 import lib.logger.LoggerHandler;
 import java.awt.Color;
+import lib.logger.ILogger;
 
 /**
  *
@@ -61,7 +61,7 @@ public class ConsoleLoggerHandler extends LoggerHandler {
 	private static final Palettes PALETTE = Palettes.FUN_AND_PROFESSIONAL;
 
 	@Override
-	public void handle(LogRecord record, Logger logger) {
+	public void handle(LogRecord record, ILogger logger) {
 		Color levelColor = PALETTE.getColor(record.getLevel());
 
 		Console.print("[" + record.getLevel().name() + "] ", levelColor);

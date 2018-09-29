@@ -1,0 +1,79 @@
+package game.infrpg.common.util;
+
+import com.badlogic.gdx.graphics.g2d.Animation;
+import game.infrpg.server.map.IMapStorage;
+import game.infrpg.server.map.memory.MemoryMapStorage;
+import java.io.File;
+
+/**
+ * Compile-time constants. These values never change.
+ * @author Bjørnar W. Alvestad
+ */
+public final class Constants {
+	
+	// ONLY 'PUBLIC STATIC FINALS' IN HERE!
+	
+	/** Debug movement speed. */
+	public static final float DEBUG_MOVEMENT_SPEED = 300;//120;
+	
+	/** Debug enable map zoom. */
+	public static final boolean ENABLE_ZOOM = true;
+	
+	/** Region size in chunks. */
+	public static final int REGION_SIZE = 32;
+	
+	/** Chunk size in tiles. */
+	public static final int CHUNK_SIZE = 16;
+	
+	/** Height of an isometric tile in pixels. */
+	public static final int TILE_SIZE = 32;
+	
+	/** Render distance in chunks from camera center. */
+	public static final int CHUNK_RENDER_DISTANCE = 2;
+	
+	/** Compress regions in storage. */
+	public static final boolean COMPRESS_REGIONS = true;
+	
+	/** Default application port. */
+	public static final int DEFAULT_PORT = 30555;
+	
+	/** Default FPS used when loding animations. */
+	public static final float DEFAULT_ANIMATION_FRAMERATE = 20;
+	
+	/** Default playmode used when loading animations. */
+	public static final Animation.PlayMode DEFAULT_ANIMATION_PLAYMODE = Animation.PlayMode.LOOP;
+	
+	/** Path to logile. */
+	public static final String LOGFILE = "last_run.log";
+	
+	/** The default name of the map directory. */
+	public static final String DEFAULT_MAP_DIRECTORY = "map";
+	
+	/** Type of storage used to persist regions long-term. */
+	public static final Class<? extends IMapStorage> MAP_STORAGE_TYPE = MemoryMapStorage.class;
+	
+	/** Client configuration pathname. */
+	public static final String CLIENT_CONFIG_PATHNAME = "client.properties";
+	
+	/** Server configuration pathname. */
+	public static final String SERVER_CONFIG_PATHNAME = "server.properties";
+	
+	/** The client window title. */
+	public static final String CLIENT_WINDOW_TITLE = "Infrpg";
+	
+	/** Client FPS limit when the window is inactive. */
+	public static final int CLIENT_BACKGROUND_FPS_LIMIT = 30;
+	
+	/** Client FPS limit when the window is active. */
+	public static final int CLIENT_FOREGROUND_FPS_LIMIT = 200;
+	
+	/** Log keycodes when pressing a button. */
+	public static final boolean LOG_INPUT_KEYCODES = false;
+	
+	/**
+	 * Private constructor.
+	 */
+	private Constants() {
+	}
+	
+}
