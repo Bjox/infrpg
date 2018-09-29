@@ -70,6 +70,12 @@ public final class Constants {
 	/** Log keycodes when pressing a button. */
 	public static final boolean LOG_INPUT_KEYCODES = false;
 	
+	/** Server tickrate in ticks per second. */
+	public static final int SERVER_TICKRATE = 30;
+	
+	/** The date format pattern used to format Date objects. */
+	public static final String DATE_FORMAT_PATTERN = "dd.MM.yyy HH:mm:ss.SSS";
+	
 	/**
 	 * Private constructor.
 	 */

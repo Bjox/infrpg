@@ -1,5 +1,7 @@
 package game.infrpg;
 
+import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import static game.infrpg.common.util.Globals.resolve;
 import game.infrpg.common.util.Globals;
 import game.infrpg.common.util.Arguments;
@@ -12,12 +14,14 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import game.infrpg.client.util.ClientConfig;
 import game.infrpg.common.util.Helpers;
+import game.infrpg.server.util.ServerConfig;
 import lib.logger.FileLoggerHandler;
 import lib.logger.LoggerLevel;
 import lib.logger.Logger;
 import lib.logger.PrintStreamLoggerHandler;
 import lib.util.ArgumentParser;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 import lib.config.IConfigStore;
 import lib.config.PropertiesConfigStore;
@@ -69,6 +73,8 @@ public class DesktopLauncher {
 	}
 
 	private static void setupLogger() {
+		Globals.container.registerInstance(new SimpleDateFormat(Constants.DATE_FORMAT_PATTERN));
+		
 		Globals.container.registerSingleton(ILogger.class, Logger.class);
 		ILogger logger = Globals.container.resolve(ILogger.class);
 
@@ -106,11 +112,14 @@ public class DesktopLauncher {
 	}
 
 	private static void serverRegistrations() throws Exception {
+		Globals.container.registerSingleton(IConfigStore.class, new PropertiesConfigStore("Infrpg server configuration"));
+		// TODO: registering generic IStorage to ServerConfig specific FileStorage
+		Globals.container.registerSingleton(IStorage.class, new FileStorage(Constants.SERVER_CONFIG_PATHNAME)); 
+		Globals.container.resolveAndRegisterInstance(ServerConfig.class).initConfig();
 	}
 
 	private static void startClient(ClientConfig clientConfig) {
 		LwjglApplicationConfiguration lwjglAppConfig = new LwjglApplicationConfiguration();
-		
 		lwjglAppConfig.width = clientConfig.screenWidth;
 		lwjglAppConfig.height = clientConfig.screenHeight;
 		lwjglAppConfig.title = Constants.CLIENT_WINDOW_TITLE;
@@ -124,6 +133,11 @@ public class DesktopLauncher {
 	}
 
 	private static void startServer() {
-		resolve(InfrpgServer.class).start();
+		HeadlessApplicationConfiguration headlessAppConfig = new HeadlessApplicationConfiguration();
+		headlessAppConfig.renderInterval = 1f / Constants.SERVER_TICKRATE;
+		
+		Globals.container.registerInstance(headlessAppConfig);
+		
+		new HeadlessApplication(Globals.container.resolveAndRegisterInstance(InfrpgServer.class), headlessAppConfig);
 	}
 }

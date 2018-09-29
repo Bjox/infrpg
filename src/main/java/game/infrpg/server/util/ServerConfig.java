@@ -6,6 +6,7 @@ import lib.config.AbstractConfig;
 import lib.config.ConfigClass;
 import lib.config.ConfigField;
 import lib.config.IConfigStore;
+import lib.di.Inject;
 import lib.storage.IStorage;
 
 /**
@@ -20,6 +21,7 @@ public class ServerConfig extends AbstractConfig {
 	@ConfigField
 	public int port = Constants.DEFAULT_PORT;
 	
+	@Inject
 	public ServerConfig(IConfigStore configStore, IStorage storage) throws IOException {
 		super(configStore, storage);
 	}

@@ -2,8 +2,6 @@ package game.infrpg.server;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import game.infrpg.common.console.Console;
 import game.infrpg.common.util.Globals;
 import game.infrpg.server.service.map.MapService;
@@ -18,8 +16,6 @@ import lib.logger.ILogger;
  */
 public class InfrpgServer implements ApplicationListener {
 	
-	private static final int TICKRATE = 20;
-	
 	private final ILogger logger;
 	private final ServerConfig serverConfig;
 	
@@ -27,25 +23,19 @@ public class InfrpgServer implements ApplicationListener {
 	public InfrpgServer(ILogger logger, ServerConfig config) {
 		this.logger = logger;
 		this.serverConfig = config;
+		
+		this.logger.info("Server config: " + config.getConfigKeyValueMap());
 	}
 
-	public void start() {
+	@Override
+	public void create() {
 		logger.info("Setting up server...");
-		
-		HeadlessApplicationConfiguration headlessAppConfig = new HeadlessApplicationConfiguration();
-		headlessAppConfig.renderInterval = 1f / TICKRATE;
-		
-		new HeadlessApplication(this, headlessAppConfig);
 		
 		if (!Globals.HEADLESS) {
 			Console.addShutdownHook(() -> Gdx.app.exit());
 		}
 
 		try {
-			if (Globals.DEBUG) {
-				logger.debug(headlessAppConfig);
-			}
-			
 			MapService mapservice = new MapService(new File(serverConfig.mapDirectory));
 		}
 		catch (Exception e) {
@@ -53,16 +43,11 @@ public class InfrpgServer implements ApplicationListener {
 		}
 		
 		logger.info("Server setup complete");
-
-	}
-
-	@Override
-	public void create() {
-		logger.debug("Server create");
 	}
 
 	@Override
 	public void render() {
+		logger.debug("tick");
 	}
 	
 	@Override

@@ -1,9 +1,11 @@
 package lib.logger;
 
+import game.infrpg.common.util.Globals;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -19,8 +21,10 @@ public class FileLoggerHandler extends LoggerHandler {
 
 	@Override
 	public void handle(LogRecord record, ILogger logger) {
-
-		writer.printf("[%s] %s %s %s", record.getLevel().name(), record.getPrefix(), record.getMessage(), record.getSuffix());
+		SimpleDateFormat dateFormat = Globals.resolve(SimpleDateFormat.class);
+		
+		writer.printf("%s  %-7s %s %s %s",
+				dateFormat.format(record.getTimestamp()), record.getLevel().name(), record.getPrefix(), record.getMessage(), record.getSuffix());
 
 		if (logger.getCurrentLevel().check(LoggerLevel.DEBUG)) {
 			writer.printf(" (%s:%d)", record.getFileName(), record.getLine());

@@ -3,8 +3,11 @@ package lib.di;
 import lib.di.exceptions.DIException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -142,11 +145,13 @@ public class Container implements IContainer {
 		typesTriedConstructing.add(type);
 		
 		boolean injectConstructorFound = false;
+		List<Constructor<?>> triedConstructors = new ArrayList<>();
 		for (Constructor<?> constructor : type.getConstructors()) {
 			if (!constructor.isAnnotationPresent(Inject.class)) {
 				continue;
 			}
 			injectConstructorFound = true;
+			triedConstructors.add(constructor);
 			
 			try {
 				Class<?>[] paramTypes = constructor.getParameterTypes();
@@ -172,7 +177,8 @@ public class Container implements IContainer {
 			throw new DIResolutionException(type, "no @Inject annotated constructor was found on the type.");
 		}
 		
-		throw new DIResolutionException(type, "resolution of type dependencies failed.");
+		String str = triedConstructors.stream().map(c -> c.toString()).reduce("Constructors tried:", (a, b) -> a + "\n" + b);
+		throw new DIResolutionException(type, "resolution of type dependencies failed. " + str);
 	}
 	
 	private static class Singleton {

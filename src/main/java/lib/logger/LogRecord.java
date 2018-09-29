@@ -68,7 +68,7 @@ public class LogRecord {
 	 */
 	@Override
 	public String toString() {
-		String str = String.format("[%s] %s %s %s", level.name(), prefix, message, suffix);
+		String str = String.format("%-7s %s %s %s", level.name(), prefix, message, suffix);
 		if (level.check(LoggerLevel.DEBUG)) {
 			str += String.format("(%s:%d)", getFileName(), getLine());
 		}

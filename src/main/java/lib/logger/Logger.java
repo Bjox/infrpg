@@ -32,11 +32,11 @@ public class Logger implements ILogger {
 	}
 
 	@Override
-	public void addHandler(LoggerHandler handler) {
+	public synchronized void addHandler(LoggerHandler handler) {
 		handlers.add(handler);
 	}
 
-	public void log(LogRecord record) {
+	public synchronized void log(LogRecord record) {
 		if (currentLevel == LoggerLevel.OFF) {
 			return;
 		}
@@ -55,43 +55,43 @@ public class Logger implements ILogger {
 	}
 
 	@Override
-	public void debug(Object message) {
+	public synchronized void debug(Object message) {
 		debug(String.valueOf(message), 1);
 	}
 
-	public void debug(String message, int stackMovement) {
+	public synchronized void debug(String message, int stackMovement) {
 		log(new LogRecord("", message, "", LoggerLevel.DEBUG, getStackTraceElement(stackMovement + 3)));
 	}
 
 	@Override
-	public void info(Object message) {
+	public synchronized void info(Object message) {
 		info(String.valueOf(message), 1);
 	}
 
-	public void info(String message, int stackMovement) {
+	public synchronized void info(String message, int stackMovement) {
 		log(new LogRecord("", message, "", LoggerLevel.INFO, getStackTraceElement(stackMovement + 3)));
 	}
 
 	@Override
-	public void warning(Object message) {
+	public synchronized void warning(Object message) {
 		warning(String.valueOf(message), 1);
 	}
 
-	public void warning(String message, int stackMovement) {
+	public synchronized void warning(String message, int stackMovement) {
 		log(new LogRecord("", message, "", LoggerLevel.WARNING, getStackTraceElement(stackMovement + 3)));
 	}
 
 	@Override
-	public void error(Object message) {
+	public synchronized void error(Object message) {
 		error(String.valueOf(message), 1);
 	}
 
-	public void error(String message, int stackMovement) {
+	public synchronized void error(String message, int stackMovement) {
 		log(new LogRecord("", message, "", LoggerLevel.ERROR, getStackTraceElement(stackMovement + 3)));
 	}
 
 	@Override
-	public void logException(Throwable throwable) {
+	public synchronized void logException(Throwable throwable) {
 		if (currentLevel.check(LoggerLevel.DEBUG)) {
 			try (
 					StringWriter stringWriter = new StringWriter();
