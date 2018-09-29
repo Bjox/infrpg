@@ -3,6 +3,7 @@ package game.infrpg.common.util;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import game.infrpg.server.map.IMapStorage;
 import game.infrpg.server.map.memory.MemoryMapStorage;
+import java.io.File;
 
 /**
  * Compile-time constants. These values never change.
@@ -11,6 +12,12 @@ import game.infrpg.server.map.memory.MemoryMapStorage;
 public final class Constants {
 	
 	// ONLY 'PUBLIC STATIC FINALS' IN HERE!
+	
+	/** Debug movement speed. */
+	public static final float DEBUG_MOVEMENT_SPEED = 300;//120;
+	
+	/** Debug enable map zoom. */
+	public static final boolean ENABLE_ZOOM = true;
 	
 	/** Region size in chunks. */
 	public static final int REGION_SIZE = 32;
@@ -45,24 +52,28 @@ public final class Constants {
 	/** Type of storage used to persist regions long-term. */
 	public static final Class<? extends IMapStorage> MAP_STORAGE_TYPE = MemoryMapStorage.class;
 	
+	/** Client configuration pathname. */
+	public static final String CLIENT_CONFIG_PATHNAME = "client.properties";
+	
+	/** Server configuration pathname. */
+	public static final String SERVER_CONFIG_PATHNAME = "server.properties";
+	
+	/** The client window title. */
+	public static final String CLIENT_WINDOW_TITLE = "Infrpg";
+	
+	/** Client FPS limit when the window is inactive. */
+	public static final int CLIENT_BACKGROUND_FPS_LIMIT = 30;
+	
+	/** Client FPS limit when the window is active. */
+	public static final int CLIENT_FOREGROUND_FPS_LIMIT = 200;
+	
+	/** Log keycodes when pressing a button. */
+	public static final boolean LOG_INPUT_KEYCODES = false;
 	
 	/**
 	 * Private constructor.
 	 */
 	private Constants() {
 	}
-	
-	
-	
-	// TOD: To be (re)moved...
-	public static final float DEBUG_MOVEMENT_SPEED = 300;//120;
-	public static final boolean ENABLE_ZOOM = true;
-	public static final boolean VSYNC = false;
-	public static int SCREEN_WIDTH;
-	public static int SCREEN_HEIGHT;
-	
-	
-	
-	
 	
 }

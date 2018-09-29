@@ -21,6 +21,9 @@ import game.infrpg.client.logic.mapold.Tileset;
 import game.infrpg.client.rendering.shapes.RenderUtils;
 import game.infrpg.client.entities.SwieteniaTree;
 import game.infrpg.client.logic.AbstractScreen;
+import game.infrpg.client.util.ClientConfig;
+import game.infrpg.common.console.Console;
+import lib.di.Inject;
 import lib.logger.ILogger;
 import org.lwjgl.util.Point;
 
@@ -30,24 +33,26 @@ import org.lwjgl.util.Point;
  */
 public class InGameScreen extends AbstractScreen {
 
+	private final ILogger logger;
+	private final ClientConfig config;
 	private final Map map;
 	private final Camera cam;
 	private final TilesetCycler tilesetCycler;
-	private float zoomacc = 0.0f;
-	private int renderCalls;
-
 	private final SpriteBatch batch;
 	private final Vector2 isoCamPosBuffer;
-	private final ILogger logger;
+	private final ShapeRenderer shapeRenderer;
 
 	private Spearman player;
 	private SwieteniaTree tree;
+	private float zoomacc = 0.0f;
+	private int renderCalls;
 
-	private ShapeRenderer shapeRenderer;
 
-	public InGameScreen(InfrpgGame game) {
+	@Inject
+	public InGameScreen(InfrpgGame game, ILogger logger, ClientConfig config) {
 		super(game);
-		this.logger = Globals.logger();
+		this.logger = logger;
+		this.config = config;
 		
 		TextureAtlas atlas = getAtlas();
 
@@ -59,7 +64,7 @@ public class InGameScreen extends AbstractScreen {
 
 		tilesetCycler = new TilesetCycler(map);
 
-		cam = new Camera(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
+		cam = new Camera(config.screenWidth, config.screenHeight);
 		cam.zoom = 0.5f;
 
 		cam.update();
@@ -230,6 +235,13 @@ public class InGameScreen extends AbstractScreen {
 				case Input.Keys.E:
 					map.setTileset(tilesetCycler.getPreviousTileset());
 					return true;
+					
+				case Input.Keys.BACKSLASH:
+					Console.showConsole();
+					return true;
+					
+				default:
+					if (Globals.DEBUG && Constants.LOG_INPUT_KEYCODES) logger.debug("Keycode: " + keycode);
 			}
 
 			return false;
