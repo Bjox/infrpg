@@ -2,10 +2,7 @@ package game.infrpg.client.entities;
 
 import game.infrpg.client.entity.SimpleEntity;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import game.infrpg.client.InfrpgGame;
 import game.infrpg.client.graphics.assets.Assets;
-import lib.logger.Logger;
-import game.infrpg.common.util.Util;
 import java.util.function.Consumer;
 
 /**

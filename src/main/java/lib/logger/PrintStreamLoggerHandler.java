@@ -17,7 +17,7 @@ public class PrintStreamLoggerHandler extends LoggerHandler {
 	}
 
 	@Override
-	public void handle(LogRecord record, Logger logger) {
+	public void handle(LogRecord record, ILogger logger) {
 		this.stream.println(record.toString());
 	}
 

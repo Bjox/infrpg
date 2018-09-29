@@ -8,7 +8,7 @@ import java.util.Map;
  * @author Bjørnar W. Alvestad
  * @param <T> Argument enum
  */
-public class ArgumentParser<T extends Enum<T>> {
+public class ArgumentParser<T extends Enum<T>> implements IArgumentParser<T> {
 	
 	private final Map<String, String> map;
 	
@@ -30,47 +30,46 @@ public class ArgumentParser<T extends Enum<T>> {
 	}
 	
 	
-	private String argumentEnumToString(T argument) {
-		return argument.toString().toLowerCase();
-	}
-	
-	
+	@Override
 	public boolean isPresent(String option) {
 		if (!option.startsWith("-")) option = "-" + option;
 		return map.containsKey(option);
 	}
 	
 	
+	@Override
 	public boolean isPresent(T option) {
 		return isPresent(argumentEnumToString(option));
 	}
 	
 	
+	@Override
 	public String getString(String option) {
 		return map.get(option);
 	}
 	
 	
+	@Override
 	public int getInt(String option) {
 		return Integer.parseInt(map.get(option));
 	}
 	
 	
+	@Override
 	public double getDouble(String option) {
 		return Double.parseDouble(map.get(option));
 	}
 	
+	@Override
+	public int numArguments() {
+		return map.size();
+	}
 	
 	public void printAllOptions() {
 		map.forEach((K, V) -> {
 			if (V == null) System.out.println(K);
 			else System.out.println(K + "=" + V);
 		});
-	}
-	
-	
-	public int numArguments() {
-		return map.size();
 	}
 
 	@Override
@@ -84,6 +83,8 @@ public class ArgumentParser<T extends Enum<T>> {
 		return str.toString();
 	}
 	
-	
+	private String argumentEnumToString(T argument) {
+		return argument.toString().toLowerCase();
+	}
 	
 }

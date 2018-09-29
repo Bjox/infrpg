@@ -3,7 +3,6 @@ package game.infrpg.common.util;
 import lib.di.Container;
 import lib.di.IContainer;
 import lib.logger.ILogger;
-import lib.logger.Logger;
 
 /**
  * Global static fields for both client and server.
@@ -32,7 +31,7 @@ public final class Globals {
 	 * @return 
 	 */
 	public static ILogger logger() {
-		return resolve(Logger.class);
+		return resolve(ILogger.class);
 	}
 	
 	public static boolean DEBUG;

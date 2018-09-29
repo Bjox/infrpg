@@ -109,7 +109,7 @@ public class ContainerTest {
 		
 		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
 		assertNotNull(resolvedInstance);
-		assertEquals(resolvedInstance.getValue(), str + str);
+		assertEquals(str + str, resolvedInstance.getValue());
 		
 		TestInterfaceA anotherResolvedInstance = container.resolve(TestInterfaceA.class);
 		assertNotNull(anotherResolvedInstance);
@@ -124,13 +124,52 @@ public class ContainerTest {
 		
 		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
 		assertNotNull(resolvedInstance);
-		assertEquals(resolvedInstance.getValue(), str + str);
+		assertEquals(str + str, resolvedInstance.getValue());
 		assertSame(instance, resolvedInstance);
 		
 		TestInterfaceA anotherResolvedInstance = container.resolve(TestInterfaceA.class);
 		assertNotNull(anotherResolvedInstance);
-		assertEquals(resolvedInstance.getValue(), str + str);
+		assertEquals(str + str, resolvedInstance.getValue());
 		assertSame(instance, anotherResolvedInstance);
+	}
+	
+	@Test
+	public void testRegisterTypeAndInstance() {
+		String str = "test";
+		TestClassA instance = new TestClassA(str, str);
+		container.registerType(TestInterfaceA.class, TestClassA.class);
+		container.registerInstance(instance);
+		
+		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
+		assertNotNull(resolvedInstance);
+		assertEquals(str + str, resolvedInstance.getValue());
+		assertSame(instance, resolvedInstance);
+	}
+	
+	@Test
+	public void testRegisterSingletonAndInstance() {
+		String str = "test";
+		TestClassA instance = new TestClassA(str, str);
+		container.registerSingleton(TestInterfaceA.class, TestClassA.class);
+		container.registerInstance(instance);
+		
+		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
+		assertNotNull(resolvedInstance);
+		assertEquals(str + str, resolvedInstance.getValue());
+		assertSame(instance, resolvedInstance);
+	}
+	
+	@Test
+	public void testRegisterInstanceAndSingleton() {
+		String str = "test";
+		TestClassA instance = new TestClassA(str, str);
+		container.registerInstance(instance);
+		container.registerSingleton(TestInterfaceA.class, TestClassA.class);
+		
+		TestInterfaceA resolvedInstance = container.resolve(TestInterfaceA.class);
+		assertNotNull(resolvedInstance);
+		assertEquals(str + str, resolvedInstance.getValue());
+		assertSame(instance, resolvedInstance);
 	}
 	
 	/*

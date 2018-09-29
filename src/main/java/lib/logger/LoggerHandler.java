@@ -29,7 +29,7 @@ public abstract class LoggerHandler {
 	 * @param record the record to be logged.
 	 * @param logger the Logger instance that requested this log.
 	 */
-	public abstract void handle(LogRecord record, Logger logger);
+	public abstract void handle(LogRecord record, ILogger logger);
 	
 	
 	/**

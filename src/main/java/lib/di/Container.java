@@ -49,12 +49,17 @@ public class Container implements IContainer {
 	@Override
 	public <I, T extends I> void registerSingleton(Class<I> interfaceType, Class<T> implementationType) {
 		if (instances.containsKey(implementationType)) {
-			throw new DIRegistrationException(interfaceType, implementationType,
-					"implementationType is already mapped to instance of type " + instances.get(implementationType).getClass().getName());
+			if (!implementationType.isInstance(instances.get(implementationType))) {
+				// This should in principle never happen, because objects in instances should always have their respective type as map key.
+				throw new DIRegistrationException(interfaceType, implementationType,
+						"implementationType is already mapped to instance of type " + instances.get(implementationType).getClass().getName());
+			}
+		}
+		else {
+			instances.put(implementationType, new Singleton());
 		}
 		
 		registerType(interfaceType, implementationType);
-		instances.put(implementationType, new Singleton());
 	}
 	
 	@Override
@@ -80,7 +85,9 @@ public class Container implements IContainer {
 		Class<?> type = instance.getClass();
 
 		if (instances.containsKey(type)) {
-			throw new DIRegistrationException(type, "instance of type already registered.");
+			if (!(instances.get(type) instanceof Singleton)) {
+				throw new DIRegistrationException(type, "instance of type already registered.");
+			}
 		}
 
 		instances.put(type, instance);

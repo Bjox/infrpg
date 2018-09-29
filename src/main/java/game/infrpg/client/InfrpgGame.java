@@ -16,11 +16,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import game.infrpg.client.logic.AbstractScreen;
-import lib.logger.Logger;
 import game.infrpg.common.util.Constants;
 import game.infrpg.client.rendering.DebugTextRenderer;
 import game.infrpg.common.util.Globals;
 import lib.di.Inject;
+import lib.logger.ILogger;
 
 public class InfrpgGame extends Game {
 
@@ -30,7 +30,7 @@ public class InfrpgGame extends Game {
 	private float delta_t;
 	
 	public final LwjglApplicationConfiguration config;
-	private final Logger logger;
+	private final ILogger logger;
 
 	private BitmapFont consolaFont;
 	private FPSCounter fpsCounter;
@@ -44,7 +44,7 @@ public class InfrpgGame extends Game {
 	 * @param logger
 	 */
 	@Inject
-	public InfrpgGame(LwjglApplicationConfiguration config, Logger logger) {
+	public InfrpgGame(LwjglApplicationConfiguration config, ILogger logger) {
 		this.config = config;
 		this.logger = logger;
 		

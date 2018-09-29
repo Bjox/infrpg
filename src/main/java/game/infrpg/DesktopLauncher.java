@@ -17,6 +17,7 @@ import lib.logger.PrintStreamLoggerHandler;
 import lib.util.ArgumentParser;
 import java.io.IOException;
 import lib.logger.ILogger;
+import lib.util.IArgumentParser;
 
 public class DesktopLauncher {
 	
@@ -45,7 +46,8 @@ public class DesktopLauncher {
 	}
 	
 	private static void setupArguments(String[] args) {
-		ArgumentParser<Arguments> arguments = Globals.container.registerInstance(new ArgumentParser<>(args));
+		Globals.container.registerType(IArgumentParser.class, ArgumentParser.class);
+		IArgumentParser<Arguments> arguments = Globals.container.registerInstance(new ArgumentParser<>(args));
 
 		Globals.DEBUG = arguments.isPresent(Arguments.DEBUG);
 		Globals.SERVER = arguments.isPresent(Arguments.SERVER);
@@ -53,7 +55,8 @@ public class DesktopLauncher {
 	}
 	
 	private static void setupLogger() {
-		Logger logger = Globals.container.registerInstance(new Logger());
+		Globals.container.registerSingleton(ILogger.class, Logger.class);
+		ILogger logger = Globals.container.resolve(ILogger.class);
 		
 		logger.addHandler(new PrintStreamLoggerHandler(System.out, false));
 		logger.setCurrentLevel(Globals.DEBUG ? LoggerLevel.ALL : LoggerLevel.DEFAULT);
@@ -82,11 +85,9 @@ public class DesktopLauncher {
 	}
 	
 	private static void clientRegistrations() {
-		
 	}
 	
 	private static void serverRegistrations() {
-		
 	}
 	
 	private static void startClient() {

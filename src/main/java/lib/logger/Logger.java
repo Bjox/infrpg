@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import lib.di.Inject;
 
 /**
  *
@@ -14,6 +15,7 @@ public class Logger implements ILogger {
 	private LoggerLevel currentLevel;
 	private final ArrayList<LoggerHandler> handlers;
 
+	@Inject
 	public Logger() {
 		currentLevel = LoggerLevel.OFF;
 		handlers = new ArrayList<>();
