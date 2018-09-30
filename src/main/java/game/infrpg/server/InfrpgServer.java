@@ -47,7 +47,7 @@ public class InfrpgServer implements ApplicationListener {
 
 	@Override
 	public void render() {
-		logger.debug("tick");
+		
 	}
 	
 	@Override

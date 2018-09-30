@@ -22,7 +22,9 @@ import lib.logger.PrintStreamLoggerHandler;
 import lib.util.ArgumentParser;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Locale;
+import java.util.stream.Stream;
 import lib.config.IConfigStore;
 import lib.config.PropertiesConfigStore;
 import lib.logger.ILogger;
@@ -34,14 +36,22 @@ public class DesktopLauncher {
 
 	public static void main(String[] args) {
 		setupArguments(args);
+		IArgumentParser<Arguments> arguments = resolve(IArgumentParser.class);
+		if (arguments.isPresent(Arguments.USAGE)) {
+			printUsage();
+			return;
+		}
+		else {
+			System.out.println("Run with -usage to get a list of possible command line arguments.");
+		}
+		
 		setupLogger();
 		ILogger logger = Globals.logger();
-		setupConsole(logger);
 		Locale.setDefault(Locale.ENGLISH);
-		
-		logger.debug(resolve(ArgumentParser.class));
+		logger.debug(arguments);
 
-		if (Globals.DEBUG) {
+		setupConsole(logger);
+		if (Globals.DEBUG && !Globals.HEADLESS) {
 			Console.showConsole();
 		}
 
@@ -61,6 +71,13 @@ public class DesktopLauncher {
 			logger.logException(e);
 		}
 
+	}
+	
+	private static void printUsage() {
+		System.out.println("--Infrpg usage" + String.join("", Collections.nCopies(58, "-")));
+		Stream.of(Arguments.values())
+				.map(arg -> String.format("   -%-15s%s\n\n", arg.name().toLowerCase(), arg.description))
+				.forEach(System.out::printf);
 	}
 
 	private static void setupArguments(String[] args) {
