@@ -13,12 +13,12 @@ public class Chunk implements Serializable {
 
 	public Chunk() {
 		this.tileData = new byte[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-		for (int i = 0; i < Constants.CHUNK_SIZE; i++) {
-			for (int j = 0; j < Constants.CHUNK_SIZE; j++) {
-				byte v = (byte)(Math.random()*256);
-				tileData[i][j] = v;
-			}
-		}
+//		for (int i = 0; i < Constants.CHUNK_SIZE; i++) {
+//			for (int j = 0; j < Constants.CHUNK_SIZE; j++) {
+//				byte v = (byte)(Math.random()*256);
+//				tileData[i][j] = v;
+//			}
+//		}
 	}
 	
 	public void setTile(int x, int y, byte tile) {

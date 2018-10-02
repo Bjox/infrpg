@@ -14,6 +14,10 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import game.infrpg.client.util.ClientConfig;
 import game.infrpg.common.util.Helpers;
+import game.infrpg.server.map.IMapStorage;
+import lib.cache.Cache;
+import game.infrpg.server.service.map.IMapService;
+import game.infrpg.server.service.map.MapService;
 import game.infrpg.server.util.ServerConfig;
 import lib.logger.FileLoggerHandler;
 import lib.logger.LoggerLevel;
@@ -31,9 +35,11 @@ import lib.logger.ILogger;
 import lib.storage.FileStorage;
 import lib.storage.IStorage;
 import lib.util.IArgumentParser;
+import lib.cache.ICache;
 
 public class DesktopLauncher {
 
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		setupArguments(args);
 		IArgumentParser<Arguments> arguments = resolve(IArgumentParser.class);
@@ -48,12 +54,13 @@ public class DesktopLauncher {
 		setupLogger();
 		ILogger logger = Globals.logger();
 		Locale.setDefault(Locale.ENGLISH);
-		logger.debug(arguments);
-
+		
 		setupConsole(logger);
 		if (Globals.DEBUG && !Globals.HEADLESS) {
 			Console.showConsole();
 		}
+		
+		logger.debug(arguments);
 
 		try {
 			if (Globals.SERVER) {
@@ -133,6 +140,11 @@ public class DesktopLauncher {
 		// TODO: registering generic IStorage to ServerConfig specific FileStorage
 		Globals.container.registerSingleton(IStorage.class, new FileStorage(Constants.SERVER_CONFIG_PATHNAME)); 
 		Globals.container.resolveAndRegisterInstance(ServerConfig.class).initConfig();
+		
+		Globals.container.registerSingleton(IMapStorage.class, Constants.MAP_STORAGE_TYPE);
+		Globals.container.registerSingleton(IMapService.class, MapService.class);
+		
+		Globals.container.registerType(ICache.class, Cache.class);
 	}
 
 	private static void startClient(ClientConfig clientConfig) {

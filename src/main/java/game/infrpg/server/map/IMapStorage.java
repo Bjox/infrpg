@@ -8,7 +8,12 @@ import java.io.Closeable;
  */
 public interface IMapStorage extends Closeable {
 	
-	public Region getRegion(int x, int y) throws Exception;
-	public void storeRegion(Region region) throws Exception;
+	void init() throws Exception;
+	
+	Region getRegion(int x, int y);
+	
+	void storeRegion(Region region);
+	
+	boolean isClosed();
 	
 }

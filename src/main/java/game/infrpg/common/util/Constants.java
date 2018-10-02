@@ -3,6 +3,7 @@ package game.infrpg.common.util;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import game.infrpg.server.map.IMapStorage;
 import game.infrpg.server.map.memory.MemoryMapStorage;
+import game.infrpg.server.map.sqlite.SQLiteMapStorage;
 import java.io.File;
 
 /**
@@ -50,7 +51,7 @@ public final class Constants {
 	public static final String DEFAULT_MAP_DIRECTORY = "map";
 	
 	/** Type of storage used to persist regions long-term. */
-	public static final Class<? extends IMapStorage> MAP_STORAGE_TYPE = MemoryMapStorage.class;
+	public static final Class<? extends IMapStorage> MAP_STORAGE_TYPE = SQLiteMapStorage.class;// MemoryMapStorage.class;
 	
 	/** Client configuration pathname. */
 	public static final String CLIENT_CONFIG_PATHNAME = "client.properties";

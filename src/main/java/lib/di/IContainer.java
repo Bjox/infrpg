@@ -1,5 +1,7 @@
 package lib.di;
 
+import lib.logger.ILogger;
+
 /**
  *
  * @author Bjørnar W. Alvestad

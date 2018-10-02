@@ -11,17 +11,24 @@ import org.lwjgl.util.Point;
 public class Region implements Serializable {
 	
 	private final Chunk[][] chunks;
+	
+	/** The region position. */
 	public final Point position;
-
+	
+	/**
+	 * Create a new region at the specified position.
+	 * @param x
+	 * @param y 
+	 */
 	public Region(int x, int y) {
 		this.chunks = new Chunk[Constants.REGION_SIZE][Constants.REGION_SIZE];
 		this.position = new Point(x, y);
 		
-		for (int i = 0; i < Constants.REGION_SIZE; i++) {
-			for (int j = 0; j < Constants.REGION_SIZE; j++) {
-				chunks[i][j] = new Chunk();
-			}
-		}
+//		for (int i = 0; i < Constants.REGION_SIZE; i++) {
+//			for (int j = 0; j < Constants.REGION_SIZE; j++) {
+//				chunks[i][j] = new Chunk();
+//			}
+//		}
 	}
 	
 	public void setChunk(int x, int y, Chunk chunk) {

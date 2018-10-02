@@ -17,6 +17,10 @@ public final class Helpers {
 		return DEBUG ? 0 : CLIENT_BACKGROUND_FPS_LIMIT;
 	}
 	
+	public static RuntimeException wrapInRuntimeException(Throwable t) {
+		return new RuntimeException(t);
+	}
+	
 	/**
 	 * Private constructor.
 	 */
