@@ -96,9 +96,9 @@ public class SQLiteMapStorage extends SerializedMapStorage {
 	}
 
 	@Override
-	protected int readSerialized(int x, int y, byte[] buffer) throws Exception {
+	protected synchronized int readSerialized(int x, int y, byte[] buffer) throws Exception {
 		throwIfStorageIsClosed();
-		logger.debug("Reading region from db");
+		logger.debug(String.format("Reading region (%d,%d) from db", x, y));
 		
 		selectRegionStatement.setInt(1, x);
 		selectRegionStatement.setInt(2, y);
@@ -124,9 +124,9 @@ public class SQLiteMapStorage extends SerializedMapStorage {
 	}
 
 	@Override
-	protected void writeSerialized(int x, int y, byte[] data) throws SQLException {
+	protected synchronized void writeSerialized(int x, int y, byte[] data) throws SQLException {
 		throwIfStorageIsClosed();
-		logger.debug("Writing region to db");
+		logger.debug(String.format("Writing region (%d,%d) to db", x, y));
 
 		// Try to update region first
 		updateRegionStatement.setBytes(1, data);
@@ -136,11 +136,14 @@ public class SQLiteMapStorage extends SerializedMapStorage {
 
 		// Insert region if it does not exist
 		if (rowsAffected == 0) {
-			logger.debug("Inserting region into db");
 			insertRegionStatement.setInt(1, x);
 			insertRegionStatement.setInt(2, y);
 			insertRegionStatement.setBytes(3, data);
 			insertRegionStatement.executeUpdate();
+			logger.debug("Inserted region into db");
+		}
+		else {
+			logger.debug("Updated region in db");
 		}
 
 		insertRegionStatement.getConnection().commit();

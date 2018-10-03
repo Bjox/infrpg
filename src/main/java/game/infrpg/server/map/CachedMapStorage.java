@@ -28,7 +28,7 @@ public class CachedMapStorage extends Cache<String, Region> implements IMapStora
 
 	@Override
 	public Region getRegion(int x, int y) {
-		logger.debug(String.format("Getting region (%d,%d)\n", x, y));
+		logger.debug(String.format("Getting region (%d,%d)", x, y));
 		
 		String key = getKey(x, y);
 		Region region = get(key);
@@ -37,13 +37,16 @@ public class CachedMapStorage extends Cache<String, Region> implements IMapStora
 		}
 		
 		region = backingStorage.getRegion(x, y);
-		put(key, region);
+		if (region != null) {
+			put(key, region);
+		}
+		
 		return region;
 	}
 
 	@Override
 	public void storeRegion(Region region) {
-		logger.debug(String.format("Storing region (%d,%d)\n", region.position.getX(), region.position.getY()));
+		logger.debug(String.format("Storing region (%d,%d)", region.position.getX(), region.position.getY()));
 		
 		backingStorage.storeRegion(region);
 		
@@ -63,6 +66,12 @@ public class CachedMapStorage extends Cache<String, Region> implements IMapStora
 	@Override
 	public boolean isClosed() {
 		return backingStorage.isClosed();
+	}
+
+	@Override
+	protected void evictedFromCache(Region region) {
+		logger.debug(region.toString() + " evicted from cache");
+		backingStorage.storeRegion(region);
 	}
 	
 	private String getKey(int x, int y) {

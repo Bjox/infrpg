@@ -50,23 +50,23 @@ public abstract class SerializedMapStorage extends AbstractMapStorage {
 	}
 
 	@Override
-	public Region getRegion(int x, int y) {
+	public synchronized Region getRegion(int x, int y) {
 		throwIfStorageIsClosed();
 		try {
 			int readResult = readSerialized(x, y, readBuffer);
 
 			switch (readResult) {
 				case READ_SERIALIZED_NOT_FOUND:
-					logger.debug(String.format("Encountered READ_SERIALIZED_NOT_FOUND when reading region [%d,%d].", x, y));
+					logger.debug(String.format("Encountered READ_SERIALIZED_NOT_FOUND when reading region (%d,%d).", x, y));
 					return null;
 				case READ_SERIALIZED_BUFF_OVERFLOW:
-					throw new Exception(String.format("Encountered READ_SERIALIZED_BUFF_OVERFLOW when reading region [%d,%d].", x, y));
+					throw new Exception(String.format("Encountered READ_SERIALIZED_BUFF_OVERFLOW when reading region (%d,%d).", x, y));
 				case READ_SERIALIZED_EOF_EOS:
-					throw new Exception(String.format("Encountered READ_SERIALIZED_EOF_EOS when reading region [%d,%d].", x, y));
+					throw new Exception(String.format("Encountered READ_SERIALIZED_EOF_EOS when reading region (%d,%d).", x, y));
 			}
 
 			int length = readResult;
-			logger.debug("Deserializing region, length = " + (length / 1024) + "KiB");
+			logger.debug("Deserializing region, length = " + Helpers.formatSizeInBytes(length));
 			ByteArrayInputStream bis = new ByteArrayInputStream(readBuffer, 0, length);
 			InputStream is = Constants.COMPRESS_REGIONS ? new GZIPInputStream(bis) : bis;
 
@@ -83,19 +83,22 @@ public abstract class SerializedMapStorage extends AbstractMapStorage {
 	}
 
 	@Override
-	public void storeRegion(Region region) {
+	public synchronized void storeRegion(Region region) {
 		throwIfStorageIsClosed();
 		try {
 			logger.debug("Serializing region " + region.toString());
 
-			ByteArrayOutputStream bos = new ByteArrayOutputStream(calcBufferSize());
+			ByteArrayOutputStream bos = new ByteArrayOutputStream(calcBufferSize()); // TODO: Optimization, buffer created each time
 			OutputStream os = Constants.COMPRESS_REGIONS ? new GZIPOutputStream(bos) : bos;
 
 			try (ObjectOutputStream oos = new ObjectOutputStream(os)) {
 				oos.writeObject(region);
 				oos.flush();
 			}
-			writeSerialized(region.position.getX(), region.position.getY(), bos.toByteArray()); // TODO: Optimization, byte array is copied
+			
+			byte[] bytes = bos.toByteArray();
+			logger.debug("Serialized region length = " + Helpers.formatSizeInBytes(bytes.length));
+			writeSerialized(region.position.getX(), region.position.getY(), bytes); // TODO: Optimization, byte array is copied
 		}
 		catch (Exception e) {
 			throw Helpers.wrapInRuntimeException(e);

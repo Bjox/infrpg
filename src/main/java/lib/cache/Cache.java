@@ -1,6 +1,7 @@
 package lib.cache;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,12 +22,12 @@ public class Cache<K, V> implements ICache<K, V> {
 	/**
 	 * Default cleanup period in milliseconds.
 	 */
-	private static final long DEFAULT_CLEANUP_PERIOD = 60000;
+	private static final long DEFAULT_CLEANUP_PERIOD = 60_00;
 	
 	/**
 	 * Default cache period in milliseconds.
 	 */
-	private static final long DEFAULT_CACHE_PERIOD = 59000;
+	private static final long DEFAULT_CACHE_PERIOD = 59_00;
 
 	private final ILogger logger;
 	private final Map<K, CacheEntry<V>> cache;
@@ -141,13 +142,27 @@ public class Cache<K, V> implements ICache<K, V> {
 		synchronized (cache) {
 			int sizeBefore = cache.size();
 			long now = System.nanoTime();
-			cache.values().removeIf(entry -> (now - entry.getLastAccessTimestamp()) > cachePeriod);
+			
+			Iterator<CacheEntry<V>> it = cache.values().iterator();
+			while (it.hasNext()) {
+				CacheEntry<V> entry = it.next();
+				if ((now - entry.getLastAccessTimestamp()) > cachePeriod) {
+					evictedFromCache(entry.peekValue());
+					it.remove();
+				}
+			}
+			
 			elementsRemoved = sizeBefore - cache.size();
 		}
 
-		logger.debug(elementsRemoved + " elements removed from cache.");
+		logger.debug(elementsRemoved + " element(s) removed from cache.");
 	}
-
 	
+	/**
+	 * Override this method in order to process objects that are evicted from the cache.
+	 * @param value 
+	 */
+	protected void evictedFromCache(V value) {
+	}
 
 }

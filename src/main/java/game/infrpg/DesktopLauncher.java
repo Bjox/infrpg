@@ -18,6 +18,10 @@ import game.infrpg.server.map.IMapStorage;
 import lib.cache.Cache;
 import game.infrpg.server.service.map.IMapService;
 import game.infrpg.server.service.map.MapService;
+import game.infrpg.server.service.mapgen.FlatgrassGenerator;
+import game.infrpg.server.service.mapgen.IMapGenerator;
+import game.infrpg.server.service.mapgen.ISeedProvider;
+import game.infrpg.server.service.mapgen.SeedProvider;
 import game.infrpg.server.util.ServerConfig;
 import lib.logger.FileLoggerHandler;
 import lib.logger.LoggerLevel;
@@ -141,6 +145,8 @@ public class DesktopLauncher {
 		Globals.container.registerSingleton(IStorage.class, new FileStorage(Constants.SERVER_CONFIG_PATHNAME)); 
 		Globals.container.resolveAndRegisterInstance(ServerConfig.class).initConfig();
 		
+		Globals.container.registerType(IMapGenerator.class, FlatgrassGenerator.class);
+		Globals.container.registerType(ISeedProvider.class, SeedProvider.class);
 		Globals.container.registerSingleton(IMapStorage.class, Constants.MAP_STORAGE_TYPE);
 		Globals.container.registerSingleton(IMapService.class, MapService.class);
 		

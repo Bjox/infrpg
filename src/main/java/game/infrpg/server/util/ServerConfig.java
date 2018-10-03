@@ -20,6 +20,8 @@ public class ServerConfig extends AbstractConfig {
 	public String mapDirectory = Constants.DEFAULT_MAP_DIRECTORY;
 	@ConfigField
 	public int port = Constants.DEFAULT_PORT;
+	@ConfigField
+	public String mapSeed = "";
 	
 	@Inject
 	public ServerConfig(IConfigStore configStore, IStorage storage) throws IOException {

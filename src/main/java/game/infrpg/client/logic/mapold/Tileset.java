@@ -29,28 +29,6 @@ public class Tileset {
 		}
 	}
 	
-	/**
-	 * Tile definition.
-	 */
-	public enum Tiles {
-		GRASS(0),
-		DIRT(1),
-		;
-		
-		/** The tile index of the enum list. */
-		public final byte index;
-		
-		/** The number of defined enum tiles. */
-		public static final int AMOUNT = values().length;
-
-		private Tiles(int index) {
-			if (index > Byte.MAX_VALUE || index < Byte.MIN_VALUE) {
-				throw new RuntimeException("Tile index out of range.");
-			}
-			this.index = (byte)index;
-		}
-	}
-	
 	/** Tileset singletons storage. */
 	private static HashMap<String, Tileset> tilesets;
 	
@@ -116,7 +94,7 @@ public class Tileset {
 			String tilename = tile.name().toLowerCase();
 			TextureRegion tex = atlas.findRegion(String.format("tilesets/%s/%s", name, tilename));
 			if (tex == null) Globals.logger().warning(String.format("Missing tile \"%s\" in tileset \"%s\".", tilename, name));
-			textures[tile.index] = tex;
+			textures[tile.dataValue] = tex;
 		}
 	}
 	
@@ -125,7 +103,7 @@ public class Tileset {
 	}
 	
 	public TextureRegion getTexture(Tiles tile) {
-		return textures[tile.index];
+		return textures[tile.dataValue];
 	}
 
 	@Override

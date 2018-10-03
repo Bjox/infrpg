@@ -3,6 +3,7 @@ package game.infrpg.server.map;
 import game.infrpg.common.util.Constants;
 import java.io.Serializable;
 import org.lwjgl.util.Point;
+import org.lwjgl.util.ReadablePoint;
 
 /**
  *
@@ -13,7 +14,7 @@ public class Region implements Serializable {
 	private final Chunk[][] chunks;
 	
 	/** The region position. */
-	public final Point position;
+	public final ReadablePoint position;
 	
 	/**
 	 * Create a new region at the specified position.
@@ -23,12 +24,6 @@ public class Region implements Serializable {
 	public Region(int x, int y) {
 		this.chunks = new Chunk[Constants.REGION_SIZE][Constants.REGION_SIZE];
 		this.position = new Point(x, y);
-		
-//		for (int i = 0; i < Constants.REGION_SIZE; i++) {
-//			for (int j = 0; j < Constants.REGION_SIZE; j++) {
-//				chunks[i][j] = new Chunk();
-//			}
-//		}
 	}
 	
 	public void setChunk(int x, int y, Chunk chunk) {
@@ -41,7 +36,7 @@ public class Region implements Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("Region[%d,%d]", position.getX(), position.getY());
+		return String.format("Region(%d,%d)", position.getX(), position.getY());
 	}
 	
 	
