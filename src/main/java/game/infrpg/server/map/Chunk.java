@@ -10,6 +10,9 @@ import org.lwjgl.util.ReadablePoint;
  * @author Bjørnar W. Alvestad
  */
 public class Chunk implements Serializable {
+	
+	// Increment this if non-backwards compatible changes are made on the class.
+	private static final long serialVersionUID = 1L;
 
 	private final byte[][] tileData;
 
@@ -37,6 +40,11 @@ public class Chunk implements Serializable {
 				tileData[i][j] = supplier.supplyTileData(i, j);
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Chunk(%d,%d)", position.getX(), position.getY());
 	}
 
 	public static interface TileDataSupplier {

@@ -7,7 +7,6 @@ import game.infrpg.common.util.Globals;
 import game.infrpg.server.map.Chunk;
 import game.infrpg.server.service.map.IMapService;
 import game.infrpg.server.util.ServerConfig;
-import java.util.concurrent.Callable;
 import lib.di.Inject;
 import lib.logger.ILogger;
 
@@ -46,9 +45,6 @@ public class InfrpgServer implements ApplicationListener {
 		}
 		
 		logger.info("Server setup complete");
-		
-		Chunk chunk = mapService.getChunk(0, 0);
-		logger.debug(chunk);
 	}
 
 	@Override
@@ -85,6 +81,5 @@ public class InfrpgServer implements ApplicationListener {
 			logger.logException(e);
 		}
 	}
-
 	
 }

@@ -14,7 +14,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import game.infrpg.client.util.ClientConfig;
 import game.infrpg.common.util.Helpers;
-import game.infrpg.server.map.IMapStorage;
+import game.infrpg.server.map.storage.IMapStorage;
 import lib.cache.Cache;
 import game.infrpg.server.service.map.IMapService;
 import game.infrpg.server.service.map.MapService;
@@ -23,6 +23,7 @@ import game.infrpg.server.service.mapgen.IMapGenerator;
 import game.infrpg.server.service.mapgen.ISeedProvider;
 import game.infrpg.server.service.mapgen.SeedProvider;
 import game.infrpg.server.util.ServerConfig;
+import java.awt.Dimension;
 import lib.logger.FileLoggerHandler;
 import lib.logger.LoggerLevel;
 import lib.logger.Logger;
@@ -62,6 +63,10 @@ public class DesktopLauncher {
 		setupConsole(logger);
 		if (Globals.DEBUG && !Globals.HEADLESS) {
 			Console.showConsole();
+			
+			if (Globals.SERVER) {
+				Console.setConsoleSize(new Dimension(1000, 600));
+			}
 		}
 		
 		logger.debug(arguments);
@@ -120,16 +125,18 @@ public class DesktopLauncher {
 	private static void setupConsole(ILogger logger) {
 		if (Globals.HEADLESS) {
 			logger.info("Running in headless mode");
+			
 			if (!Globals.SERVER) {
 				logger.warning("Headless flag is not applicable on a client instance");
 			}
+			
+			return;
 		}
-		else {
-			Console.createConsole("Infrpg console");
-			Console.attachToOut();
-			Console.attachToErr();
-			logger.addHandler(new ConsoleLoggerHandler());
-		}
+		
+		Console.createConsole("Infrpg console");
+		Console.attachToOut();
+		Console.attachToErr();
+		logger.addHandler(new ConsoleLoggerHandler());
 	}
 
 	private static void clientRegistrations() throws Exception {

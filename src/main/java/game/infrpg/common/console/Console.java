@@ -203,6 +203,7 @@ public final class Console extends JFrame {
 	
 	public static synchronized void setConsoleSize(Dimension size) {
 		textpane.setPreferredSize(size);
+		if (console != null) console.pack();
 	}
 	
 	

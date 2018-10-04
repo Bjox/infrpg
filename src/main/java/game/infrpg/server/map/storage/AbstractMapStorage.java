@@ -1,4 +1,4 @@
-package game.infrpg.server.map;
+package game.infrpg.server.map.storage;
 
 import game.infrpg.common.util.Helpers;
 import java.io.IOException;

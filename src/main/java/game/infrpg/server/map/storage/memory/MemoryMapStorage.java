@@ -1,6 +1,6 @@
-package game.infrpg.server.map.memory;
+package game.infrpg.server.map.storage.memory;
 
-import game.infrpg.server.map.AbstractMapStorage;
+import game.infrpg.server.map.storage.AbstractMapStorage;
 import game.infrpg.server.map.Region;
 import java.io.IOException;
 import java.util.HashMap;

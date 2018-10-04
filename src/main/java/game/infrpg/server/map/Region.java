@@ -11,6 +11,9 @@ import org.lwjgl.util.ReadablePoint;
  */
 public class Region implements Serializable {
 	
+	// Increment this if non-backwards compatible changes are made on the class.
+	private static final long serialVersionUID = 1L;
+	
 	private final Chunk[][] chunks;
 	
 	/** The region position. */

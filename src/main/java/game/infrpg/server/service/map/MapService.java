@@ -1,9 +1,9 @@
 package game.infrpg.server.service.map;
 
 import game.infrpg.common.util.Constants;
-import game.infrpg.server.map.CachedMapStorage;
+import game.infrpg.server.map.storage.CachedMapStorage;
 import game.infrpg.server.map.Chunk;
-import game.infrpg.server.map.IMapStorage;
+import game.infrpg.server.map.storage.IMapStorage;
 import game.infrpg.server.map.Region;
 import game.infrpg.server.service.Service;
 import game.infrpg.server.service.mapgen.IMapGenerator;
@@ -49,8 +49,8 @@ public class MapService extends Service implements IMapService {
 	public Chunk getChunk(int x, int y) {
 		Region region = getChunkRegion(x, y);
 		
-		int localX = x % Constants.REGION_SIZE; // TODO: optimize irem
-		int localY = y % Constants.REGION_SIZE;
+		int localX = Math.floorMod(x, Constants.REGION_SIZE);
+		int localY = Math.floorMod(y, Constants.REGION_SIZE);
 		
 		Chunk chunk = region.getChunk(localX, localY);
 		
@@ -71,8 +71,8 @@ public class MapService extends Service implements IMapService {
 	 * @return 
 	 */
 	private Region getChunkRegion(int chunkX, int chunkY) {
-		int regionX = chunkX / Constants.REGION_SIZE; // TODO: optimize idiv
-		int regionY = chunkY / Constants.REGION_SIZE;
+		int regionX = Math.floorDiv(chunkX, Constants.REGION_SIZE);
+		int regionY = Math.floorDiv(chunkY, Constants.REGION_SIZE);
 		
 		Region region = mapStorage.getRegion(regionX, regionY);
 		

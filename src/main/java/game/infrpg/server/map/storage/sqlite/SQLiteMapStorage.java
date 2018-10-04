@@ -1,7 +1,7 @@
-package game.infrpg.server.map.sqlite;
+package game.infrpg.server.map.storage.sqlite;
 
 import com.badlogic.gdx.Gdx;
-import game.infrpg.server.map.SerializedMapStorage;
+import game.infrpg.server.map.storage.SerializedMapStorage;
 import game.infrpg.server.util.ServerConfig;
 import java.io.BufferedInputStream;
 import java.io.File;

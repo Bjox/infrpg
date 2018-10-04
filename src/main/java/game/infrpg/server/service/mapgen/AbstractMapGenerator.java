@@ -1,10 +1,13 @@
 package game.infrpg.server.service.mapgen;
 
+import game.infrpg.server.service.Service;
+import java.io.IOException;
+
 /**
  *
  * @author Bjørnar W. Alvestad
  */
-public abstract class AbstractMapGenerator implements IMapGenerator {
+public abstract class AbstractMapGenerator extends Service implements IMapGenerator {
 	
 	public final String seed;
 
@@ -15,6 +18,10 @@ public abstract class AbstractMapGenerator implements IMapGenerator {
 	@Override
 	public String getSeed() {
 		return seed;
+	}
+
+	@Override
+	public void close() throws IOException {
 	}
 	
 }

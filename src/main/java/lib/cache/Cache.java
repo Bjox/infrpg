@@ -1,5 +1,7 @@
 package lib.cache;
 
+import game.infrpg.common.util.Constants;
+import game.infrpg.common.util.Globals;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -22,12 +24,12 @@ public class Cache<K, V> implements ICache<K, V> {
 	/**
 	 * Default cleanup period in milliseconds.
 	 */
-	private static final long DEFAULT_CLEANUP_PERIOD = 60_00;
+	private static final long DEFAULT_CLEANUP_PERIOD = 60_000;
 	
 	/**
 	 * Default cache period in milliseconds.
 	 */
-	private static final long DEFAULT_CACHE_PERIOD = 59_00;
+	private static final long DEFAULT_CACHE_PERIOD = 59_000;
 
 	private final ILogger logger;
 	private final Map<K, CacheEntry<V>> cache;
@@ -69,6 +71,10 @@ public class Cache<K, V> implements ICache<K, V> {
 		TimerTask cleanupTask = new TimerTask() {
 			@Override
 			public void run() {
+				if (shouldSkipCleanup()) {
+					logger.debug("Skipping region cache cleanup");
+					return;
+				}
 				cleanup();
 			}
 		};
@@ -163,6 +169,10 @@ public class Cache<K, V> implements ICache<K, V> {
 	 * @param value 
 	 */
 	protected void evictedFromCache(V value) {
+	}
+	
+	private static boolean shouldSkipCleanup() {
+		return Globals.DEBUG && Constants.SKIP_REGION_CACHE_CLEANUP_IF_DEBUG;
 	}
 
 }

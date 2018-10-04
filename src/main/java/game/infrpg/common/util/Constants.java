@@ -1,9 +1,9 @@
 package game.infrpg.common.util;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import game.infrpg.server.map.IMapStorage;
-import game.infrpg.server.map.memory.MemoryMapStorage;
-import game.infrpg.server.map.sqlite.SQLiteMapStorage;
+import game.infrpg.server.map.storage.IMapStorage;
+import game.infrpg.server.map.storage.memory.MemoryMapStorage;
+import game.infrpg.server.map.storage.sqlite.SQLiteMapStorage;
 import java.io.File;
 
 /**
@@ -76,6 +76,9 @@ public final class Constants {
 	
 	/** The date format pattern used to format Date objects. */
 	public static final String DATE_FORMAT_PATTERN = "dd.MM.yyy HH:mm:ss.SSS";
+	
+	/** Skip region cache cleanup if debugging. Useful during debugging and development. */
+	public static final boolean SKIP_REGION_CACHE_CLEANUP_IF_DEBUG = true;
 	
 	/**
 	 * Private constructor.

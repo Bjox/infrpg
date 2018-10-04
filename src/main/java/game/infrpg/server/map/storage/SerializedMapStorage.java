@@ -1,8 +1,9 @@
-package game.infrpg.server.map;
+package game.infrpg.server.map.storage;
 
 import game.infrpg.common.util.Globals;
 import game.infrpg.common.util.Constants;
 import game.infrpg.common.util.Helpers;
+import game.infrpg.server.map.Region;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
