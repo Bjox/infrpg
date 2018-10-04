@@ -20,7 +20,7 @@
  *  limitations under the License.
  */
 
-package game.infrpg.server.map.sqlite;
+package game.infrpg.server.map.storage.sqlite;
 
 import java.io.*;
 import java.sql.*;

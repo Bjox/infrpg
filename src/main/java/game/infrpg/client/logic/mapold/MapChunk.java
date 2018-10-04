@@ -8,7 +8,6 @@ import java.io.Serializable;
 import org.lwjgl.util.Point;
 import static game.infrpg.common.util.Constants.CHUNK_SIZE;
 import static game.infrpg.common.util.Constants.TILE_SIZE;
-import game.infrpg.client.logic.mapold.Tileset.Tiles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +64,7 @@ public class MapChunk implements Serializable {
 	
 	
 	public void setTile(int x, int y, Tiles tile) {
-		chunkTileData[x][y] = tile.index;
+		chunkTileData[x][y] = tile.dataValue;
 	}
 
 	

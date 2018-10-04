@@ -2,13 +2,11 @@ package game.infrpg.server;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import game.infrpg.common.console.Console;
 import game.infrpg.common.util.Globals;
-import game.infrpg.server.service.map.MapService;
+import game.infrpg.server.map.Chunk;
+import game.infrpg.server.service.map.IMapService;
 import game.infrpg.server.util.ServerConfig;
-import java.io.File;
 import lib.di.Inject;
 import lib.logger.ILogger;
 
@@ -18,51 +16,40 @@ import lib.logger.ILogger;
  */
 public class InfrpgServer implements ApplicationListener {
 	
-	private static final int TICKRATE = 20;
-	
 	private final ILogger logger;
 	private final ServerConfig serverConfig;
+	private final IMapService mapService;
 	
 	@Inject
-	public InfrpgServer(ILogger logger, ServerConfig config) {
+	public InfrpgServer(ILogger logger, ServerConfig config, IMapService mapService) {
 		this.logger = logger;
 		this.serverConfig = config;
-	}
-
-	public void start() {
-		logger.info("Setting up server...");
+		this.mapService = mapService;
 		
-		HeadlessApplicationConfiguration headlessAppConfig = new HeadlessApplicationConfiguration();
-		headlessAppConfig.renderInterval = 1f / TICKRATE;
-		
-		new HeadlessApplication(this, headlessAppConfig);
-		
-		if (!Globals.HEADLESS) {
-			Console.addShutdownHook(() -> Gdx.app.exit());
-		}
-
-		try {
-			if (Globals.DEBUG) {
-				logger.debug(headlessAppConfig);
-			}
-			
-			MapService mapservice = new MapService(new File(serverConfig.mapDirectory));
-		}
-		catch (Exception e) {
-			logger.logException(e);
-		}
-		
-		logger.info("Server setup complete");
-
+		this.logger.info("Server config: " + config.getConfigKeyValueMap());
 	}
 
 	@Override
 	public void create() {
-		logger.debug("Server create");
+		logger.info("Setting up server...");
+		
+		if (!Globals.HEADLESS) {
+			Console.addShutdownHook(() -> Gdx.app.exit());
+		}
+		
+		try {
+			mapService.init();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		logger.info("Server setup complete");
 	}
 
 	@Override
 	public void render() {
+		
 	}
 	
 	@Override
@@ -81,7 +68,18 @@ public class InfrpgServer implements ApplicationListener {
 
 	@Override
 	public void dispose() {
-		logger.debug("Server dispose");
+		logger.debug("Disposing server...");
+		
+		if (!Globals.HEADLESS) {
+			Console.destroyConsole();
+		}
+		
+		try {
+			mapService.close();
+		}
+		catch (Exception e) {
+			logger.logException(e);
+		}
 	}
 	
 }

@@ -1,34 +1,34 @@
-package game.infrpg.server.map.memory;
+package game.infrpg.server.map.storage.memory;
 
-import game.infrpg.server.map.IMapStorage;
+import game.infrpg.server.map.storage.AbstractMapStorage;
 import game.infrpg.server.map.Region;
 import java.io.IOException;
 import java.util.HashMap;
+import lib.di.Inject;
 
 /**
  *
  * @author Bjørnar W. Alvestad
  */
-public class MemoryMapStorage implements IMapStorage {
+public class MemoryMapStorage extends AbstractMapStorage {
 
 	private final HashMap<String, Region> regions;
 
+	@Inject
 	public MemoryMapStorage() {
 		this.regions = new HashMap<>();
 	}
 	
 	@Override
-	public Region getRegion(int x, int y) throws Exception {
+	public Region getRegion(int x, int y) {
+		throwIfStorageIsClosed();
 		return regions.get(getKey(x, y));
 	}
 
 	@Override
-	public void storeRegion(Region region) throws Exception {
+	public void storeRegion(Region region) {
+		throwIfStorageIsClosed();
 		regions.put(getKey(region), region);
-	}
-
-	@Override
-	public void close() throws IOException {
 	}
 	
 	private String getKey(Region r) {

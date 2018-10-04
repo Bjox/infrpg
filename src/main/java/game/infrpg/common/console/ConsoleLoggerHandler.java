@@ -1,9 +1,11 @@
 package game.infrpg.common.console;
 
+import game.infrpg.common.util.Globals;
 import lib.logger.LogRecord;
 import lib.logger.LoggerLevel;
 import lib.logger.LoggerHandler;
 import java.awt.Color;
+import java.text.SimpleDateFormat;
 import lib.logger.ILogger;
 
 /**
@@ -63,8 +65,8 @@ public class ConsoleLoggerHandler extends LoggerHandler {
 	@Override
 	public void handle(LogRecord record, ILogger logger) {
 		Color levelColor = PALETTE.getColor(record.getLevel());
-
-		Console.print("[" + record.getLevel().name() + "] ", levelColor);
+		
+		Console.print(String.format("%-8s", record.getLevel().name()), levelColor);
 		Console.print(record.getPrefix() + " ", Color.GRAY);
 		Console.print(record.getMessage() + " ", Color.WHITE);
 		Console.print(record.getSuffix() + " ", Color.GRAY);

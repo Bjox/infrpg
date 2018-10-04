@@ -52,6 +52,8 @@ public class InfrpgGame extends Game {
 		new ClientConsoleCmds().registerCommands();
 
 		Globals.RENDER_DEBUG_TEXT = Globals.DEBUG;
+		
+		this.logger.debug("Client config: " + config.getConfigKeyValueMap());
 	}
 
 	public static InfrpgGame gameInstance() {

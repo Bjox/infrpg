@@ -1,8 +1,9 @@
 package game.infrpg.common.util;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import game.infrpg.server.map.IMapStorage;
-import game.infrpg.server.map.memory.MemoryMapStorage;
+import game.infrpg.server.map.storage.IMapStorage;
+import game.infrpg.server.map.storage.memory.MemoryMapStorage;
+import game.infrpg.server.map.storage.sqlite.SQLiteMapStorage;
 import java.io.File;
 
 /**
@@ -50,7 +51,7 @@ public final class Constants {
 	public static final String DEFAULT_MAP_DIRECTORY = "map";
 	
 	/** Type of storage used to persist regions long-term. */
-	public static final Class<? extends IMapStorage> MAP_STORAGE_TYPE = MemoryMapStorage.class;
+	public static final Class<? extends IMapStorage> MAP_STORAGE_TYPE = SQLiteMapStorage.class;// MemoryMapStorage.class;
 	
 	/** Client configuration pathname. */
 	public static final String CLIENT_CONFIG_PATHNAME = "client.properties";
@@ -69,6 +70,15 @@ public final class Constants {
 	
 	/** Log keycodes when pressing a button. */
 	public static final boolean LOG_INPUT_KEYCODES = false;
+	
+	/** Server tickrate in ticks per second. */
+	public static final int SERVER_TICKRATE = 30;
+	
+	/** The date format pattern used to format Date objects. */
+	public static final String DATE_FORMAT_PATTERN = "dd.MM.yyy HH:mm:ss.SSS";
+	
+	/** Skip region cache cleanup if debugging. Useful during debugging and development. */
+	public static final boolean SKIP_REGION_CACHE_CLEANUP_IF_DEBUG = true;
 	
 	/**
 	 * Private constructor.

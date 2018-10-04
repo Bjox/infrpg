@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -85,10 +87,19 @@ public abstract class AbstractConfig {
 		}
 	}
 	
-	private void forEachConfigField(Consumer<Field> operation) {
-		Stream.of(getClass().getFields())
-				.filter(this::hasConfigFieldAnnotation)
-				.forEach(operation);
+	public void forEachConfigField(Consumer<Field> operation) {
+		configFieldStream().forEach(operation);
+	}
+	
+	public Stream<Field> configFieldStream() {
+		return Stream.of(getClass().getFields())
+				.filter(this::hasConfigFieldAnnotation);
+	}
+	
+	public Map<String, Object> getConfigKeyValueMap() {
+		HashMap<String, Object> map = new HashMap<>();
+		forEachConfigField(f -> map.put(f.getName(), getFieldValue(f)));
+		return map;
 	}
 	
 	private boolean hasConfigFieldAnnotation(Field field) {
@@ -131,6 +142,16 @@ public abstract class AbstractConfig {
 		}
 		catch (IllegalAccessException | IllegalArgumentException e) {
 			String str = "Cannot store configuration field \"" + field.getName() + "\". " + e.getMessage();
+			throw new RuntimeException(str, e);
+		}
+	}
+	
+	private Object getFieldValue(Field field) {
+		try {
+			return field.get(this);
+		}
+		catch (IllegalAccessException | IllegalArgumentException e) {
+			String str = "Cannot get value of configuration field \"" + field.getName() + "\". " + e.getMessage();
 			throw new RuntimeException(str, e);
 		}
 	}
