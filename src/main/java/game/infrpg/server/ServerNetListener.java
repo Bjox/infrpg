@@ -3,7 +3,8 @@ package game.infrpg.server;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import game.infrpg.common.util.Globals;
+import game.infrpg.server.util.ServerConfig;
+import java.io.Closeable;
 import java.io.IOException;
 import lib.logger.ILogger;
 
@@ -12,16 +13,17 @@ import lib.logger.ILogger;
  *
  * @author Bjørnar W. Alvestad
  */
-public class ServerListener extends Listener {
+public class ServerNetListener extends Listener implements Closeable {
 	
 	private final ILogger logger;
 	private final Server server;
 	public final int port;
 	
-	public ServerListener(int port) {
-		this.logger = Globals.logger();
+	public ServerNetListener(ILogger logger, ServerConfig config) {
+		this.logger = logger;
+		this.port = config.port;
+		
 		this.server = new Server();
-		this.port = port;
 	}
 	
 	public void start() throws IOException {
@@ -32,6 +34,11 @@ public class ServerListener extends Listener {
 		server.addListener(this);
 		
 		logger.debug("Server endpoint started");
+	}
+	
+	public void stop() {
+		logger.debug("Stopping server instance");
+		server.stop();
 	}
 
 	@Override
@@ -46,6 +53,19 @@ public class ServerListener extends Listener {
 
 	@Override
 	public void received(Connection connection, Object object) {
+		logger.debug("Received " + object.toString() + " on connection " + connection.toString());
+	}
+
+	@Override
+	public void close() throws IOException {
+		logger.debug("Closing ServerNetListener");
+		
+		try {
+			stop();
+		}
+		catch (Exception e) {
+			logger.logException(e);
+		}
 	}
 
 	

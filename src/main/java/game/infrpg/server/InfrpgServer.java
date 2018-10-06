@@ -1,10 +1,8 @@
 package game.infrpg.server;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import game.infrpg.common.console.Console;
 import game.infrpg.common.util.Globals;
-import game.infrpg.server.map.Chunk;
 import game.infrpg.server.service.map.IMapService;
 import game.infrpg.server.util.ServerConfig;
 import lib.di.Inject;
@@ -14,7 +12,7 @@ import lib.logger.ILogger;
  *
  * @author Bjørnar W. Alvestad
  */
-public class InfrpgServer implements ApplicationListener {
+public class InfrpgServer extends ServerApplicationListener {
 	
 	private final ILogger logger;
 	private final ServerConfig serverConfig;
@@ -22,6 +20,8 @@ public class InfrpgServer implements ApplicationListener {
 	
 	@Inject
 	public InfrpgServer(ILogger logger, ServerConfig config, IMapService mapService) {
+		super(logger);
+		
 		this.logger = logger;
 		this.serverConfig = config;
 		this.mapService = mapService;
@@ -48,22 +48,8 @@ public class InfrpgServer implements ApplicationListener {
 	}
 
 	@Override
-	public void render() {
+	public void tick(float delta) {
 		
-	}
-	
-	@Override
-	public void resize(int width, int height) {
-	}
-
-	@Override
-	public void pause() {
-		logger.debug("Server pause");
-	}
-
-	@Override
-	public void resume() {
-		logger.debug("Server resume");
 	}
 
 	@Override
