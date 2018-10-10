@@ -133,7 +133,6 @@ public class DesktopLauncher {
 			return;
 		}
 		
-		Console.createConsole("Infrpg console");
 		Console.attachToOut();
 		Console.attachToErr();
 		logger.addHandler(new ConsoleLoggerHandler());
