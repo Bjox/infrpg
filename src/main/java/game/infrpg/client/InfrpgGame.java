@@ -3,6 +3,7 @@ package game.infrpg.client;
 import game.infrpg.client.util.ClientConsoleCmds;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -13,17 +14,24 @@ import game.infrpg.common.console.Console;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.utils.Disposable;
 import game.infrpg.client.logic.AbstractScreen;
+import game.infrpg.client.net.ClientNetListener;
 import game.infrpg.client.rendering.DebugTextRenderer;
 import game.infrpg.client.util.ClientConfig;
 import game.infrpg.common.util.Globals;
 import java.awt.Dimension;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lib.di.Inject;
 import lib.logger.ILogger;
 
 public class InfrpgGame extends Game {
 
-	private static InfrpgGame instance;
+	private static InfrpgGame game;
 	
 	private final ILogger logger;
 	private final ClientConfig config;
@@ -36,16 +44,19 @@ public class InfrpgGame extends Game {
 	private SpriteBatch batch;
 	private TextureAtlas atlas;
 	private DebugTextRenderer debugText;
+	private final ClientNetListener net;
 
 	/**
 	 *
 	 * @param logger
 	 * @param config
+	 * @param net
 	 */
 	@Inject
-	public InfrpgGame(ILogger logger, ClientConfig config) {
+	public InfrpgGame(ILogger logger, ClientConfig config, ClientNetListener net) {
 		this.logger = logger;
 		this.config = config;
+		this.net = net;
 		this.elapsed_t = 0;
 		this.screenSize = new Dimension(config.screenWidth, config.screenHeight);
 		
@@ -56,12 +67,8 @@ public class InfrpgGame extends Game {
 		this.logger.debug("Client config: " + config.getConfigKeyValueMap());
 	}
 
-	public static InfrpgGame gameInstance() {
-		return instance;
-	}
-
 	public static TextureAtlas getAtlas() {
-		return instance.atlas;
+		return game.atlas;
 	}
 
 	/**
@@ -70,7 +77,7 @@ public class InfrpgGame extends Game {
 	 * @return
 	 */
 	public static float elapsedTime() {
-		return instance.elapsed_t;
+		return game.elapsed_t;
 	}
 
 	/**
@@ -79,14 +86,25 @@ public class InfrpgGame extends Game {
 	 * @return
 	 */
 	public static float deltaTime() {
-		return instance.delta_t;
+		return game.delta_t;
+	}
+	
+	public static void connect(String ip, int port) {
+		Globals.logger().info("Connecting to " + ip + ":" + port);
+		
+		try {
+			game.net.connect(ip, port);
+		}
+		catch (IOException ex) {
+			Globals.logger().warning("Could not connect to " + ip + ":" + port + ". " + ex.getMessage());
+		}
 	}
 
 	@Override
 	public void create() {
 		logger.info("Game init...");
 
-		instance = this;
+		game = this;
 
 		atlas = new TextureAtlas(Gdx.files.internal("packed/pack.atlas"));
 
@@ -112,7 +130,10 @@ public class InfrpgGame extends Game {
 //		AssetManager assman = new AssetManager();
 //		TextureLoader.TextureParameter texparams = new TextureLoader.TextureParameter();
 //		texparams.genMipMaps = true;
+
 		setScreen(Globals.resolve(InGameScreen.class));
+		
+		logger.info("Game init complete");
 	}
 
 	@Override
@@ -124,7 +145,7 @@ public class InfrpgGame extends Game {
 		super.render();
 
 		double fps = fpsCounter.getFps();
-		if (Globals.RENDER_DEBUG_TEXT) {
+		if (Globals.RENDER_DEBUG_TEXT && getScreen() != null) {
 			int renderCalls = getScreen().getRenderCalls();
 			long totalMemory = Runtime.getRuntime().totalMemory();
 			long maxMemory = Runtime.getRuntime().maxMemory();
@@ -148,14 +169,40 @@ public class InfrpgGame extends Game {
 	public void dispose() {
 		logger.debug("Disposing Game...");
 
-		getScreen().dispose();
-		consolaFont.dispose();
-		batch.dispose();
-		atlas.dispose();
+		if (getScreen() != null) getScreen().dispose();
+		tryClose(net);
+		tryClose(consolaFont);
+		tryClose(batch);
+		tryClose(atlas);
+		
 		Console.destroyConsole();
 
 		logger.debug("Cleanup complete");
 		logger.info("Application will now exit");
+	}
+	
+	private void tryClose(Closeable closeable) {
+		String name = closeable.getClass().getSimpleName();
+		logger.debug("Closing " + name);
+		try {
+			closeable.close();
+		}
+		catch (Exception e) {
+			logger.error("An exception occurred while closing: " + name);
+			logger.logException(e);
+		}
+	}
+	
+	private void tryClose(Disposable disposable) {
+		String name = disposable.getClass().getSimpleName();
+		logger.debug("Disposing " + name);
+		try {
+			disposable.dispose();
+		}
+		catch (Exception e) {
+			logger.error("An exception occurred while disposing: " + name);
+			logger.logException(e);
+		}
 	}
 
 	@Override

@@ -14,12 +14,10 @@ import game.infrpg.client.logic.mapold.Map;
 import game.infrpg.client.InfrpgGame;
 import static game.infrpg.client.InfrpgGame.*;
 import game.infrpg.client.logic.Camera;
-import game.infrpg.client.entities.Spearman;
 import game.infrpg.client.logic.Dir;
 import game.infrpg.common.util.Constants;
 import game.infrpg.client.logic.mapold.Tileset;
 import game.infrpg.client.rendering.shapes.RenderUtils;
-import game.infrpg.client.entities.SwieteniaTree;
 import game.infrpg.client.logic.AbstractScreen;
 import game.infrpg.client.util.ClientConfig;
 import game.infrpg.common.console.Console;
@@ -42,8 +40,6 @@ public class InGameScreen extends AbstractScreen {
 	private final Vector2 isoCamPosBuffer;
 	private final ShapeRenderer shapeRenderer;
 
-	private Spearman player;
-	private SwieteniaTree tree;
 	private float zoomacc = 0.0f;
 	private int renderCalls;
 
@@ -71,14 +67,6 @@ public class InGameScreen extends AbstractScreen {
 
 		shapeRenderer = new ShapeRenderer();
 
-		player = new Spearman();
-		player.setRenderState(player.RS_DOWN);
-		cam.lookAt(player);
-		cam.offset_y = 25f;
-
-		tree = new SwieteniaTree();
-		tree.x = 100;
-
 		Gdx.input.setInputProcessor(new InGameInput());
 	}
 
@@ -104,8 +92,6 @@ public class InGameScreen extends AbstractScreen {
 		batch.setProjectionMatrix(cam.combined);
 
 		batch.begin();
-		player.render(batch);
-		tree.render(batch);
 		batch.end();
 
 		RenderUtils.renderShapes(cam.combined);
@@ -120,17 +106,15 @@ public class InGameScreen extends AbstractScreen {
 	}
 	
 	private void tick(float delta) {
-		tree.tick();
+		
 	}
 
 	@Override
 	public void pause() {
-		logger.debug("Pause");
 	}
 
 	@Override
 	public void resume() {
-		logger.debug("Resume");
 	}
 
 	@Override
@@ -164,15 +148,10 @@ public class InGameScreen extends AbstractScreen {
 		Dir moveDir = Dir.dirFromMask(directionMask);
 
 		if (moveDir != null) {
-			Vector2 dirVector = moveDir.getIsometricDirVector();
-			dirVector.scl(Constants.DEBUG_MOVEMENT_SPEED * delta);
-			player.x += dirVector.x;
-			player.y += dirVector.y;
-			player.setDirection(moveDir);
-			player.setIdle(false);
-		}
-		else {
-			player.setIdle(true);
+			Vector2 dirVector = moveDir.getUnitDirVector();
+			dirVector.scl(Constants.DEBUG_MOVEMENT_SPEED * cam.zoom * delta);
+			cam.position.x += dirVector.x;
+			cam.position.y += dirVector.y;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {

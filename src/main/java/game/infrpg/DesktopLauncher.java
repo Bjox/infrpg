@@ -47,6 +47,7 @@ public class DesktopLauncher {
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		setupArguments(args);
+		
 		IArgumentParser<Arguments> arguments = resolve(IArgumentParser.class);
 		if (arguments.isPresent(Arguments.USAGE)) {
 			printUsage();
@@ -86,7 +87,7 @@ public class DesktopLauncher {
 		catch (Exception e) {
 			logger.logException(e);
 		}
-
+		
 	}
 	
 	private static void printUsage() {
@@ -97,12 +98,13 @@ public class DesktopLauncher {
 	}
 
 	private static void setupArguments(String[] args) {
-		Globals.container.registerType(IArgumentParser.class, ArgumentParser.class);
-		IArgumentParser<Arguments> arguments = Globals.container.registerInstance(new ArgumentParser<>(args));
-
+		IArgumentParser<Arguments> arguments = new ArgumentParser<>(args);
+		
 		Globals.DEBUG = arguments.isPresent(Arguments.DEBUG);
 		Globals.SERVER = arguments.isPresent(Arguments.SERVER);
 		Globals.HEADLESS = arguments.isPresent(Arguments.HEADLESS);
+		
+		Globals.container.registerSingleton(IArgumentParser.class, arguments);
 	}
 
 	private static void setupLogger() {
