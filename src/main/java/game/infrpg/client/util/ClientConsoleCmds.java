@@ -4,7 +4,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import game.infrpg.common.console.Console;
 import game.infrpg.common.console.cmd.Command;
 import game.infrpg.common.console.cmd.CommandList;
-import game.infrpg.common.util.Constants;
 import game.infrpg.common.util.Globals;
 import game.infrpg.common.util.Helpers;
 
@@ -13,7 +12,6 @@ import game.infrpg.common.util.Helpers;
  * @author Bjørnar W. Alvestad
  */
 public class ClientConsoleCmds extends CommandList {
-
 	
 	public static class Maxfps extends Command {
 
