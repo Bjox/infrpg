@@ -3,6 +3,7 @@ package game.infrpg.server;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import game.infrpg.server.service.client.IClientService;
 import game.infrpg.server.util.ServerConfig;
 import java.io.Closeable;
 import java.io.IOException;
@@ -17,13 +18,16 @@ import lib.logger.ILogger;
 public class ServerNetListener extends Listener implements Closeable {
 	
 	private final ILogger logger;
+	private final IClientService clientService;
+	
 	private final Server server;
-	public final int port;
+	private final int port;
 	
 	@Inject
-	public ServerNetListener(ILogger logger, ServerConfig config) {
+	public ServerNetListener(ILogger logger, ServerConfig config, IClientService clientService) {
 		this.logger = logger;
 		this.port = config.port;
+		this.clientService = clientService;
 		
 		this.server = new Server();
 	}
@@ -41,11 +45,13 @@ public class ServerNetListener extends Listener implements Closeable {
 	@Override
 	public void connected(Connection connection) {
 		logger.debug("Connected " + connection.toString());
+		clientService.clientConnected(connection);
 	}
 
 	@Override
 	public void disconnected(Connection connection) {
 		logger.debug("Disconnected " + connection.toString());
+		clientService.clientDisconnected(connection);
 	}
 
 	@Override

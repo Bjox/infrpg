@@ -15,6 +15,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import game.infrpg.client.util.ClientConfig;
 import game.infrpg.common.util.Helpers;
 import game.infrpg.server.map.storage.IMapStorage;
+import game.infrpg.server.service.client.ClientService;
+import game.infrpg.server.service.client.IClientService;
 import lib.cache.Cache;
 import game.infrpg.server.service.map.IMapService;
 import game.infrpg.server.service.map.MapService;
@@ -141,16 +143,16 @@ public class DesktopLauncher {
 		logger.addHandler(new ConsoleLoggerHandler());
 	}
 
+	// TODO: registering generic IStorage to ClientConfig specific FileStorage
 	private static void clientRegistrations() throws Exception {
 		Globals.container.registerSingleton(IConfigStore.class, new PropertiesConfigStore("Infrpg client configuration"));
-		// TODO: registering generic IStorage to ClientConfig specific FileStorage
 		Globals.container.registerSingleton(IStorage.class, new FileStorage(Constants.CLIENT_CONFIG_PATHNAME)); 
 		Globals.container.resolveAndRegisterInstance(ClientConfig.class).initConfig();
 	}
 
+	// TODO: registering generic IStorage to ServerConfig specific FileStorage
 	private static void serverRegistrations() throws Exception {
 		Globals.container.registerSingleton(IConfigStore.class, new PropertiesConfigStore("Infrpg server configuration"));
-		// TODO: registering generic IStorage to ServerConfig specific FileStorage
 		Globals.container.registerSingleton(IStorage.class, new FileStorage(Constants.SERVER_CONFIG_PATHNAME)); 
 		Globals.container.resolveAndRegisterInstance(ServerConfig.class).initConfig();
 		
@@ -160,6 +162,8 @@ public class DesktopLauncher {
 		Globals.container.registerSingleton(IMapService.class, MapService.class);
 		
 		Globals.container.registerType(ICache.class, Cache.class);
+		
+		Globals.container.registerSingleton(IClientService.class, ClientService.class);
 	}
 
 	private static void startClient(ClientConfig clientConfig) {
