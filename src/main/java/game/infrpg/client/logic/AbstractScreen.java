@@ -1,14 +1,16 @@
 package game.infrpg.client.logic;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.utils.Disposable;
 import game.infrpg.client.InfrpgGame;
-import game.infrpg.client.logic.RenderCallCounter;
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
  *
  * @author Bjørnar W. Alvestad
  */
-public abstract class AbstractScreen implements Screen, RenderCallCounter {
+public abstract class AbstractScreen implements Screen, RenderCallCounter, Closeable, Disposable {
 	
 	protected final InfrpgGame game;
 
@@ -52,4 +54,8 @@ public abstract class AbstractScreen implements Screen, RenderCallCounter {
 		return "";
 	}
 
+	@Override
+	public void close() throws IOException {
+		dispose();
+	}
 }

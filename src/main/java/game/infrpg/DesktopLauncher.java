@@ -15,6 +15,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import game.infrpg.client.util.ClientConfig;
 import game.infrpg.common.util.Helpers;
 import game.infrpg.server.map.storage.IMapStorage;
+import game.infrpg.server.service.client.ClientService;
+import game.infrpg.server.service.client.IClientService;
 import lib.cache.Cache;
 import game.infrpg.server.service.map.IMapService;
 import game.infrpg.server.service.map.MapService;
@@ -47,6 +49,7 @@ public class DesktopLauncher {
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		setupArguments(args);
+		
 		IArgumentParser<Arguments> arguments = resolve(IArgumentParser.class);
 		if (arguments.isPresent(Arguments.USAGE)) {
 			printUsage();
@@ -86,7 +89,7 @@ public class DesktopLauncher {
 		catch (Exception e) {
 			logger.logException(e);
 		}
-
+		
 	}
 	
 	private static void printUsage() {
@@ -97,12 +100,13 @@ public class DesktopLauncher {
 	}
 
 	private static void setupArguments(String[] args) {
-		Globals.container.registerType(IArgumentParser.class, ArgumentParser.class);
-		IArgumentParser<Arguments> arguments = Globals.container.registerInstance(new ArgumentParser<>(args));
-
+		IArgumentParser<Arguments> arguments = new ArgumentParser<>(args);
+		
 		Globals.DEBUG = arguments.isPresent(Arguments.DEBUG);
 		Globals.SERVER = arguments.isPresent(Arguments.SERVER);
 		Globals.HEADLESS = arguments.isPresent(Arguments.HEADLESS);
+		
+		Globals.container.registerSingleton(IArgumentParser.class, arguments);
 	}
 
 	private static void setupLogger() {
@@ -133,22 +137,21 @@ public class DesktopLauncher {
 			return;
 		}
 		
-		Console.createConsole("Infrpg console");
 		Console.attachToOut();
 		Console.attachToErr();
 		logger.addHandler(new ConsoleLoggerHandler());
 	}
 
+	// TODO: registering generic IStorage to ClientConfig specific FileStorage
 	private static void clientRegistrations() throws Exception {
 		Globals.container.registerSingleton(IConfigStore.class, new PropertiesConfigStore("Infrpg client configuration"));
-		// TODO: registering generic IStorage to ClientConfig specific FileStorage
 		Globals.container.registerSingleton(IStorage.class, new FileStorage(Constants.CLIENT_CONFIG_PATHNAME)); 
 		Globals.container.resolveAndRegisterInstance(ClientConfig.class).initConfig();
 	}
 
+	// TODO: registering generic IStorage to ServerConfig specific FileStorage
 	private static void serverRegistrations() throws Exception {
 		Globals.container.registerSingleton(IConfigStore.class, new PropertiesConfigStore("Infrpg server configuration"));
-		// TODO: registering generic IStorage to ServerConfig specific FileStorage
 		Globals.container.registerSingleton(IStorage.class, new FileStorage(Constants.SERVER_CONFIG_PATHNAME)); 
 		Globals.container.resolveAndRegisterInstance(ServerConfig.class).initConfig();
 		
@@ -158,6 +161,8 @@ public class DesktopLauncher {
 		Globals.container.registerSingleton(IMapService.class, MapService.class);
 		
 		Globals.container.registerType(ICache.class, Cache.class);
+		
+		Globals.container.registerSingleton(IClientService.class, ClientService.class);
 	}
 
 	private static void startClient(ClientConfig clientConfig) {

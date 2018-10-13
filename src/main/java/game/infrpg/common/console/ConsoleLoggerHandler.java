@@ -1,11 +1,9 @@
 package game.infrpg.common.console;
 
-import game.infrpg.common.util.Globals;
 import lib.logger.LogRecord;
 import lib.logger.LoggerLevel;
 import lib.logger.LoggerHandler;
 import java.awt.Color;
-import java.text.SimpleDateFormat;
 import lib.logger.ILogger;
 
 /**

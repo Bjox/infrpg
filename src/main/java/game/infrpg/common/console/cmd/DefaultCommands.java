@@ -108,7 +108,7 @@ class ConsoleCommands extends Command {
 						Console.setConsoleBackground(DefaultCommands.stringToColor(args[2]));
 					}
 					else
-						Console.println("Missing argument color", Console.ERROR_MSG);
+						Console.println("Missing argument color", Console.COLOR_ERROR_MSG);
 					break;
 				case "fg":
 				case "foreground":
@@ -116,7 +116,7 @@ class ConsoleCommands extends Command {
 						Console.setConsoleForeground(DefaultCommands.stringToColor(args[2]));
 					}
 					else
-						Console.println("Missing argument color", Console.ERROR_MSG);
+						Console.println("Missing argument color", Console.COLOR_ERROR_MSG);
 					break;
 				default: break;
 			}
@@ -260,11 +260,11 @@ class SystemCall extends Command {
                  InputStreamReader(p.getErrorStream()));
  
             while ((s = stdInput.readLine()) != null) {
-                Console.println(s, Console.CMD_COLOR);
+                Console.println(s, Console.COLOR_CMD);
             }
              
             while ((s = stdError.readLine()) != null) {
-                Console.println(s, Console.ERROR_MSG);
+                Console.println(s, Console.COLOR_ERROR_MSG);
             }
 		} catch (Exception e) {}
 	}
