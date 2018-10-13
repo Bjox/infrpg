@@ -15,7 +15,7 @@ public final class Constants {
 	// ONLY 'PUBLIC STATIC FINALS' IN HERE!
 	
 	/** Debug movement speed. */
-	public static final float DEBUG_MOVEMENT_SPEED = 300;//120;
+	public static final float DEBUG_MOVEMENT_SPEED = 500;//120;
 	
 	/** Debug enable map zoom. */
 	public static final boolean ENABLE_ZOOM = true;
@@ -79,6 +79,9 @@ public final class Constants {
 	
 	/** Skip region cache cleanup if debugging. Useful during debugging and development. */
 	public static final boolean SKIP_REGION_CACHE_CLEANUP_IF_DEBUG = true;
+	
+	/** Connection timeout in ms when connecting to a server. */
+	public static final int CLIENT_CONNECTION_TIMEOUT = 5000;
 	
 	/**
 	 * Private constructor.

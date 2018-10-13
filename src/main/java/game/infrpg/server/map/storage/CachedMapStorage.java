@@ -59,7 +59,7 @@ public class CachedMapStorage extends Cache<String, Region> implements IMapStora
 
 	@Override
 	public void close() throws IOException {
-		logger.debug("Writing region cache to storage");
+		logger.debug("Closing map storage cache. Writing cached regions to storage");
 		cachedValuesStream().forEach(backingStorage::storeRegion);
 		backingStorage.close();
 	}

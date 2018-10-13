@@ -3,9 +3,11 @@ package game.infrpg.server;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import game.infrpg.server.service.client.IClientService;
 import game.infrpg.server.util.ServerConfig;
 import java.io.Closeable;
 import java.io.IOException;
+import lib.di.Inject;
 import lib.logger.ILogger;
 
 
@@ -16,12 +18,16 @@ import lib.logger.ILogger;
 public class ServerNetListener extends Listener implements Closeable {
 	
 	private final ILogger logger;
-	private final Server server;
-	public final int port;
+	private final IClientService clientService;
 	
-	public ServerNetListener(ILogger logger, ServerConfig config) {
+	private final Server server;
+	private final int port;
+	
+	@Inject
+	public ServerNetListener(ILogger logger, ServerConfig config, IClientService clientService) {
 		this.logger = logger;
 		this.port = config.port;
+		this.clientService = clientService;
 		
 		this.server = new Server();
 	}
@@ -35,20 +41,17 @@ public class ServerNetListener extends Listener implements Closeable {
 		
 		logger.debug("Server endpoint started");
 	}
-	
-	public void stop() {
-		logger.debug("Stopping server instance");
-		server.stop();
-	}
 
 	@Override
 	public void connected(Connection connection) {
 		logger.debug("Connected " + connection.toString());
+		clientService.clientConnected(connection);
 	}
 
 	@Override
 	public void disconnected(Connection connection) {
 		logger.debug("Disconnected " + connection.toString());
+		clientService.clientDisconnected(connection);
 	}
 
 	@Override
@@ -58,14 +61,8 @@ public class ServerNetListener extends Listener implements Closeable {
 
 	@Override
 	public void close() throws IOException {
-		logger.debug("Closing ServerNetListener");
-		
-		try {
-			stop();
-		}
-		catch (Exception e) {
-			logger.logException(e);
-		}
+		logger.debug("Stopping server instance");
+		server.stop();
 	}
 
 	

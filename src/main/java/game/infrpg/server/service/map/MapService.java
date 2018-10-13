@@ -41,7 +41,6 @@ public class MapService extends Service implements IMapService {
 	
 	@Override
 	public void close() throws IOException {
-		logger.debug("Closing MapService");
 		mapStorage.close();
 	}
 
