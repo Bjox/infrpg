@@ -170,6 +170,22 @@ public class ContainerTest {
 		assertSame(instance, resolvedInstance);
 	}
 	
+	@Test
+	public void testRegisterSingletonFromType() {
+		String str = "test";
+		container.registerInstance(str);
+		container.registerSingleton(TestClassA.class);
+		
+		TestClassA resolvedInstance = container.resolve(TestClassA.class);
+		assertNotNull(resolvedInstance);
+		assertEquals(str + str, resolvedInstance.getValue());
+		
+		TestClassA anotherResolvedInstance = container.resolve(TestClassA.class);
+		assertNotNull(anotherResolvedInstance);
+		assertEquals(str + str,  anotherResolvedInstance.getValue());
+		assertTrue(resolvedInstance == anotherResolvedInstance);
+	}
+	
 	/*
 	Test interfaces and classes
 	*/

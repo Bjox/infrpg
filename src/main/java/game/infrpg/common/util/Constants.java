@@ -38,6 +38,9 @@ public final class Constants {
 	/** Default application port. */
 	public static final int DEFAULT_PORT = 30555;
 	
+	/** Default application port. */
+	public static final String DEFAULT_PORT_STR = "30555";
+	
 	/** Default FPS used when loding animations. */
 	public static final float DEFAULT_ANIMATION_FRAMERATE = 20;
 	

@@ -3,6 +3,7 @@ package lib.cmd;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.stream.Stream;
 
 /**
  *
@@ -12,6 +13,7 @@ public class CommandMethod {
 	
 	private final Method method;
 	private final CommandMethodParameter[] parameters;
+	private final String description;
 	private final int minNumArguments;
 	private final int numArguments;
 
@@ -44,15 +46,19 @@ public class CommandMethod {
 			}
 			
 			parameters[i] = new CommandMethodParameter(param.getName(), param.getType(), defaultValueParsed);
-			
 			i++;
 		}
 		
 		this.minNumArguments = numArguments - numParamsWithDefaultValue;
+		this.description = method.getAnnotation(Command.class).description();
 	}
 	
-	public String getName() {
+	public final String getName() {
 		return method.getName();
+	}
+	
+	public final String getDescription() {
+		return description;
 	}
 	
 	/**
@@ -85,7 +91,13 @@ public class CommandMethod {
 			}
 			else {
 				String argStr = args[i+1];
-				argValue = parser.parse(parameter.type, argStr);
+				try {
+					argValue = parser.parse(parameter.type, argStr);
+				}
+				catch (Exception e) {
+					throw new CommandParseException(
+						String.format("Invalid input \"%s\" for %s parameter <%s>.", argStr, parameter.type.getSimpleName(), parameter.name), e);
+				}
 			}
 			argValues[i] = argValue;
 		}
@@ -104,6 +116,13 @@ public class CommandMethod {
 	public void invoke(Object[] args, CommandObject cmdObject) throws
 		IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		method.invoke(cmdObject, args);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder paramStr = new StringBuilder();
+		Stream.of(parameters).forEach(p -> paramStr.append(" ").append(p.toString()));
+		return getName() + paramStr.toString();
 	}
 	
 }

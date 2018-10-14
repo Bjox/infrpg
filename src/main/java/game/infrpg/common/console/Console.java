@@ -1,8 +1,11 @@
 package game.infrpg.common.console;
 
-import game.infrpg.common.console.cmd.Command;
-import game.infrpg.common.console.cmd.DefaultCommands;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -11,7 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.function.Consumer;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.text.*;
@@ -37,8 +41,9 @@ public final class Console extends JFrame {
 	private static final String[] history = new String[HISTORY_MAX];
 	private static final StyledDocument doc;
 	private static final DefaultStyledDocument defaultDoc;
-	private static final ArrayList<Thread> shutdownHooks = new ArrayList<>();
-	private static final HashMap<String, Command> commands = new HashMap<>();
+	private static final List<Thread> shutdownHooks = new ArrayList<>();
+	//private static final Map<String, Command> commands = new HashMap<>();
+	private static final List<Consumer<String>> commandCallbacks = new ArrayList<>();
 	
 	private static int historyPointer = 0;
 	private static int historyHead = 0;
@@ -184,7 +189,7 @@ public final class Console extends JFrame {
 
 		console.pack();
 		addKeyBindings();
-		DefaultCommands.addDefaultCommands(console);
+		//DefaultCommands.addDefaultCommands(console);
 		setConsoleForeground(COLOR_FOREGROUND);
 	}
 
@@ -195,25 +200,25 @@ public final class Console extends JFrame {
 		}
 	}
 
-	public static synchronized void addCommand(Command cmd) {
-		commands.put(cmd.getName().toLowerCase(), cmd);
-	}
-
-	public static synchronized String[] getCommandNames() {
-		String[] cmds = new String[commands.size()];
-		return commands.keySet().toArray(cmds);
-	}
-
-	public static synchronized String getCommandHelpString(String cmdName) {
-		if (commands.containsKey(cmdName)) {
-			return commands.get(cmdName).getHelp();
-		}
-		return null;
-	}
-
-	public static synchronized Command getCommand(String name) {
-		return commands.get(name);
-	}
+//	public static synchronized void addCommand(Command cmd) {
+//		commands.put(cmd.getName().toLowerCase(), cmd);
+//	}
+//
+//	public static synchronized String[] getCommandNames() {
+//		String[] cmds = new String[commands.size()];
+//		return commands.keySet().toArray(cmds);
+//	}
+//
+//	public static synchronized String getCommandHelpString(String cmdName) {
+//		if (commands.containsKey(cmdName)) {
+//			return commands.get(cmdName).getHelp();
+//		}
+//		return null;
+//	}
+//
+//	public static synchronized Command getCommand(String name) {
+//		return commands.get(name);
+//	}
 
 	/**
 	 * Adds a shutdown hook; a thread that will be started when the console window is being disposed.<br>
@@ -722,18 +727,28 @@ public final class Console extends JFrame {
 		textpane.setText("");
 	}
 
-	private static void parseCommand(String s) {
-		s = s.trim().replaceAll("\\s(\\s+)", " "); // ditch them whitespaces
-		addToHistory(s);
-		String[] args = s.split(" ");
-		Command cmd = commands.get(args[0]);
-		if (cmd == null) {
-//			parseCommand("call "+s);
-			println("Command not found.", COLOR_ERROR_MSG);
-		}
-		else {
-			cmd.execute(args);
-		}
+	private static void parseCommand(String str) {
+		String cmdstr = str.trim().replaceAll("\\s(\\s+)", " "); // ditch them whitespaces
+		addToHistory(cmdstr);
+		commandCallbacks.forEach(c -> c.accept(cmdstr));
+		
+//		if (commands.isEmpty()) {
+//			return;
+//		}
+//		
+//		String[] args = cmdstr.split(" ");
+//		Command cmd = commands.get(args[0]);
+//		if (cmd == null) {
+////			parseCommand("call "+s);
+//			println("Command not found.", COLOR_ERROR_MSG);
+//		}
+//		else {
+//			cmd.execute(args);
+//		}
+	}
+	
+	public static synchronized void addCommandCallback(Consumer<String> callback) {
+		commandCallbacks.add(callback);
 	}
 
 	private static synchronized void printString(String arg0) {

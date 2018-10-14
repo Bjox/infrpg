@@ -1,9 +1,7 @@
 package game.infrpg.client;
 
-import game.infrpg.client.util.ClientConsoleCmds;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -23,9 +21,7 @@ import game.infrpg.common.util.Globals;
 import java.awt.Dimension;
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import lib.cmd.CommandDispatcher;
 import lib.di.Inject;
 import lib.logger.ILogger;
 
@@ -60,7 +56,14 @@ public class InfrpgGame extends Game {
 		this.elapsed_t = 0;
 		this.screenSize = new Dimension(config.screenWidth, config.screenHeight);
 		
-		new ClientConsoleCmds().registerCommands();
+		Console.addCommandCallback(cmd -> {
+			try {
+				Globals.resolve(CommandDispatcher.class).parse(cmd);
+			}
+			catch (Exception e) {
+				Console.println(e.getMessage());
+			}
+		});
 
 		Globals.RENDER_DEBUG_TEXT = Globals.DEBUG;
 		

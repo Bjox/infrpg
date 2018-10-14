@@ -15,5 +15,13 @@ public class CommandMethodParameter {
 		this.type = type;
 		this.defaultValue = defaultValue;
 	}
+
+	@Override
+	public String toString() {
+		if (defaultValue == null) {
+			return String.format("<%s>", name);
+		}
+		return String.format("[%s=%s]", name, defaultValue);
+	}
 	
 }

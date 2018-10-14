@@ -76,49 +76,49 @@ public class PrintStreamInterceptor extends PrintStream {
 		@Override
 		public void println(String x) {
 			super.println(x);
-			Console.print(x + "\n");
+			Console.print("\n");
 		}
 
 		@Override
 		public void println(Object x) {
 			super.println(x);
-			Console.print(String.valueOf(x) + "\n");
+			Console.print("\n");
 		}
 
 		@Override
 		public void println(boolean x) {
 			super.println(x);
-			Console.print(String.valueOf(x) + "\n");
+			Console.print("\n");
 		}
 
 		@Override
 		public void println(char x) {
 			super.println(x);
-			Console.print(String.valueOf(x) + "\n");
+			Console.print("\n");
 		}
 
 		@Override
 		public void println(double x) {
 			super.println(x);
-			Console.print(String.valueOf(x) + "\n");
+			Console.print("\n");
 		}
 
 		@Override
 		public void println(float x) {
 			super.println(x);
-			Console.print(String.valueOf(x) + "\n");
+			Console.print("\n");
 		}
 
 		@Override
 		public void println(int x) {
 			super.println(x);
-			Console.print(String.valueOf(x) + "\n");
+			Console.print("\n");
 		}
 
 		@Override
 		public void println(long x) {
 			super.println(x);
-			Console.print(String.valueOf(x) + "\n");
+			Console.print("\n");
 		}
 
 		@Override

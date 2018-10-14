@@ -5,21 +5,22 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+import lib.di.Inject;
 
 /**
  *
  * @author Bjørnar W. Alvestad
- * @param <T>
  */
-public class CommandDispatcher<T extends CommandObject> {
+public class CommandDispatcher {
 
 	public static final char COMMAND_SEPARATOR = ' ';
 
-	private final T cmdObject;
+	private final CommandObject cmdObject;
 	private final Map<String, CommandMethod> cmdMethods;
 	private final TypeParser parser;
 
-	public CommandDispatcher(T cmdObject) {
+	@Inject
+	public CommandDispatcher(CommandObject cmdObject) {
 		this.cmdObject = cmdObject;
 		this.cmdMethods = new HashMap<>();
 		this.parser = new TypeParser();
@@ -27,7 +28,7 @@ public class CommandDispatcher<T extends CommandObject> {
 		Stream.of(cmdObject.getClass().getMethods())
 			.filter(this::isCommandMethod)
 			.map(cm -> new CommandMethod(cm, parser))
-			.forEach(cm -> cmdMethods.put(cm.getName(), cm));
+			.forEach(cm -> cmdMethods.put(cm.getName().toLowerCase(), cm));
 	}
 
 	private boolean isCommandMethod(Method method) {
@@ -39,10 +40,46 @@ public class CommandDispatcher<T extends CommandObject> {
 			return;
 		}
 
+		String[] parts = split(command);
+		
+		if (parts.length == 0) {
+			return;
+		}
+
+		String cmdName = parts[0];
+		
+		if (cmdName.equalsIgnoreCase("help")) {
+			String helpArg = parts.length > 1 ? parts[1] : null;
+			helpCommand(helpArg);
+			return;
+		}
+		
+		CommandMethod cmdMethod = cmdMethods.get(cmdName.toLowerCase());
+		if (cmdMethod == null) {
+			throw new CommandParseException("Unrecognized command \"" + cmdName + "\".");
+		}
+
+		try {
+			Object[] args = cmdMethod.parseArguments(parts, parser);
+			cmdMethod.invoke(args, cmdObject);
+		}
+		catch (CommandParseException e) {
+			throw new CommandParseException("Command \"" + cmdMethod.getName() + "\": " + e.getMessage(), e);
+		}
+		catch (IllegalAccessException | IllegalArgumentException e) {
+			throw new CommandParseException("Cannot execute command \"" + cmdMethod.getName() + "\".", e);
+		}
+		catch (InvocationTargetException e) {
+			throw new CommandParseException("An exception occurred while executing command \"" + cmdMethod.getName() + "\".", e.getCause());
+		}
+	}
+	
+	private String[] split(String str) {
 		final char splitChar = '\u001F';
 
-		StringBuilder cmdStr = new StringBuilder(command);
+		StringBuilder cmdStr = new StringBuilder(str);
 		boolean encounteredQuotationMark = false;
+		
 		for (int i = 0; i < cmdStr.length(); i++) {
 			char ch = cmdStr.charAt(i);
 			if (ch == '"') {
@@ -56,28 +93,36 @@ public class CommandDispatcher<T extends CommandObject> {
 			}
 		}
 
-		String[] parts = cmdStr.toString().split(String.valueOf(splitChar));
-		if (parts.length == 0) {
-			return;
-		}
-
-		String cmdName = parts[0];
-		CommandMethod cmdMethod = cmdMethods.get(cmdName);
-		if (cmdMethod == null) {
-			throw new CommandParseException("Unrecognized command \"" + cmdName + "\".");
-		}
-
-		Object[] args = cmdMethod.parseArguments(parts, parser);
-
-		try {
-			cmdMethod.invoke(args, cmdObject);
-		}
-		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			throw new CommandParseException("Cannot execute command \"" + cmdMethod.getName() + "\".", e);
-		}
+		return cmdStr.toString().split(String.valueOf(splitChar));
 	}
 
 	public TypeParser getTypeParser() {
 		return parser;
 	}
+	
+	public String[] getCommandList() {
+		return cmdMethods.values().stream()
+			.map(cmd -> cmd.toString())
+			.toArray(String[]::new);
+	}
+
+	@Override
+	public String toString() {
+		return String.join("\n", getCommandList());
+	}
+	
+	private void helpCommand(String arg) {
+		if (arg == null) {
+			System.out.println("Displays available help information for a given command.\nUsage: \"help <command_name>\"");
+			System.out.println("Available commands:");
+			System.out.println(toString());
+			return;
+		}
+		if (!cmdMethods.containsKey(arg.toLowerCase())) {
+			System.out.println("Unrecognized command \"" + arg + "\".");
+			return;
+		}
+		System.out.println(cmdMethods.get(arg.toLowerCase()).getDescription());
+	}
+	
 }

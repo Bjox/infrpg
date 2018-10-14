@@ -41,7 +41,7 @@ public class Container implements IContainer {
 
 		if (typeRegistrations.containsKey(interfaceType)) {
 			throw new DIRegistrationException(
-					interfaceType, implementationType, "interfaceType is already mapped to " + typeRegistrations.get(interfaceType).getName());
+				interfaceType, implementationType, "interfaceType is already mapped to " + typeRegistrations.get(interfaceType).getName());
 		}
 
 		typeRegistrations.put(interfaceType, implementationType);
@@ -53,7 +53,7 @@ public class Container implements IContainer {
 			if (!implementationType.isInstance(instances.get(implementationType))) {
 				// This should in principle never happen, because objects in instances should always have their respective type as map key.
 				throw new DIRegistrationException(interfaceType, implementationType,
-						"implementationType is already mapped to instance of type " + instances.get(implementationType).getClass().getName());
+					"implementationType is already mapped to instance of type " + instances.get(implementationType).getClass().getName());
 			}
 		}
 		else {
@@ -82,14 +82,17 @@ public class Container implements IContainer {
 	}
 
 	@Override
+	public <T> void registerSingleton(Class<T> type) {
+		throwIfInstancesContainsKey(type);
+
+		instances.put(type, new Singleton());
+	}
+
+	@Override
 	public <T> T registerInstance(T instance) {
 		Class<?> type = instance.getClass();
 
-		if (instances.containsKey(type)) {
-			if (!(instances.get(type) instanceof Singleton)) {
-				throw new DIRegistrationException(type, "instance of type already registered.");
-			}
-		}
+		throwIfInstancesContainsKey(type);
 
 		instances.put(type, instance);
 
@@ -110,6 +113,9 @@ public class Container implements IContainer {
 
 	private <T> T resolveRecursive(Class<T> type, Set<Class<?>> typesTriedConstructing) {
 		if (instances.containsKey(type)) {
+			if (instances.get(type) instanceof Singleton) {
+				constructSingleton(type, typesTriedConstructing);
+			}
 			return type.cast(instances.get(type));
 		}
 
@@ -121,7 +127,7 @@ public class Container implements IContainer {
 
 			if (instances.containsKey(mappedType)) {
 				if (instances.get(mappedType) instanceof Singleton) {
-					instances.put(mappedType, constructInstanceOfType(mappedType, typesTriedConstructing));
+					constructSingleton(mappedType, typesTriedConstructing);
 				}
 				return type.cast(instances.get(mappedType));
 			}
@@ -154,7 +160,7 @@ public class Container implements IContainer {
 			try {
 				Class<?>[] paramTypes = constructor.getParameterTypes();
 				Object[] paramArgs = Stream.of(paramTypes).map(
-						t -> resolveRecursive(t, typesTriedConstructing)).toArray();
+					t -> resolveRecursive(t, typesTriedConstructing)).toArray();
 
 				try {
 					Object instance = constructor.newInstance(paramArgs);
@@ -179,27 +185,17 @@ public class Container implements IContainer {
 		throw new DIResolutionException(type, "resolution of type dependencies failed. " + str);
 	}
 
-	/*
-	Dont close the container this way, because some instances may close while services etc still needs them!
-	e.g. MapService still needs the map storage when closing in order to write cached regions to storage.
-	If we do this, we have no controll over the order of which things are closed.
-	*/
-//	@Override
-//	public void close() throws IOException {
-//		instances.values().stream()
-//				.filter(o -> o instanceof Closeable)
-//				.forEach(o -> {
-//					try {
-//						((Closeable) o).close();
-//					}
-//					catch (Exception e) {
-//						if (logger != null) {
-//							logger.error("An exception occurred while closing type \"" + o.getClass().getName() + "\". " + e.getMessage());
-//							logger.logException(e);
-//						}
-//					}
-//				});
-//	}
+	private void constructSingleton(Class<?> type, Set<Class<?>> typesTriedConstructing) {
+		instances.put(type, constructInstanceOfType(type, typesTriedConstructing));
+	}
+
+	private void throwIfInstancesContainsKey(Class<?> implementationType) {
+		if (instances.containsKey(implementationType)) {
+			if (!(instances.get(implementationType) instanceof Singleton)) {
+				throw new DIRegistrationException(implementationType, "instance of type already registered.");
+			}
+		}
+	}
 
 	private static class Singleton {
 	}
