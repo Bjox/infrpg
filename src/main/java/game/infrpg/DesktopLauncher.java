@@ -14,9 +14,11 @@ import game.infrpg.common.console.Console;
 import game.infrpg.common.console.ConsoleLoggerHandler;
 import game.infrpg.server.InfrpgServer;
 import game.infrpg.client.ClientCommands;
+import game.infrpg.client.net.ClientNetHandler;
 import game.infrpg.client.util.ClientConfig;
 import game.infrpg.common.util.Helpers;
 import game.infrpg.server.map.storage.IMapStorage;
+import game.infrpg.server.net.ServerNetHandler;
 import game.infrpg.server.service.client.ClientService;
 import game.infrpg.server.service.client.IClientService;
 import game.infrpg.server.service.map.IMapService;
@@ -47,6 +49,8 @@ import lib.util.IArgumentParser;
 import lib.cache.ICache;
 import lib.cmd.CommandDispatcher;
 import lib.cmd.CommandObject;
+import game.infrpg.common.net.INetHandler;
+import game.infrpg.server.net.ServerNetListener;
 
 public class DesktopLauncher {
 
@@ -154,6 +158,8 @@ public class DesktopLauncher {
 
 		container.registerSingleton(CommandObject.class, ClientCommands.class);
 		container.registerSingleton(CommandDispatcher.class);
+		
+		container.registerType(INetHandler.class, ClientNetHandler.class);
 	}
 
 	// TODO: registering generic IStorage to ServerConfig specific FileStorage
@@ -169,7 +175,9 @@ public class DesktopLauncher {
 
 		container.registerType(ICache.class, Cache.class);
 
+		container.registerSingleton(ServerNetListener.class);
 		container.registerSingleton(IClientService.class, ClientService.class);
+		container.registerType(INetHandler.class, ServerNetHandler.class);
 	}
 
 	private static void startClient(ClientConfig clientConfig) {

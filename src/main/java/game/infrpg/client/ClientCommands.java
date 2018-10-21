@@ -5,6 +5,7 @@ import game.infrpg.common.console.Console;
 import game.infrpg.common.util.Constants;
 import game.infrpg.common.util.Globals;
 import game.infrpg.common.util.Helpers;
+import java.util.concurrent.CompletableFuture;
 import lib.cmd.Command;
 import lib.cmd.CommandException;
 import lib.cmd.CommandObject;

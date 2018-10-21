@@ -13,6 +13,8 @@ public interface IArgumentParser<T extends Enum<T>> {
 	
 	String getString(String option);
 	
+	String getString(T option);
+	
 	int getInt(String option);
 	
 	double getDouble(String option);

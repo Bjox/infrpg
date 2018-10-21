@@ -1,7 +1,6 @@
 package game.infrpg.server.service.client;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 import game.infrpg.server.service.Service;
 import java.io.IOException;
 import java.util.HashMap;

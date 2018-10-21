@@ -50,6 +50,12 @@ public class ArgumentParser<T extends Enum<T>> implements IArgumentParser<T> {
 	
 	
 	@Override
+	public String getString(T option) {
+		return getString("-" + argumentEnumToString(option));
+	}
+	
+	
+	@Override
 	public int getInt(String option) {
 		return Integer.parseInt(map.get(option));
 	}
@@ -86,5 +92,7 @@ public class ArgumentParser<T extends Enum<T>> implements IArgumentParser<T> {
 	private String argumentEnumToString(T argument) {
 		return argument.toString().toLowerCase();
 	}
+
+	
 	
 }

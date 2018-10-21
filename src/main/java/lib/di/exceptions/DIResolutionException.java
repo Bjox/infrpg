@@ -15,7 +15,7 @@ public class DIResolutionException extends DIException {
 	}
 	
 	public DIResolutionException(Class<?> type, String message) {
-		this("Cannot resolve type " + type.getName() + ": " + message);
+		this("\nCannot resolve type " + type.getName() + ": " + message);
 	}
 	
 }

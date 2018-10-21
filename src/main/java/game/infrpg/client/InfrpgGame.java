@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import game.infrpg.client.screens.ingame.InGameScreen;
 import game.infrpg.client.util.FPSCounter;
 import game.infrpg.common.console.Console;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -16,19 +15,28 @@ import com.badlogic.gdx.utils.Disposable;
 import game.infrpg.client.logic.AbstractScreen;
 import game.infrpg.client.net.ClientNetListener;
 import game.infrpg.client.rendering.DebugTextRenderer;
+import game.infrpg.client.screens.ingame.InGameScreen;
+import game.infrpg.client.screens.menu.MenuScreen;
 import game.infrpg.client.util.ClientConfig;
+import game.infrpg.common.util.Arguments;
 import game.infrpg.common.util.Globals;
+import game.infrpg.common.util.Helpers;
 import java.awt.Dimension;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import lib.cmd.CommandDispatcher;
+import lib.cmd.CommandParseException;
 import lib.di.Inject;
 import lib.logger.ILogger;
+import lib.util.IArgumentParser;
 
-public class InfrpgGame extends Game {
+public class InfrpgGame extends Game
+{
 
 	private static InfrpgGame game;
-	
+
 	private final ILogger logger;
 	private final ClientConfig config;
 	private final Dimension screenSize;
@@ -49,28 +57,22 @@ public class InfrpgGame extends Game {
 	 * @param net
 	 */
 	@Inject
-	public InfrpgGame(ILogger logger, ClientConfig config, ClientNetListener net) {
+	public InfrpgGame(ILogger logger, ClientConfig config, ClientNetListener net)
+	{
 		this.logger = logger;
 		this.config = config;
 		this.net = net;
 		this.elapsed_t = 0;
 		this.screenSize = new Dimension(config.screenWidth, config.screenHeight);
-		
-		Console.addCommandCallback(cmd -> {
-			try {
-				Globals.resolve(CommandDispatcher.class).parse(cmd);
-			}
-			catch (Exception e) {
-				Console.println(e.getMessage());
-			}
-		});
 
+		Console.addCommandHook(InfrpgGame::execCommand);
 		Globals.RENDER_DEBUG_TEXT = Globals.DEBUG;
-		
+
 		this.logger.debug("Client config: " + config.getConfigKeyValueMap());
 	}
 
-	public static TextureAtlas getAtlas() {
+	public static TextureAtlas getAtlas()
+	{
 		return game.atlas;
 	}
 
@@ -79,7 +81,8 @@ public class InfrpgGame extends Game {
 	 *
 	 * @return
 	 */
-	public static float elapsedTime() {
+	public static float elapsedTime()
+	{
 		return game.elapsed_t;
 	}
 
@@ -88,23 +91,41 @@ public class InfrpgGame extends Game {
 	 *
 	 * @return
 	 */
-	public static float deltaTime() {
+	public static float deltaTime()
+	{
 		return game.delta_t;
 	}
-	
-	public static void connect(String ip, int port) {
+
+	public static CompletableFuture<Void> execCommand(String cmd)
+	{
+		return Globals.resolve(CommandDispatcher.class).parse(cmd)
+			.exceptionally(e ->
+			{
+				while (e != null && e.getCause() != null) e = e.getCause();
+				if (e != null) Console.println(e.getMessage(), Console.COLOR_ERROR_MSG);
+				return null;
+			});
+	}
+
+	public static void connect(String ip, int port)
+	{
 		Globals.logger().info("Connecting to " + ip + ":" + port);
-		
-		try {
+
+		try
+		{
 			game.net.connect(ip, port);
+			game.setScreen(Globals.resolve(InGameScreen.class));
 		}
-		catch (IOException ex) {
+		catch (IOException ex)
+		{
 			Globals.logger().warning("Could not connect to " + ip + ":" + port + ". " + ex.getMessage());
+			throw Helpers.wrapInRuntimeException(ex);
 		}
 	}
 
 	@Override
-	public void create() {
+	public void create()
+	{
 		logger.info("Game init...");
 
 		game = this;
@@ -127,20 +148,32 @@ public class InfrpgGame extends Game {
 		// Enable alpha transparency
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
 		Gdx.graphics.setVSync(config.verticalSync);
 
 //		AssetManager assman = new AssetManager();
 //		TextureLoader.TextureParameter texparams = new TextureLoader.TextureParameter();
 //		texparams.genMipMaps = true;
+		setScreen(Globals.resolve(MenuScreen.class));
 
-		setScreen(Globals.resolve(InGameScreen.class));
-		
+		logger.info("Executing startup commands");
+		IArgumentParser<Arguments> argp = Globals.resolve(IArgumentParser.class);
+		String execStr = argp.getString(Arguments.EXEC);
+		if (execStr != null)
+		{
+			String[] execParts = execStr.split(";");
+			for (String cmd : execParts)
+			{
+				logger.info("Executing command \"" + cmd + "\"");
+				execCommand(cmd);
+			}
+		}
+
 		logger.info("Game init complete");
 	}
 
 	@Override
-	public void render() {
+	public void render()
+	{
 		delta_t = Gdx.graphics.getDeltaTime();
 		//elapsed_t = (float) (System.nanoTime() / 1_000_000_000d); // This caused stuttering in animations
 		elapsed_t += delta_t;
@@ -148,7 +181,8 @@ public class InfrpgGame extends Game {
 		super.render();
 
 		double fps = fpsCounter.getFps();
-		if (Globals.RENDER_DEBUG_TEXT && getScreen() != null) {
+		if (Globals.RENDER_DEBUG_TEXT && getScreen() != null)
+		{
 			int renderCalls = getScreen().getRenderCalls();
 			long totalMemory = Runtime.getRuntime().totalMemory();
 			long maxMemory = Runtime.getRuntime().maxMemory();
@@ -169,47 +203,58 @@ public class InfrpgGame extends Game {
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose()
+	{
 		logger.debug("Disposing Game...");
 
-		if (getScreen() != null) getScreen().dispose();
+		if (getScreen() != null)
+		{
+			getScreen().dispose();
+		}
 		tryClose(net);
 		tryClose(consolaFont);
 		tryClose(batch);
 		tryClose(atlas);
-		
+
 		Console.destroyConsole();
 
 		logger.debug("Cleanup complete");
 		logger.info("Application will now exit");
 	}
-	
-	private void tryClose(Closeable closeable) {
+
+	private void tryClose(Closeable closeable)
+	{
 		String name = closeable.getClass().getSimpleName();
 		logger.debug("Closing " + name);
-		try {
+		try
+		{
 			closeable.close();
 		}
-		catch (Exception e) {
+		catch (Exception e)
+		{
 			logger.error("An exception occurred while closing: " + name);
 			logger.logException(e);
 		}
 	}
-	
-	private void tryClose(Disposable disposable) {
+
+	private void tryClose(Disposable disposable)
+	{
 		String name = disposable.getClass().getSimpleName();
 		logger.debug("Disposing " + name);
-		try {
+		try
+		{
 			disposable.dispose();
 		}
-		catch (Exception e) {
+		catch (Exception e)
+		{
 			logger.error("An exception occurred while disposing: " + name);
 			logger.logException(e);
 		}
 	}
 
 	@Override
-	public AbstractScreen getScreen() {
+	public AbstractScreen getScreen()
+	{
 		return (AbstractScreen) super.getScreen();
 	}
 

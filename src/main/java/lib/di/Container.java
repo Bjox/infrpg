@@ -150,6 +150,8 @@ public class Container implements IContainer {
 
 		boolean injectConstructorFound = false;
 		List<Constructor<?>> triedConstructors = new ArrayList<>();
+		List<Throwable> exStack = new ArrayList<>();
+		
 		for (Constructor<?> constructor : type.getConstructors()) {
 			if (!constructor.isAnnotationPresent(Inject.class)) {
 				continue;
@@ -171,6 +173,7 @@ public class Container implements IContainer {
 				}
 			}
 			catch (DIException e) {
+				exStack.add(e);
 			}
 			catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 				throw new RuntimeException("An exception occurred while constructing instance of type " + type.getName(), e);
@@ -181,8 +184,9 @@ public class Container implements IContainer {
 			throw new DIResolutionException(type, "no @Inject annotated constructor was found on the type.");
 		}
 
-		String str = triedConstructors.stream().map(c -> c.toString()).reduce("Constructors tried:", (a, b) -> a + "\n" + b);
-		throw new DIResolutionException(type, "resolution of type dependencies failed. " + str);
+		//String str = triedConstructors.stream().map(c -> c.toString()).reduce("Constructors tried:", (a, b) -> a + "\n" + b);
+		String str2 = exStack.stream().map(e -> e.getMessage()).reduce("", (a, b) -> a + b);
+		throw new DIResolutionException(type, "resolution of type dependencies failed. " + str2);
 	}
 
 	private void constructSingleton(Class<?> type, Set<Class<?>> typesTriedConstructing) {

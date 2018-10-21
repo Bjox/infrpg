@@ -1,5 +1,6 @@
 package game.infrpg.server;
 
+import game.infrpg.server.net.ServerNetListener;
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.minlog.Log;
 import game.infrpg.common.console.Console;
@@ -46,10 +47,10 @@ public class InfrpgServer extends ServerApplicationListener {
 			Console.addShutdownHook(() -> Gdx.app.exit());
 		}
 
+		// Kryo logger
+		Log.set(Globals.DEBUG ? Log.LEVEL_DEBUG : Log.LEVEL_INFO);
 		try {
 			mapService.init();
-
-			Log.set(Globals.DEBUG ? Log.LEVEL_DEBUG : Log.LEVEL_INFO);
 			net.start();
 		}
 		catch (Exception e) {

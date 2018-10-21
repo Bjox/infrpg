@@ -43,7 +43,7 @@ public final class Console extends JFrame {
 	private static final DefaultStyledDocument defaultDoc;
 	private static final List<Thread> shutdownHooks = new ArrayList<>();
 	//private static final Map<String, Command> commands = new HashMap<>();
-	private static final List<Consumer<String>> commandCallbacks = new ArrayList<>();
+	private static final List<Consumer<String>> commandHooks = new ArrayList<>();
 	
 	private static int historyPointer = 0;
 	private static int historyHead = 0;
@@ -730,7 +730,7 @@ public final class Console extends JFrame {
 	private static void parseCommand(String str) {
 		String cmdstr = str.trim().replaceAll("\\s(\\s+)", " "); // ditch them whitespaces
 		addToHistory(cmdstr);
-		commandCallbacks.forEach(c -> c.accept(cmdstr));
+		commandHooks.forEach(c -> c.accept(cmdstr));
 		
 //		if (commands.isEmpty()) {
 //			return;
@@ -747,8 +747,8 @@ public final class Console extends JFrame {
 //		}
 	}
 	
-	public static synchronized void addCommandCallback(Consumer<String> callback) {
-		commandCallbacks.add(callback);
+	public static synchronized void addCommandHook(Consumer<String> callback) {
+		commandHooks.add(callback);
 	}
 
 	private static synchronized void printString(String arg0) {
