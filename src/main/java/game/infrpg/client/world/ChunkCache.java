@@ -14,7 +14,7 @@ public class ChunkCache extends Cache<Long, MapChunk>
 	@Inject
 	public ChunkCache(ILogger logger)
 	{
-		super(logger, 100, 1000);
+		super(logger);
 	}
 
 	public boolean containsChunk(int x, int y)

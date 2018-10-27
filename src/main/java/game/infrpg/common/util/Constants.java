@@ -30,7 +30,7 @@ public final class Constants
 	public static final int TILE_SIZE = 32;
 
 	/** Render distance in chunks from camera center. */
-	public static final int CHUNK_RENDER_DISTANCE = 3;
+	public static final float CHUNK_RENDER_DISTANCE = 2;
 
 	/** Compress regions in storage. */
 	public static final boolean COMPRESS_REGIONS = true;

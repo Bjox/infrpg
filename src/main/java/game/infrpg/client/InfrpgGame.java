@@ -222,9 +222,14 @@ public class InfrpgGame extends Game
 	private void tick()
 	{
 		ClientNetHandler netHandler = net.getHandler();
-
-		Chunk chunk = netHandler.chunksToProcess.poll();
-		if (chunk != null) chunkCache.putChunk(new MapChunk(chunk));
+		
+		Chunk chunk;
+		while ((chunk = netHandler.chunksToProcess.poll()) != null)
+		{
+			chunkCache.putChunk(new MapChunk(chunk));
+		}
+		//Chunk chunk = netHandler.chunksToProcess.poll();
+		//if (chunk != null) chunkCache.putChunk(new MapChunk(chunk));
 		
 	}
 

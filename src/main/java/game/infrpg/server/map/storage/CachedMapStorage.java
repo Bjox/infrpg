@@ -35,8 +35,6 @@ public class CachedMapStorage extends Cache<String, Region> implements IMapStora
 	@Override
 	public Region getRegion(int x, int y)
 	{
-		logger.debug(String.format("Getting region (%d,%d)", x, y));
-
 		String key = getKey(x, y);
 		Region region = get(key);
 		if (region != null)

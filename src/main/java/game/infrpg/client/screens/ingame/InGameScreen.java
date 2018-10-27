@@ -16,7 +16,6 @@ import static game.infrpg.client.InfrpgGame.*;
 import game.infrpg.client.logic.Camera;
 import game.infrpg.client.logic.Dir;
 import game.infrpg.common.util.Constants;
-import game.infrpg.client.world.Tileset;
 import game.infrpg.client.rendering.shapes.RenderUtils;
 import game.infrpg.client.logic.AbstractScreen;
 import game.infrpg.client.util.ClientConfig;
@@ -63,7 +62,7 @@ public class InGameScreen extends AbstractScreen
 		tilesetCycler = new TilesetCycler(map);
 
 		cam = new Camera(config.screenWidth, config.screenHeight);
-		cam.zoom = 10.f;
+		cam.zoom = 1.f;
 
 		cam.update();
 
@@ -230,6 +229,10 @@ public class InGameScreen extends AbstractScreen
 
 				case Input.Keys.F3:
 					Globals.RENDER_ENTITY_OUTLINE = !Globals.RENDER_ENTITY_OUTLINE;
+					return true;
+					
+				case Input.Keys.F4:
+					Globals.RENDER_CHUNK_OUTLINE = !Globals.RENDER_CHUNK_OUTLINE;
 					return true;
 
 				case Input.Keys.Q:

@@ -40,6 +40,7 @@ public final class Globals {
 	public static boolean RENDER_DEBUG_TEXT;
 	public static boolean RENDER_ENTITY_OUTLINE;
 	public static boolean RENDER_ENTITY_ORIGIN;
+	public static boolean RENDER_CHUNK_OUTLINE;
 	
 	/**
 	 * Private constructor.
