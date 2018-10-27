@@ -4,7 +4,7 @@ package lib.cmd;
  *
  * @author Bjørnar W. Alvestad
  */
-public class CommandParseException extends Exception {
+public class CommandParseException extends RuntimeException {
 
 	public CommandParseException(String message, Throwable cause) {
 		super(message, cause);

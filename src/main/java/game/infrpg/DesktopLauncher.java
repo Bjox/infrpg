@@ -4,6 +4,7 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.esotericsoftware.minlog.Log;
 import static game.infrpg.common.util.Globals.resolve;
 import static game.infrpg.common.util.Globals.container;
 import game.infrpg.common.util.Globals;
@@ -15,7 +16,11 @@ import game.infrpg.common.console.ConsoleLoggerHandler;
 import game.infrpg.server.InfrpgServer;
 import game.infrpg.client.ClientCommands;
 import game.infrpg.client.net.ClientNetHandler;
+import game.infrpg.client.net.ClientNetListener;
+import game.infrpg.client.screens.ingame.InGameScreen;
+import game.infrpg.client.screens.menu.MenuScreen;
 import game.infrpg.client.util.ClientConfig;
+import game.infrpg.client.world.ChunkCache;
 import game.infrpg.common.util.Helpers;
 import game.infrpg.server.map.storage.IMapStorage;
 import game.infrpg.server.net.ServerNetHandler;
@@ -132,6 +137,9 @@ public class DesktopLauncher {
 		catch (IOException e) {
 			logger.error("Unable to set up file logger: " + e.getMessage());
 		}
+		
+		// Kryo logger
+		Log.set(Constants.NET_LOG_LEVEL);
 	}
 
 	private static void setupConsole(ILogger logger) {
@@ -159,7 +167,10 @@ public class DesktopLauncher {
 		container.registerSingleton(CommandObject.class, ClientCommands.class);
 		container.registerSingleton(CommandDispatcher.class);
 		
-		container.registerType(INetHandler.class, ClientNetHandler.class);
+		container.registerSingleton(ClientNetListener.class);
+		container.registerSingleton(ClientNetHandler.class);
+		
+		container.registerSingleton(ChunkCache.class);
 	}
 
 	// TODO: registering generic IStorage to ServerConfig specific FileStorage

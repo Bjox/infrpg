@@ -15,10 +15,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.text.*;
+import lib.cmd.CommandInvocationException;
+import lib.cmd.CommandParseException;
 
 /**
  * A swing based console for printing info and retrieve commands.
@@ -43,7 +47,7 @@ public final class Console extends JFrame {
 	private static final DefaultStyledDocument defaultDoc;
 	private static final List<Thread> shutdownHooks = new ArrayList<>();
 	//private static final Map<String, Command> commands = new HashMap<>();
-	private static final List<Consumer<String>> commandHooks = new ArrayList<>();
+	private static Function<String, CompletableFuture<Void>> commandHook;
 	
 	private static int historyPointer = 0;
 	private static int historyHead = 0;
@@ -643,7 +647,7 @@ public final class Console extends JFrame {
 		return console != null;
 	}
 
-	public static synchronized void printException(Exception ex) {
+	public static synchronized void printException(Throwable ex) {
 		StackTraceElement[] stackTr = ex.getStackTrace();
 		Console.println("Exception in thread \"" + Thread.currentThread().getName() + "\" " + ex.toString(), Console.COLOR_ERROR_MSG);
 		for (StackTraceElement e : stackTr) {
@@ -730,7 +734,23 @@ public final class Console extends JFrame {
 	private static void parseCommand(String str) {
 		String cmdstr = str.trim().replaceAll("\\s(\\s+)", " "); // ditch them whitespaces
 		addToHistory(cmdstr);
-		commandHooks.forEach(c -> c.accept(cmdstr));
+		if (commandHook != null) {
+			commandHook.apply(cmdstr).exceptionally(e ->
+			{
+				if (e != null)
+				{
+					if (e.getCause() != null && (e.getCause() instanceof CommandParseException || e.getCause() instanceof CommandInvocationException))
+					{
+						println(e.getCause().getMessage(), COLOR_ERROR_MSG);
+					}
+					else
+					{
+						printException(e);
+					}
+				}
+				return null;
+			});
+		}
 		
 //		if (commands.isEmpty()) {
 //			return;
@@ -747,8 +767,8 @@ public final class Console extends JFrame {
 //		}
 	}
 	
-	public static synchronized void addCommandHook(Consumer<String> callback) {
-		commandHooks.add(callback);
+	public static synchronized void setCommandHook(Function<String, CompletableFuture<Void>> callback) {
+		commandHook = callback;
 	}
 
 	private static synchronized void printString(String arg0) {

@@ -66,33 +66,25 @@ public class CommandDispatcher
 		}
 
 		CommandMethod cmdMethod = cmdMethods.get(cmdName.toLowerCase());
-		
+
 		return CompletableFuture.runAsync(() ->
 		{
+			if (cmdMethod == null)
+			{
+				throw new CommandParseException("Unrecognized command \"" + cmdName + "\".");
+			}
+			Object[] args = cmdMethod.parseArguments(parts, parser);
 			try
 			{
-				if (cmdMethod == null) throw new CommandParseException("Unrecognized command \"" + cmdName + "\".");
-				try
-				{
-					Object[] args = cmdMethod.parseArguments(parts, parser);
-					cmdMethod.invoke(args, cmdObject);
-				}
-				catch (CommandParseException e)
-				{
-					throw new CommandParseException("Command \"" + cmdMethod.getName() + "\": " + e.getMessage(), e);
-				}
-				catch (IllegalAccessException | IllegalArgumentException e)
-				{
-					throw new CommandParseException("Cannot execute command \"" + cmdMethod.getName() + "\".", e);
-				}
-				catch (InvocationTargetException e)
-				{
-					throw new CommandParseException("An exception occurred while executing command \"" + cmdMethod.getName() + "\".", e.getCause());
-				}
+				cmdMethod.invoke(args, cmdObject);
 			}
-			catch (CommandParseException e)
+			catch (IllegalAccessException | IllegalArgumentException e)
 			{
-				throw Helpers.wrapInRuntimeException(e);
+				throw new RuntimeException("Cannot execute command \"" + cmdMethod.getName() + "\".", e);
+			}
+			catch (InvocationTargetException e)
+			{
+				throw new CommandInvocationException(e.getCause().getMessage(), e.getCause());
 			}
 		});
 	}

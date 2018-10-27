@@ -46,9 +46,7 @@ public class InfrpgServer extends ServerApplicationListener {
 		if (!Globals.HEADLESS) {
 			Console.addShutdownHook(() -> Gdx.app.exit());
 		}
-
-		// Kryo logger
-		Log.set(Globals.DEBUG ? Log.LEVEL_DEBUG : Log.LEVEL_INFO);
+		
 		try {
 			mapService.init();
 			net.start();

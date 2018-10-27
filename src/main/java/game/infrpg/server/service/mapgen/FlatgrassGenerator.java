@@ -1,6 +1,6 @@
 package game.infrpg.server.service.mapgen;
 
-import game.infrpg.client.logic.mapold.Tiles;
+import game.infrpg.client.world.Tiles;
 import game.infrpg.server.map.Chunk;
 import lib.di.Inject;
 

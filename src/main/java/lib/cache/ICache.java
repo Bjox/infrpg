@@ -16,4 +16,6 @@ public interface ICache<K, V> {
 	
 	void setCachePeriod(long cachePeriod);
 	
+	void flush();
+	
 }

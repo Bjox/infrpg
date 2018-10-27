@@ -20,6 +20,7 @@ public final class KryoRegistrations {
 		ChunkRequest.class,
 		ChunkResponse.class,
 		
+		byte[].class,
 		byte[][].class,
 		
 		Chunk.class,

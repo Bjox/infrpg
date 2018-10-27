@@ -1,7 +1,5 @@
 package lib.cache;
 
-import game.infrpg.common.util.Constants;
-import game.infrpg.common.util.Globals;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,18 +12,18 @@ import lib.logger.ILogger;
 /**
  * Thread-safe, generic cache. Cached values that are not accessed for a specified
  * period of time will be evicted from the cache at periodic cleanup intervals.
- * 
+ *
  * @author Bjørnar W. Alvestad
  * @param <K> Key type.
  * @param <V> Value type.
  */
-public class Cache<K, V> implements ICache<K, V> {
-
+public class Cache<K, V> implements ICache<K, V>
+{
 	/**
 	 * Default cleanup period in milliseconds.
 	 */
 	private static final long DEFAULT_CLEANUP_PERIOD = 60_000;
-	
+
 	/**
 	 * Default cache period in milliseconds.
 	 */
@@ -33,25 +31,28 @@ public class Cache<K, V> implements ICache<K, V> {
 
 	private final ILogger logger;
 	private final Map<K, CacheEntry<V>> cache;
-	private long cachePeriod;
-	
+	private long cachePeriod; // in ns
+	private volatile int elementCount;
+
 	/**
 	 * Create a new Cache using the default cache nad cleanup periods.
-	 * 
-	 * @param logger 
+	 *
+	 * @param logger
 	 */
 	@Inject
-	public Cache(ILogger logger) {
+	public Cache(ILogger logger)
+	{
 		this(logger, DEFAULT_CACHE_PERIOD, DEFAULT_CLEANUP_PERIOD);
 	}
-	
+
 	/**
 	 * Create a new Cache using the default cleanup period.
 	 *
 	 * @param logger
 	 * @param cachePeriod The cache period in milliseconds.
 	 */
-	public Cache(ILogger logger, long cachePeriod) {
+	public Cache(ILogger logger, long cachePeriod)
+	{
 		this(logger, cachePeriod, DEFAULT_CLEANUP_PERIOD);
 	}
 
@@ -62,17 +63,21 @@ public class Cache<K, V> implements ICache<K, V> {
 	 * @param cachePeriod The cache period in milliseconds.
 	 * @param cleanupPeriod Cleanup period in milliseconds.
 	 */
-	public Cache(ILogger logger, long cachePeriod, long cleanupPeriod) {
+	public Cache(ILogger logger, long cachePeriod, long cleanupPeriod)
+	{
 		this.cache = new HashMap<>();
-		this.cachePeriod = cachePeriod;
+		this.cachePeriod = cachePeriod * 1000000;
 		this.logger = logger;
 
 		Timer cleanupTimer = new Timer("Cache-cleanup", true);
-		TimerTask cleanupTask = new TimerTask() {
+		TimerTask cleanupTask = new TimerTask()
+		{
 			@Override
-			public void run() {
-				if (shouldSkipCleanup()) {
-					logger.debug("Skipping region cache cleanup");
+			public void run()
+			{
+				if (skipCleanup())
+				{
+					logger.debug("Skipping cache cleanup");
 					return;
 				}
 				cleanup();
@@ -84,16 +89,20 @@ public class Cache<K, V> implements ICache<K, V> {
 	/**
 	 * Gets a value from the cache.
 	 * This will refresh the cache period for the returned value.
+	 *
 	 * @param key
 	 * @return The cached value, or null if the value does not exist.
 	 */
 	@Override
-	public V get(K key) {
+	public V get(K key)
+	{
 		CacheEntry<V> entry;
-		synchronized (cache) {
+		synchronized (cache)
+		{
 			entry = cache.get(key);
 		}
-		if (entry == null) {
+		if (entry == null)
+		{
 			return null;
 		}
 		return entry.getValue();
@@ -101,78 +110,130 @@ public class Cache<K, V> implements ICache<K, V> {
 
 	/**
 	 * Cache a value. Any existing values with the same key will be overwritten.
+	 *
 	 * @param key
-	 * @param element 
+	 * @param element
 	 */
 	@Override
-	public void put(K key, V element) {
+	public void put(K key, V element)
+	{
+		if (element == null)
+		{
+			return;
+		}
 		CacheEntry<V> entry = new CacheEntry<>(element);
-		synchronized (cache) {
+		synchronized (cache)
+		{
 			cache.put(key, entry);
+			elementCount++;
 		}
 	}
-	
+
 	/**
 	 * Sets the cache period. Any overdue cache values will be removed
 	 * at the next cleanup.
-	 * @param cachePeriod 
+	 *
+	 * @param cachePeriod
 	 */
 	@Override
-	public void setCachePeriod(long cachePeriod) {
+	public void setCachePeriod(long cachePeriod)
+	{
 		this.cachePeriod = cachePeriod;
 	}
-	
+
 	/**
 	 * Checks if the provided key is mapped to a cached value.
 	 * In principle, this method checks if <code>get(key) != null</code>,
 	 * except for not refreshing the cache period for any value mapped to key.
+	 *
 	 * @param key
 	 * @return
 	 */
 	@Override
-	public boolean containsKey(K key) {
-		return cache.containsKey(key);
+	public boolean containsKey(K key)
+	{
+		synchronized (cache)
+		{
+			return cache.containsKey(key);
+		}
 	}
-	
+
 	/**
 	 * Returns a stream of every value in the cache. Cache periods are not refreshed.
-	 * @return 
+	 *
+	 * @return
 	 */
-	public Stream<V> cachedValuesStream() {
+	@Deprecated
+	public Stream<V> cachedValuesStream()
+	{
 		return cache.values().stream().map(e -> e.peekValue());
 	}
 
-	private void cleanup() {
+	@Override
+	public void flush()
+	{
+		synchronized (cache)
+		{
+			Iterator<CacheEntry<V>> it = cache.values().iterator();
+			while (it.hasNext())
+			{
+				CacheEntry<V> entry = it.next();
+				evictedFromCache(entry.peekValue());
+				it.remove();
+			}
+			elementCount = 0;
+		}
+	}
+
+	private void cleanup()
+	{
 		int elementsRemoved;
-		
-		synchronized (cache) {
+
+		synchronized (cache)
+		{
 			int sizeBefore = cache.size();
 			long now = System.nanoTime();
-			
+
 			Iterator<CacheEntry<V>> it = cache.values().iterator();
-			while (it.hasNext()) {
+			while (it.hasNext())
+			{
 				CacheEntry<V> entry = it.next();
-				if ((now - entry.getLastAccessTimestamp()) > cachePeriod) {
+				if ((now - entry.getLastAccessTimestamp()) > cachePeriod)
+				{
 					evictedFromCache(entry.peekValue());
 					it.remove();
 				}
 			}
-			
+
 			elementsRemoved = sizeBefore - cache.size();
+			elementCount -= elementsRemoved;
 		}
 
 		logger.debug(elementsRemoved + " element(s) removed from cache.");
 	}
 	
+	public int getElementCount()
+	{
+		return elementCount;
+	}
+
 	/**
 	 * Override this method in order to process objects that are evicted from the cache.
-	 * @param value 
+	 *
+	 * @param value
 	 */
-	protected void evictedFromCache(V value) {
+	protected void evictedFromCache(V value)
+	{
 	}
-	
-	private static boolean shouldSkipCleanup() {
-		return Globals.DEBUG && Constants.SKIP_REGION_CACHE_CLEANUP_IF_DEBUG;
+
+	/**
+	 * Override to skip cache cleanup.
+	 *
+	 * @return
+	 */
+	protected boolean skipCleanup()
+	{
+		return false;
 	}
 
 }

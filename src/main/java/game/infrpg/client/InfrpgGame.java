@@ -13,59 +13,71 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.utils.Disposable;
 import game.infrpg.client.logic.AbstractScreen;
+import game.infrpg.client.world.MapChunk;
+import game.infrpg.client.net.ClientNetHandler;
 import game.infrpg.client.net.ClientNetListener;
 import game.infrpg.client.rendering.DebugTextRenderer;
 import game.infrpg.client.screens.ingame.InGameScreen;
 import game.infrpg.client.screens.menu.MenuScreen;
 import game.infrpg.client.util.ClientConfig;
+import game.infrpg.client.world.ChunkCache;
+import game.infrpg.client.world.Tileset;
 import game.infrpg.common.util.Arguments;
 import game.infrpg.common.util.Globals;
 import game.infrpg.common.util.Helpers;
+import game.infrpg.server.map.Chunk;
 import java.awt.Dimension;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import lib.cmd.CommandDispatcher;
-import lib.cmd.CommandParseException;
+import lib.di.IContainer;
 import lib.di.Inject;
 import lib.logger.ILogger;
 import lib.util.IArgumentParser;
 
 public class InfrpgGame extends Game
 {
-
 	private static InfrpgGame game;
 
 	private final ILogger logger;
 	private final ClientConfig config;
 	private final Dimension screenSize;
-
 	private float elapsed_t;
 	private float delta_t;
+	private final ClientNetListener net;
+	private final ChunkCache chunkCache;
+	private final FPSCounter fpsCounter;
+
 	private BitmapFont consolaFont;
-	private FPSCounter fpsCounter;
 	private SpriteBatch batch;
 	private TextureAtlas atlas;
 	private DebugTextRenderer debugText;
-	private final ClientNetListener net;
 
 	/**
 	 *
 	 * @param logger
 	 * @param config
 	 * @param net
+	 * @param chunkCache
 	 */
 	@Inject
-	public InfrpgGame(ILogger logger, ClientConfig config, ClientNetListener net)
+	public InfrpgGame(
+		ILogger logger,
+		ClientConfig config,
+		ClientNetListener net,
+		ChunkCache chunkCache)
 	{
 		this.logger = logger;
 		this.config = config;
 		this.net = net;
 		this.elapsed_t = 0;
 		this.screenSize = new Dimension(config.screenWidth, config.screenHeight);
+		this.chunkCache = chunkCache;
+		this.fpsCounter = new FPSCounter(1000);
 
-		Console.addCommandHook(InfrpgGame::execCommand);
+		Console.setCommandHook(InfrpgGame::execCommand);
 		Globals.RENDER_DEBUG_TEXT = Globals.DEBUG;
 
 		this.logger.debug("Client config: " + config.getConfigKeyValueMap());
@@ -98,13 +110,7 @@ public class InfrpgGame extends Game
 
 	public static CompletableFuture<Void> execCommand(String cmd)
 	{
-		return Globals.resolve(CommandDispatcher.class).parse(cmd)
-			.exceptionally(e ->
-			{
-				while (e != null && e.getCause() != null) e = e.getCause();
-				if (e != null) Console.println(e.getMessage(), Console.COLOR_ERROR_MSG);
-				return null;
-			});
+		return Globals.resolve(CommandDispatcher.class).parse(cmd);
 	}
 
 	public static void connect(String ip, int port)
@@ -121,19 +127,24 @@ public class InfrpgGame extends Game
 			Globals.logger().warning("Could not connect to " + ip + ":" + port + ". " + ex.getMessage());
 			throw Helpers.wrapInRuntimeException(ex);
 		}
+		catch (Exception ex)
+		{
+			Globals.logger().logException(ex);
+			throw Helpers.wrapInRuntimeException(ex);
+		}
 	}
 
 	@Override
 	public void create()
 	{
 		logger.info("Game init...");
-
+		
 		game = this;
-
+		
 		atlas = new TextureAtlas(Gdx.files.internal("packed/pack.atlas"));
-
-		fpsCounter = new FPSCounter(1000);
 		batch = new SpriteBatch();
+		
+		Tileset.loadTilesets(atlas);
 
 		FreeTypeFontGenerator fontgenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/consola.ttf"));
 		FreeTypeFontParameter fontparameter = new FreeTypeFontParameter();
@@ -153,6 +164,10 @@ public class InfrpgGame extends Game
 //		AssetManager assman = new AssetManager();
 //		TextureLoader.TextureParameter texparams = new TextureLoader.TextureParameter();
 //		texparams.genMipMaps = true;
+
+		logger.debug("Registering screens");
+		registerScreens(Globals.container);
+
 		setScreen(Globals.resolve(MenuScreen.class));
 
 		logger.info("Executing startup commands");
@@ -174,6 +189,8 @@ public class InfrpgGame extends Game
 	@Override
 	public void render()
 	{
+		tick();
+
 		delta_t = Gdx.graphics.getDeltaTime();
 		//elapsed_t = (float) (System.nanoTime() / 1_000_000_000d); // This caused stuttering in animations
 		elapsed_t += delta_t;
@@ -200,6 +217,15 @@ public class InfrpgGame extends Game
 
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 		}
+	}
+
+	private void tick()
+	{
+		ClientNetHandler netHandler = net.getHandler();
+
+		Chunk chunk = netHandler.chunksToProcess.poll();
+		if (chunk != null) chunkCache.putChunk(new MapChunk(chunk));
+		
 	}
 
 	@Override
@@ -256,6 +282,12 @@ public class InfrpgGame extends Game
 	public AbstractScreen getScreen()
 	{
 		return (AbstractScreen) super.getScreen();
+	}
+	
+	private static void registerScreens(IContainer container)
+	{
+		container.resolveAndRegisterInstance(MenuScreen.class);
+		container.resolveAndRegisterInstance(InGameScreen.class);
 	}
 
 }

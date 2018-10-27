@@ -1,4 +1,4 @@
-package game.infrpg.client.logic.mapold;
+package game.infrpg.client.world;
 
 /**
  *

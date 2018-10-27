@@ -10,13 +10,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import game.infrpg.common.util.Globals;
-import game.infrpg.client.logic.mapold.Map;
+import game.infrpg.client.world.Map;
 import game.infrpg.client.InfrpgGame;
 import static game.infrpg.client.InfrpgGame.*;
 import game.infrpg.client.logic.Camera;
 import game.infrpg.client.logic.Dir;
 import game.infrpg.common.util.Constants;
-import game.infrpg.client.logic.mapold.Tileset;
+import game.infrpg.client.world.Tileset;
 import game.infrpg.client.rendering.shapes.RenderUtils;
 import game.infrpg.client.logic.AbstractScreen;
 import game.infrpg.client.util.ClientConfig;
@@ -29,8 +29,8 @@ import org.lwjgl.util.Point;
  *
  * @author Bjørnar W. Alvestad
  */
-public class InGameScreen extends AbstractScreen {
-
+public class InGameScreen extends AbstractScreen
+{
 	private final ILogger logger;
 	private final ClientConfig config;
 	private final Map map;
@@ -43,44 +43,46 @@ public class InGameScreen extends AbstractScreen {
 	private float zoomacc = 0.0f;
 	private int renderCalls;
 
-
 	@Inject
-	public InGameScreen(InfrpgGame game, ILogger logger, ClientConfig config) {
+	public InGameScreen(
+		InfrpgGame game,
+		ILogger logger,
+		ClientConfig config,
+		Map map)
+	{
 		super(game);
 		this.logger = logger;
 		this.config = config;
-		
+		this.map = map;
+
 		TextureAtlas atlas = getAtlas();
 
 		this.isoCamPosBuffer = new Vector2();
-		Tileset.loadTilesets(atlas);
 		batch = new SpriteBatch();
-
-		map = new Map("penis".hashCode()); // TODO: Hardcoded map seed
 
 		tilesetCycler = new TilesetCycler(map);
 
 		cam = new Camera(config.screenWidth, config.screenHeight);
-		cam.zoom = 0.5f;
+		cam.zoom = 10.f;
 
 		cam.update();
 
 		shapeRenderer = new ShapeRenderer();
-
-		Gdx.input.setInputProcessor(new InGameInput());
 	}
 
 	@Override
-	public void render(float delta) {
+	public void render(float delta)
+	{
 		tick(delta);
-		
+
 		renderCalls = 0;
 		handleInput(delta);
 
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		if (Math.abs(zoomacc) > 0.01f) {
+		if (Math.abs(zoomacc) > 0.01f)
+		{
 			float zoomspeed = zoomacc * delta * 10.0f;
 			zoomacc -= zoomspeed;
 			cam.zoom *= 1.0f + zoomspeed;
@@ -104,68 +106,87 @@ public class InGameScreen extends AbstractScreen {
 		renderCalls += map.getRenderCalls();
 		renderCalls += batch.renderCalls;
 	}
-	
-	private void tick(float delta) {
-		
+
+	private void tick(float delta)
+	{
+
 	}
 
 	@Override
-	public void pause() {
+	public void pause()
+	{
 	}
 
 	@Override
-	public void resume() {
+	public void resume()
+	{
 	}
 
 	@Override
-	public void dispose() {
+	public void show()
+	{
+		Gdx.input.setInputProcessor(new InGameInput());
+	}
+
+	@Override
+	public void dispose()
+	{
 		logger.debug("Disposing InGameScreen...");
 		batch.dispose();
 		map.dispose();
 	}
 
-	private void handleInput(float delta) {
+	private void handleInput(float delta)
+	{
 		int directionMask = 0;
 
-		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.W))
+		{
 			directionMask |= Dir.UP.mask;
 		}
 
-		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.A))
+		{
 			directionMask |= Dir.LEFT.mask;
 		}
 
-		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.S))
+		{
 			directionMask &= ~Dir.UP.mask;
 			directionMask |= Dir.DOWN.mask;
 		}
 
-		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.D))
+		{
 			directionMask &= ~Dir.LEFT.mask;
 			directionMask |= Dir.RIGHT.mask;
 		}
 
 		Dir moveDir = Dir.dirFromMask(directionMask);
 
-		if (moveDir != null) {
+		if (moveDir != null)
+		{
 			Vector2 dirVector = moveDir.getUnitDirVector();
 			dirVector.scl(Constants.DEBUG_MOVEMENT_SPEED * cam.zoom * delta);
 			cam.position.x += dirVector.x;
 			cam.position.y += dirVector.y;
 		}
 
-		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
+		{
 			Gdx.app.exit();
 		}
 	}
 
 	@Override
-	public int getRenderCalls() {
+	public int getRenderCalls()
+	{
 		return renderCalls;
 	}
 
 	@Override
-	public String debugRenderText() {
+	public String debugRenderText()
+	{
 		StringBuilder str = new StringBuilder();
 
 		cam.getIsometricPosition(isoCamPosBuffer);
@@ -175,26 +196,30 @@ public class InGameScreen extends AbstractScreen {
 		float chunkX = isoCamPosBuffer.x / (Constants.CHUNK_SIZE * Constants.TILE_SIZE);
 		float chunkY = isoCamPosBuffer.y / (Constants.CHUNK_SIZE * Constants.TILE_SIZE);
 		Point centerChunk = new Point(
-				Math.floorDiv((int) isoCamPosBuffer.x, Constants.CHUNK_SIZE * Constants.TILE_SIZE),
-				Math.floorDiv((int) isoCamPosBuffer.y, Constants.CHUNK_SIZE * Constants.TILE_SIZE));
+			Math.floorDiv((int) isoCamPosBuffer.x, Constants.CHUNK_SIZE * Constants.TILE_SIZE),
+			Math.floorDiv((int) isoCamPosBuffer.y, Constants.CHUNK_SIZE * Constants.TILE_SIZE));
 
 		str.append(String.format("%-15s %.2f, %.2f  [%d, %d]\n", "Chunk pos:",
-				chunkX, chunkY, centerChunk.getX(), centerChunk.getY()));
+			chunkX, chunkY, centerChunk.getX(), centerChunk.getY()));
 
-		str.append(String.format("%-15s %d\n", "Chunks:", map.getChunkCount()));
+		str.append(String.format("%-15s %d\n", "Loaded chunks:", map.getNumLoadedChunks()));
 
 		return str.toString();
 	}
 
-	public Vector3 getCameraPosition() {
+	public Vector3 getCameraPosition()
+	{
 		return cam.position;
 	}
 
-	private class InGameInput implements InputProcessor {
+	private class InGameInput implements InputProcessor
+	{
 
 		@Override
-		public boolean keyDown(int keycode) {
-			switch (keycode) {
+		public boolean keyDown(int keycode)
+		{
+			switch (keycode)
+			{
 				case Input.Keys.F1:
 					Globals.RENDER_DEBUG_TEXT = !Globals.RENDER_DEBUG_TEXT;
 					return true;
@@ -206,19 +231,19 @@ public class InGameScreen extends AbstractScreen {
 				case Input.Keys.F3:
 					Globals.RENDER_ENTITY_OUTLINE = !Globals.RENDER_ENTITY_OUTLINE;
 					return true;
-					
+
 				case Input.Keys.Q:
 					map.setTileset(tilesetCycler.getNextTileset());
 					return true;
-					
+
 				case Input.Keys.E:
 					map.setTileset(tilesetCycler.getPreviousTileset());
 					return true;
-					
+
 				case Input.Keys.BACKSLASH:
 					Console.showConsole();
 					return true;
-					
+
 				default:
 					if (Globals.DEBUG && Constants.LOG_INPUT_KEYCODES) logger.debug("Keycode: " + keycode);
 			}
@@ -227,38 +252,46 @@ public class InGameScreen extends AbstractScreen {
 		}
 
 		@Override
-		public boolean keyUp(int keycode) {
+		public boolean keyUp(int keycode)
+		{
 			return false;
 		}
 
 		@Override
-		public boolean keyTyped(char character) {
+		public boolean keyTyped(char character)
+		{
 			return false;
 		}
 
 		@Override
-		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		public boolean touchDown(int screenX, int screenY, int pointer, int button)
+		{
 			return false;
 		}
 
 		@Override
-		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		public boolean touchUp(int screenX, int screenY, int pointer, int button)
+		{
 			return false;
 		}
 
 		@Override
-		public boolean touchDragged(int screenX, int screenY, int pointer) {
+		public boolean touchDragged(int screenX, int screenY, int pointer)
+		{
 			return false;
 		}
 
 		@Override
-		public boolean mouseMoved(int screenX, int screenY) {
+		public boolean mouseMoved(int screenX, int screenY)
+		{
 			return false;
 		}
 
 		@Override
-		public boolean scrolled(int amount) {
-			if (Constants.ENABLE_ZOOM) {
+		public boolean scrolled(int amount)
+		{
+			if (Constants.ENABLE_ZOOM)
+			{
 				zoomacc += amount * 0.2;
 				return true;
 			}

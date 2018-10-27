@@ -3,9 +3,7 @@ package game.infrpg.client.screens.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -15,10 +13,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import game.infrpg.client.InfrpgGame;
 import game.infrpg.client.logic.AbstractScreen;
-import game.infrpg.client.screens.ingame.InGameScreen;
-import game.infrpg.common.util.Globals;
-import game.infrpg.common.util.Helpers;
-import lib.cmd.CommandDispatcher;
 import lib.di.Inject;
 import lib.logger.ILogger;
 
@@ -40,7 +34,6 @@ public class MenuScreen extends AbstractScreen
 		this.logger.debug("Menu");
 
 		this.stage = new Stage(new ScreenViewport());
-		Gdx.input.setInputProcessor(stage);
 
 		Skin mySkin = new Skin(Gdx.files.internal("skins/default/uiskin.json"));
 
@@ -99,6 +92,12 @@ public class MenuScreen extends AbstractScreen
 
 		stage.act();
 		stage.draw();
+	}
+
+	@Override
+	public void show()
+	{
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
