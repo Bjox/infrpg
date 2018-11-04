@@ -2,6 +2,7 @@ package game.infrpg.server.net;
 
 import game.infrpg.common.net.INetHandler;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
@@ -75,6 +76,11 @@ public class ServerNetListener extends Listener implements Closeable
 	{
 		if (Constants.NET_TRACE)
 			logger.debug("Received " + object.toString() + " on connection " + connection.toString());
+		
+		if (object instanceof FrameworkMessage)
+		{
+			return;
+		}
 
 		if (!(object instanceof NetPacket))
 		{

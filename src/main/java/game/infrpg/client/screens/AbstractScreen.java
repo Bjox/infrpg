@@ -1,8 +1,9 @@
-package game.infrpg.client.logic;
+package game.infrpg.client.screens;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.Disposable;
 import game.infrpg.client.InfrpgGame;
+import game.infrpg.client.rendering.RenderCallCounter;
 import java.io.Closeable;
 import java.io.IOException;
 

@@ -2,8 +2,6 @@ package game.infrpg.client.world;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Affine2;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import game.infrpg.client.rendering.shapes.RenderUtils;
 import static game.infrpg.client.rendering.shapes.RenderUtils.ISOMETRIC_TRANSFORM;
@@ -18,7 +16,7 @@ import game.infrpg.server.map.Chunk;
  *
  * @author Bjørnar W. Alvestad
  */
-public class MapChunk extends Chunk
+public class MapChunk extends Chunk implements IMapChunk
 {
 	/** The screen/cartesian position. */
 	private final Vector2 screenPos;
@@ -34,6 +32,7 @@ public class MapChunk extends Chunk
 		super(chunk);
 		this.screenPos = new Vector2(position.getX() * CHUNK_SIZE * TILE_SIZE, position.getY() * CHUNK_SIZE * TILE_SIZE);
 		Util.iso2cart(screenPos);
+		screenPos.x -= TILE_SIZE;
 		this.coordBuffer = new Vector2();
 	}
 
@@ -42,6 +41,7 @@ public class MapChunk extends Chunk
 		super.setTile(x, y, tile.dataValue);
 	}
 
+	@Override
 	public void render(Tileset tileset, SpriteBatch batch)
 	{
 		for (byte x = CHUNK_SIZE - 1; x >= 0; x--)
@@ -68,6 +68,12 @@ public class MapChunk extends Chunk
 	public String toString()
 	{
 		return String.format("Map chunk [%d, %d]", position.getX(), position.getY());
+	}
+
+	@Override
+	public long getId()
+	{
+		return id;
 	}
 
 }

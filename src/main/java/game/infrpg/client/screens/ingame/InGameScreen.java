@@ -3,6 +3,7 @@ package game.infrpg.client.screens.ingame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -13,11 +14,11 @@ import game.infrpg.common.util.Globals;
 import game.infrpg.client.world.Map;
 import game.infrpg.client.InfrpgGame;
 import static game.infrpg.client.InfrpgGame.*;
-import game.infrpg.client.logic.Camera;
+import game.infrpg.client.rendering.Camera;
 import game.infrpg.client.logic.Dir;
 import game.infrpg.common.util.Constants;
 import game.infrpg.client.rendering.shapes.RenderUtils;
-import game.infrpg.client.logic.AbstractScreen;
+import game.infrpg.client.screens.AbstractScreen;
 import game.infrpg.client.util.ClientConfig;
 import game.infrpg.common.console.Console;
 import lib.di.Inject;
@@ -60,8 +61,8 @@ public class InGameScreen extends AbstractScreen
 		batch = new SpriteBatch();
 
 		tilesetCycler = new TilesetCycler(map);
-
-		cam = new Camera(config.screenWidth, config.screenHeight);
+		
+		cam = new Camera(game.screenSize.getWidth(), game.screenSize.getHeight());
 		cam.zoom = 1.f;
 
 		cam.update();
@@ -96,12 +97,16 @@ public class InGameScreen extends AbstractScreen
 		batch.end();
 
 		RenderUtils.renderShapes(cam.combined);
-
-//		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//		shapeRenderer.setProjectionMatrix(cam.combined);
-//		shapeRenderer.setColor(Color.RED);
-//		shapeRenderer.circle(player.getScreenX(), player.getScreenY(), 1f);
-//		shapeRenderer.end();
+		
+		if (Globals.RENDER_ENTITY_ORIGIN)
+		{
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+			shapeRenderer.setProjectionMatrix(cam.combined);
+			shapeRenderer.setColor(Color.CYAN);
+			shapeRenderer.circle(cam.position.x, cam.position.y, 2f);
+			shapeRenderer.end();
+		}
+		
 		renderCalls += map.getRenderCalls();
 		renderCalls += batch.renderCalls;
 	}
@@ -170,11 +175,6 @@ public class InGameScreen extends AbstractScreen
 			cam.position.x += dirVector.x;
 			cam.position.y += dirVector.y;
 		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
-		{
-			Gdx.app.exit();
-		}
 	}
 
 	@Override
@@ -201,7 +201,7 @@ public class InGameScreen extends AbstractScreen
 		str.append(String.format("%-15s %.2f, %.2f  [%d, %d]\n", "Chunk pos:",
 			chunkX, chunkY, centerChunk.getX(), centerChunk.getY()));
 
-		str.append(String.format("%-15s %d\n", "Loaded chunks:", map.getNumLoadedChunks()));
+		str.append(String.format("%-15s %d\n", "Cached chunks:", map.getNumCachedChunks()));
 
 		return str.toString();
 	}

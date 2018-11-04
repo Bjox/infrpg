@@ -2,6 +2,7 @@ package game.infrpg.client;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.utils.Disposable;
-import game.infrpg.client.logic.AbstractScreen;
+import game.infrpg.client.screens.AbstractScreen;
 import game.infrpg.client.world.MapChunk;
 import game.infrpg.client.net.ClientNetHandler;
 import game.infrpg.client.net.ClientNetListener;
@@ -26,16 +27,15 @@ import game.infrpg.common.util.Arguments;
 import game.infrpg.common.util.Globals;
 import game.infrpg.common.util.Helpers;
 import game.infrpg.server.map.Chunk;
-import java.awt.Dimension;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import lib.cmd.CommandDispatcher;
 import lib.di.IContainer;
 import lib.di.Inject;
 import lib.logger.ILogger;
 import lib.util.IArgumentParser;
+import org.lwjgl.util.ReadableDimension;
 
 public class InfrpgGame extends Game
 {
@@ -43,7 +43,7 @@ public class InfrpgGame extends Game
 
 	private final ILogger logger;
 	private final ClientConfig config;
-	private final Dimension screenSize;
+	public final ReadableDimension screenSize;
 	private float elapsed_t;
 	private float delta_t;
 	private final ClientNetListener net;
@@ -73,7 +73,7 @@ public class InfrpgGame extends Game
 		this.config = config;
 		this.net = net;
 		this.elapsed_t = 0;
-		this.screenSize = new Dimension(config.screenWidth, config.screenHeight);
+		this.screenSize = config.screenResolution.toDimension();
 		this.chunkCache = chunkCache;
 		this.fpsCounter = new FPSCounter(1000);
 
@@ -212,7 +212,7 @@ public class InfrpgGame extends Game
 			debugText.setLine(4, getScreen().debugRenderText());
 
 			batch.begin();
-			debugText.render(batch, 5, screenSize.height - 5);
+			debugText.render(batch, 5, screenSize.getHeight() - 5);
 			batch.end();
 
 			Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -228,9 +228,12 @@ public class InfrpgGame extends Game
 		{
 			chunkCache.putChunk(new MapChunk(chunk));
 		}
-		//Chunk chunk = netHandler.chunksToProcess.poll();
-		//if (chunk != null) chunkCache.putChunk(new MapChunk(chunk));
 		
+		
+		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
+		{
+			Gdx.app.exit();
+		}
 	}
 
 	@Override

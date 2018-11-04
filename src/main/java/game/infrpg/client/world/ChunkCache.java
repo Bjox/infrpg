@@ -9,7 +9,7 @@ import lib.logger.ILogger;
  *
  * @author Bjørnar W. Alvestad
  */
-public class ChunkCache extends Cache<Long, MapChunk>
+public class ChunkCache extends Cache<Long, IMapChunk>
 {
 	@Inject
 	public ChunkCache(ILogger logger)
@@ -22,23 +22,23 @@ public class ChunkCache extends Cache<Long, MapChunk>
 		return containsKey(getKey(x, y));
 	}
 
-	public MapChunk getChunk(int x, int y)
+	public IMapChunk getChunk(int x, int y)
 	{
 		return get(getKey(x, y));
 	}
 
-	public void putChunk(MapChunk chunk)
+	public void putChunk(IMapChunk chunk)
 	{
 		put(getKey(chunk), chunk);
 	}
 
-	private long getKey(Chunk chunk)
+	private long getKey(IMapChunk chunk)
 	{
-		return getKey(chunk.position.getX(), chunk.position.getY());
+		return chunk.getId();
 	}
-
+	
 	private long getKey(int x, int y)
 	{
-		return Integer.toUnsignedLong(x) << 32 | Integer.toUnsignedLong(y);
+		return Chunk.calculateChunkId(x, y);
 	}
 }

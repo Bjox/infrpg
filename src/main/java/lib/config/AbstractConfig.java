@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+import lib.cmd.TypeParser;
 
 /**
  * Extend this class in order to create a custom configuration class.<br>
@@ -24,16 +25,19 @@ public abstract class AbstractConfig {
 
 	private final IConfigStore configStore;
 	private final IStorage storage;
+	private final TypeParser typeParser;
 	
 	/**
 	 * Constructor.
 	 * @param configStore The key-value buffer backing this configuration.
 	 * @param storage The data access layer used to persist the configuration.
+	 * @param typeParser
 	 * @throws IOException 
 	 */
-	public AbstractConfig(IConfigStore configStore, IStorage storage) throws IOException {
+	public AbstractConfig(IConfigStore configStore, IStorage storage, TypeParser typeParser) throws IOException {
 		this.configStore = configStore;
 		this.storage = storage;
+		this.typeParser = typeParser;
 		
 		throwIfClassLacksConfigClassAnnotation();
 	}
@@ -119,10 +123,10 @@ public abstract class AbstractConfig {
 			}
 			
 			String strValue = configStore.getString(key);
-			ConfigFieldDataType type = ConfigFieldDataType.valueOf(field.getType().getSimpleName().toUpperCase());
-
+			Class<?> type = field.getType();
+			
 			try {
-				field.set(this, type.parse(strValue));
+				field.set(this, typeParser.parse(type, strValue));
 			}
 			catch (IllegalAccessException e) {
 				throw new RuntimeException(e);

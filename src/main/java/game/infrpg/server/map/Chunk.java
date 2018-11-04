@@ -2,25 +2,17 @@ package game.infrpg.server.map;
 
 import game.infrpg.common.util.Constants;
 import java.io.Serializable;
-import org.lwjgl.util.Point;
-import org.lwjgl.util.ReadablePoint;
 
 /**
  *
  * @author Bjørnar W. Alvestad
  */
-public class Chunk implements Serializable
+public class Chunk extends AbstractChunk implements Serializable
 {
-
 	// Increment this if non-backwards compatible changes are made on the class.
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = 2L;
+	
 	private final byte[][] tileData;
-
-	/**
-	 * The chunk position.
-	 */
-	public final ReadablePoint position;
 	
 	/**
 	 * Empty constructor for kryo.
@@ -28,19 +20,18 @@ public class Chunk implements Serializable
 	public Chunk()
 	{
 		this.tileData = null;
-		this.position = null;
 	}
 
 	public Chunk(int x, int y)
 	{
+		super(x, y);
 		this.tileData = new byte[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-		this.position = new Point(x, y);
 	}
 
-	public Chunk(Chunk chunk)
+	public Chunk(Chunk orig)
 	{
-		this.tileData = chunk.tileData;
-		this.position = chunk.position;
+		super(orig);
+		this.tileData = orig.tileData;
 	}
 
 	public void setTile(int x, int y, byte tile)
@@ -72,9 +63,7 @@ public class Chunk implements Serializable
 
 	public static interface TileDataSupplier
 	{
-
 		public byte supplyTileData(int x, int y);
-
 	}
 
 }

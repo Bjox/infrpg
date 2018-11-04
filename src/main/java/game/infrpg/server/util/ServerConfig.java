@@ -2,6 +2,7 @@ package game.infrpg.server.util;
 
 import game.infrpg.common.util.Constants;
 import java.io.IOException;
+import lib.cmd.TypeParser;
 import lib.config.AbstractConfig;
 import lib.config.ConfigClass;
 import lib.config.ConfigField;
@@ -24,8 +25,8 @@ public class ServerConfig extends AbstractConfig {
 	public String mapSeed = "";
 	
 	@Inject
-	public ServerConfig(IConfigStore configStore, IStorage storage) throws IOException {
-		super(configStore, storage);
+	public ServerConfig(IConfigStore configStore, IStorage storage, TypeParser typeParser) throws IOException {
+		super(configStore, storage, typeParser);
 	}
 	
 }

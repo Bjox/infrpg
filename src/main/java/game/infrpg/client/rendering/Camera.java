@@ -1,4 +1,4 @@
-package game.infrpg.client.logic;
+package game.infrpg.client.rendering;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;

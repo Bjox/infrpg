@@ -1,4 +1,4 @@
-package game.infrpg.client.logic;
+package game.infrpg.client.rendering;
 
 /**
  *

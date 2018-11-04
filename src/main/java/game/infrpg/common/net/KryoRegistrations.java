@@ -3,6 +3,7 @@ package game.infrpg.common.net;
 import game.infrpg.common.net.packets.ChunkRequest;
 import game.infrpg.common.net.packets.ChunkResponse;
 import com.esotericsoftware.kryo.Kryo;
+import game.infrpg.server.map.AbstractChunk;
 import game.infrpg.server.map.Chunk;
 import lib.logger.ILogger;
 import org.lwjgl.util.Point;
@@ -23,6 +24,7 @@ public final class KryoRegistrations {
 		byte[].class,
 		byte[][].class,
 		
+		AbstractChunk.class,
 		Chunk.class,
 		Point.class
 	};

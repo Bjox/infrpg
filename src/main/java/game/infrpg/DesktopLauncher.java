@@ -17,8 +17,6 @@ import game.infrpg.server.InfrpgServer;
 import game.infrpg.client.ClientCommands;
 import game.infrpg.client.net.ClientNetHandler;
 import game.infrpg.client.net.ClientNetListener;
-import game.infrpg.client.screens.ingame.InGameScreen;
-import game.infrpg.client.screens.menu.MenuScreen;
 import game.infrpg.client.util.ClientConfig;
 import game.infrpg.client.world.ChunkCache;
 import game.infrpg.common.util.Helpers;
@@ -56,6 +54,7 @@ import lib.cmd.CommandDispatcher;
 import lib.cmd.CommandObject;
 import game.infrpg.common.net.INetHandler;
 import game.infrpg.server.net.ServerNetListener;
+import lib.di.IContainer;
 
 public class DesktopLauncher {
 
@@ -90,12 +89,12 @@ public class DesktopLauncher {
 		try {
 			if (Globals.SERVER) {
 				logger.info("Infrpg server");
-				serverRegistrations();
+				serverRegistrations(container);
 				startServer();
 			}
 			else {
 				logger.info("Infrpg client");
-				clientRegistrations();
+				clientRegistrations(container);
 				startClient(resolve(ClientConfig.class));
 			}
 		}
@@ -159,7 +158,7 @@ public class DesktopLauncher {
 	}
 
 	// TODO: registering generic IStorage to ClientConfig specific FileStorage
-	private static void clientRegistrations() throws Exception {
+	private static void clientRegistrations(IContainer container) throws Exception {
 		container.registerSingleton(IConfigStore.class, new PropertiesConfigStore("Infrpg client configuration"));
 		container.registerSingleton(IStorage.class, new FileStorage(Constants.CLIENT_CONFIG_PATHNAME));
 		container.resolveAndRegisterInstance(ClientConfig.class).initConfig();
@@ -174,7 +173,7 @@ public class DesktopLauncher {
 	}
 
 	// TODO: registering generic IStorage to ServerConfig specific FileStorage
-	private static void serverRegistrations() throws Exception {
+	private static void serverRegistrations(IContainer container) throws Exception {
 		container.registerSingleton(IConfigStore.class, new PropertiesConfigStore("Infrpg server configuration"));
 		container.registerSingleton(IStorage.class, new FileStorage(Constants.SERVER_CONFIG_PATHNAME));
 		container.resolveAndRegisterInstance(ServerConfig.class).initConfig();
@@ -193,12 +192,13 @@ public class DesktopLauncher {
 
 	private static void startClient(ClientConfig clientConfig) {
 		LwjglApplicationConfiguration lwjglAppConfig = new LwjglApplicationConfiguration();
-		lwjglAppConfig.width = clientConfig.screenWidth;
-		lwjglAppConfig.height = clientConfig.screenHeight;
+		lwjglAppConfig.width = clientConfig.screenResolution.width;
+		lwjglAppConfig.height = clientConfig.screenResolution.height;
 		lwjglAppConfig.title = Constants.CLIENT_WINDOW_TITLE;
 		lwjglAppConfig.vSyncEnabled = clientConfig.verticalSync;
 		lwjglAppConfig.foregroundFPS = Helpers.getClientForegroundFpsLimit();
 		lwjglAppConfig.backgroundFPS = Helpers.getClientBackgroundFpsLimit();
+		lwjglAppConfig.fullscreen = clientConfig.fullscreen;
 
 		container.registerInstance(lwjglAppConfig);
 

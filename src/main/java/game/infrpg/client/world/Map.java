@@ -3,15 +3,15 @@ package game.infrpg.client.world;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
-import game.infrpg.client.logic.RenderCallCounter;
-import game.infrpg.client.logic.Camera;
+import game.infrpg.client.rendering.RenderCallCounter;
+import game.infrpg.client.rendering.Camera;
 import game.infrpg.client.net.ClientNetListener;
 import game.infrpg.common.net.packets.ChunkRequest;
 import static game.infrpg.common.util.Constants.CHUNK_SIZE;
 import static game.infrpg.common.util.Constants.TILE_SIZE;
 import static game.infrpg.common.util.Constants.CHUNK_RENDER_DISTANCE;
-import java.util.HashSet;
-import java.util.Set;
+import game.infrpg.server.map.Chunk;
+import java.time.Duration;
 import lib.di.Inject;
 import lib.logger.ILogger;
 import org.lwjgl.util.Point;
@@ -22,11 +22,12 @@ import org.lwjgl.util.Point;
  */
 public class Map implements Disposable, RenderCallCounter
 {
+	private static final Duration CHUNK_REQUEST_RETRY_PERIOD = Duration.ofMillis(10000);
+	
 	private final ILogger logger;
 	private final ChunkCache chunkCache;
 	private final SpriteBatch batch;
 	private final Vector2 isoCamPosBuffer;
-	private final Set<Long> requestedChunks;
 	private final ClientNetListener netListener;
 	private Tileset tileset;
 
@@ -40,7 +41,6 @@ public class Map implements Disposable, RenderCallCounter
 		this.chunkCache = chunkCache;
 		this.batch = new SpriteBatch();
 		this.isoCamPosBuffer = new Vector2();
-		this.requestedChunks = new HashSet<>(512);
 		this.netListener = netListener;
 		this.tileset = Tileset.getTileset(Tileset.Tilesets.NORMAL);
 	}
@@ -61,20 +61,21 @@ public class Map implements Disposable, RenderCallCounter
 		cam.getIsometricPosition(isoCamPosBuffer);
 
 		Point centerChunk = new Point(
-			Math.floorDiv((int) isoCamPosBuffer.x, CHUNK_SIZE * TILE_SIZE),
-			Math.floorDiv((int) isoCamPosBuffer.y, CHUNK_SIZE * TILE_SIZE));
+			Math.floorDiv((int)isoCamPosBuffer.x, CHUNK_SIZE * TILE_SIZE),
+			Math.floorDiv((int)isoCamPosBuffer.y, CHUNK_SIZE * TILE_SIZE));
 
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
-		
-		int X_RENDER_DIST = (int) (cam.zoom * 0.4 * CHUNK_RENDER_DISTANCE) + 2;
-		int Y_RENDER_DIST = (int) (cam.zoom * 0.3 * CHUNK_RENDER_DISTANCE) + 2;
+
+		float zoom = Math.min(cam.zoom, 4f);
+		int X_RENDER_DIST = (int)(zoom * 0.4 * CHUNK_RENDER_DISTANCE) + 2;
+		int Y_RENDER_DIST = (int)(zoom * 0.3 * CHUNK_RENDER_DISTANCE) + 2;
 
 		for (int i = -X_RENDER_DIST; i <= X_RENDER_DIST; i++)
 		{
 			for (int j = -Y_RENDER_DIST; j <= Y_RENDER_DIST; j++)
 			{
-				// Special case of iso-transformation
+				// Special case of integer iso-transformation
 				int x = Math.floorDiv(2 * j + i, 2);
 				int y = Math.floorDiv(2 * j - i, 2);
 				renderMapChunk(x + centerChunk.getX(), y + centerChunk.getY());
@@ -86,26 +87,35 @@ public class Map implements Disposable, RenderCallCounter
 
 	private void renderMapChunk(int x, int y)
 	{
-		long chunkKey = getChunkKey(x, y); // TODO: optimize. chunkKey is calculated multiple times
-		MapChunk chunk = chunkCache.getChunk(x, y);
-		if (chunk != null)
+		IMapChunk chunk = chunkCache.getChunk(x, y);
+		if (chunk == null)
+		{
+			chunk = new RequestedMapChunk(x, y);
+			chunkCache.putChunk(chunk);
+			requestChunk(x, y);
+		}
+		else if (chunk instanceof RequestedMapChunk)
+		{
+			RequestedMapChunk mapChunkRequest = (RequestedMapChunk)chunk;
+			Duration requestAge = mapChunkRequest.getTimeSinceRequested();
+			if (requestAge.compareTo(CHUNK_REQUEST_RETRY_PERIOD) > 0)
+			{
+				mapChunkRequest.resetTimestamp();
+				requestChunk(x, y);
+			}
+		}
+		else
 		{
 			chunk.render(tileset, batch);
-			requestedChunks.remove(chunkKey);
-		}
-		else if (!requestedChunks.contains(chunkKey))
-		{
-			requestedChunks.add(chunkKey);
-			netListener.sendTCP(new ChunkRequest(x, y)); // TODO: make async
 		}
 	}
-
-	private long getChunkKey(int x, int y)
+	
+	private void requestChunk(int x, int y)
 	{
-		return Integer.toUnsignedLong(x) << 32 | Integer.toUnsignedLong(y);
+		netListener.sendTCP(new ChunkRequest(x, y)); // TODO: make async
 	}
 
-	public int getNumLoadedChunks()
+	public int getNumCachedChunks()
 	{
 		return chunkCache.getElementCount();
 	}

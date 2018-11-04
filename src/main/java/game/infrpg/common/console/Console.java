@@ -453,7 +453,7 @@ public final class Console extends JFrame {
 			STANDARD_OUT.print(arg0);
 		}
 		if (console != null) {
-			console.printString(arg0, color);
+			printString(arg0, color);
 		}
 	}
 

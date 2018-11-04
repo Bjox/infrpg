@@ -2,8 +2,8 @@ package game.infrpg.client.net;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.minlog.Log;
 import game.infrpg.common.net.KryoRegistrations;
 import game.infrpg.common.net.NetPacket;
 import game.infrpg.common.util.Constants;
@@ -87,6 +87,11 @@ public class ClientNetListener extends Listener implements Closeable
 		if (Constants.NET_TRACE)
 			logger.debug("Received " + object.toString() + " on connection " + connection.toString());
 
+		if (object instanceof FrameworkMessage)
+		{
+			return;
+		}
+		
 		if (!(object instanceof NetPacket))
 		{
 			logger.debug("Received object not instance of NetPacket. Discarding: " + object);

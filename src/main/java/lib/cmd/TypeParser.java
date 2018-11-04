@@ -3,6 +3,7 @@ package lib.cmd;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import lib.di.Inject;
 
 /**
  *
@@ -11,7 +12,8 @@ import java.util.function.Function;
 public class TypeParser {
 	
 	private final Map<Class<?>, Function<String, ?>> parserFunctions;
-
+	
+	@Inject
 	public TypeParser() {
 		this(true);
 	}
