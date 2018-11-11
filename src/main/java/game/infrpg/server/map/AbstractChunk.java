@@ -40,6 +40,11 @@ public class AbstractChunk implements Serializable
 		this.position = orig.position;
 	}
 	
+	public long getId()
+	{
+		return id;
+	}
+	
 	public static long calculateChunkId(int x, int y)
 	{
 		return Integer.toUnsignedLong(x) << 32 | Integer.toUnsignedLong(y);
@@ -49,5 +54,6 @@ public class AbstractChunk implements Serializable
 	{
 		return calculateChunkId(chunk.position.getX(), chunk.position.getY());
 	}
+	
 	
 }

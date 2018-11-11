@@ -10,16 +10,11 @@ import java.time.Duration;
  */
 public class RequestedMapChunk extends AbstractChunk implements IMapChunk
 {
-	public long timestamp;
+	public final long timestamp;
 
 	public RequestedMapChunk(int x, int y)
 	{
 		super(x, y);
-		this.timestamp = now();
-	}
-	
-	public void resetTimestamp()
-	{
 		this.timestamp = now();
 	}
 
@@ -37,11 +32,5 @@ public class RequestedMapChunk extends AbstractChunk implements IMapChunk
 	public void render(Tileset tileset, SpriteBatch batch)
 	{
 	}
-
-	@Override
-	public long getId()
-	{
-		return id;
-	}
-
+	
 }

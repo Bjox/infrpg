@@ -134,6 +134,7 @@ public class InfrpgGame extends Game
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void create()
 	{

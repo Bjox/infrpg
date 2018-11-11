@@ -15,6 +15,20 @@ public final class Util {
 				.range(0, Math.min(a.size(), b.size()))
 				.mapToObj(i -> new Pair<>(a.get(i), b.get(i)));
 	}
+	
+	/**
+	 * Maps a value to a different numeric range.
+	 * @param v
+	 * @param v_min
+	 * @param v_max
+	 * @param min
+	 * @param max
+	 * @return 
+	 */
+	public static double mapToRange(double v, double v_min, double v_max, double min, double max)
+	{
+		return min + (v - v_min) * (max - min) / (v_max - v_min);
+	}
 
 	private Util() {
 	}

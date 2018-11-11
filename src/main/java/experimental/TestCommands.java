@@ -1,4 +1,9 @@
-package lib.cmd;
+package experimental;
+
+import lib.cmd.Command;
+import lib.cmd.CommandDispatcher;
+import lib.cmd.CommandObject;
+import lib.cmd.Default;
 
 /**
  *

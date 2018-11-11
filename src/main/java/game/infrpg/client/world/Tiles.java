@@ -6,7 +6,10 @@ package game.infrpg.client.world;
  */
 public enum Tiles {
 	GRASS(0),
-	DIRT(1),;
+	DIRT(1),
+	SAND(2),
+	WATER(3)
+	;
 
 	/**
 	 * The tile index of the enum list.

@@ -10,7 +10,6 @@ import game.infrpg.common.net.packets.ChunkRequest;
 import static game.infrpg.common.util.Constants.CHUNK_SIZE;
 import static game.infrpg.common.util.Constants.TILE_SIZE;
 import static game.infrpg.common.util.Constants.CHUNK_RENDER_DISTANCE;
-import game.infrpg.server.map.Chunk;
 import java.time.Duration;
 import lib.di.Inject;
 import lib.logger.ILogger;
@@ -90,17 +89,13 @@ public class Map implements Disposable, RenderCallCounter
 		IMapChunk chunk = chunkCache.getChunk(x, y);
 		if (chunk == null)
 		{
-			chunk = new RequestedMapChunk(x, y);
-			chunkCache.putChunk(chunk);
 			requestChunk(x, y);
 		}
 		else if (chunk instanceof RequestedMapChunk)
 		{
-			RequestedMapChunk mapChunkRequest = (RequestedMapChunk)chunk;
-			Duration requestAge = mapChunkRequest.getTimeSinceRequested();
+			Duration requestAge = ((RequestedMapChunk)chunk).getTimeSinceRequested();
 			if (requestAge.compareTo(CHUNK_REQUEST_RETRY_PERIOD) > 0)
 			{
-				mapChunkRequest.resetTimestamp();
 				requestChunk(x, y);
 			}
 		}
@@ -110,9 +105,12 @@ public class Map implements Disposable, RenderCallCounter
 		}
 	}
 	
-	private void requestChunk(int x, int y)
+	private RequestedMapChunk requestChunk(int x, int y)
 	{
 		netListener.sendTCP(new ChunkRequest(x, y)); // TODO: make async
+		RequestedMapChunk chunk = new RequestedMapChunk(x, y);
+		chunkCache.putChunk(chunk);
+		return chunk;
 	}
 
 	public int getNumCachedChunks()
