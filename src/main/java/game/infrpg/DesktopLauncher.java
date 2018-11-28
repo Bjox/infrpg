@@ -26,7 +26,7 @@ import game.infrpg.server.service.client.ClientService;
 import game.infrpg.server.service.client.IClientService;
 import game.infrpg.server.service.map.IMapService;
 import game.infrpg.server.service.map.MapService;
-import game.infrpg.server.service.mapgen.FlatgrassGenerator;
+import game.infrpg.server.service.mapgen.flatgrass.FlatgrassGenerator;
 import game.infrpg.server.service.mapgen.IMapGenerator;
 import game.infrpg.server.service.mapgen.ISeedProvider;
 import game.infrpg.server.service.mapgen.SeedProvider;
@@ -54,6 +54,7 @@ import lib.cmd.CommandDispatcher;
 import lib.cmd.CommandObject;
 import game.infrpg.common.net.INetHandler;
 import game.infrpg.server.net.ServerNetListener;
+import game.infrpg.server.service.mapgen.terrainv1.TerrainV1Generator;
 import lib.di.IContainer;
 
 public class DesktopLauncher {
@@ -178,7 +179,8 @@ public class DesktopLauncher {
 		container.registerSingleton(IStorage.class, new FileStorage(Constants.SERVER_CONFIG_PATHNAME));
 		container.resolveAndRegisterInstance(ServerConfig.class).initConfig();
 
-		container.registerType(IMapGenerator.class, FlatgrassGenerator.class);
+		//container.registerType(IMapGenerator.class, FlatgrassGenerator.class);
+		container.registerType(IMapGenerator.class, TerrainV1Generator.class);
 		container.registerType(ISeedProvider.class, SeedProvider.class);
 		container.registerSingleton(IMapStorage.class, Constants.MAP_STORAGE_TYPE);
 		container.registerSingleton(IMapService.class, MapService.class);

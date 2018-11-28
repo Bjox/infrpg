@@ -43,8 +43,13 @@ public class Chunk extends AbstractChunk implements Serializable
 	{
 		return tileData[x][y];
 	}
-
-	public void setTiles(TileDataSupplier supplier)
+	
+	/**
+	 * Sets all tiles in this chunk according to the supplied TileDataSupplier.
+	 * @param supplier
+	 * @return A reference to this chunk.
+	 */
+	public Chunk setTiles(TileDataSupplier supplier)
 	{
 		for (int i = 0; i < Constants.CHUNK_SIZE; i++)
 		{
@@ -53,6 +58,7 @@ public class Chunk extends AbstractChunk implements Serializable
 				tileData[i][j] = supplier.supplyTileData(i, j);
 			}
 		}
+		return this;
 	}
 
 	@Override
@@ -61,6 +67,7 @@ public class Chunk extends AbstractChunk implements Serializable
 		return String.format("Chunk(%d,%d)", position.getX(), position.getY());
 	}
 
+	@FunctionalInterface
 	public static interface TileDataSupplier
 	{
 		public byte supplyTileData(int x, int y);

@@ -15,11 +15,12 @@ public final class Noise
 	public static void main(String[] args)
 	{
 		OpenSimplexNoise noise = new OpenSimplexNoise(Double.doubleToLongBits(Math.random()));
-		FractalBrownianMotion fbmNoise = new FractalBrownianMotion(8, 0.4, 0.03, noise);
+		FractalBrownianMotion fbmNoise = new FractalBrownianMotion(8, 0.5, 0.015, noise);
 		
 		NoiseVisualizer.build(fbmNoise)
-			.setWidth(400)
-			.setHeight(400)
+			.setWidth(200)
+			.setHeight(200)
+			.setPixelScale(4)
 			.createNoiseVisualizer()
 			.setVisible(true);
 	}

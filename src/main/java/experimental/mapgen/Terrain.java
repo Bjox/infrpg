@@ -14,9 +14,9 @@ import lib.util.noise.OpenSimplexNoise;
 
 public class Terrain
 {
-	static final int windowWidth = 1600;
+	static final int windowWidth = 1200;
 	static final int windowHeight = 900;
-	static final double pixelScale = 2.0;
+	static final double pixelScale = 4.0;
 	
 	static final int width = (int)(windowWidth / pixelScale);
 	static final int height = (int)(windowHeight / pixelScale);

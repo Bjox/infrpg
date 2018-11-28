@@ -66,7 +66,7 @@ public class Map implements Disposable, RenderCallCounter
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
 
-		float zoom = Math.min(cam.zoom, 4f);
+		float zoom = Math.min(cam.zoom, 8f);
 		int X_RENDER_DIST = (int)(zoom * 0.4 * CHUNK_RENDER_DISTANCE) + 2;
 		int Y_RENDER_DIST = (int)(zoom * 0.3 * CHUNK_RENDER_DISTANCE) + 2;
 

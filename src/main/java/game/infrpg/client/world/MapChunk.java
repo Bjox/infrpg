@@ -53,7 +53,7 @@ public class MapChunk extends Chunk implements IMapChunk
 
 				Util.iso2cart(coordBuffer);
 
-				batch.draw(tileset.getTexture(getTile(x, y)), coordBuffer.x + screenPos.x, coordBuffer.y + screenPos.y);
+				batch.draw(tileset.getTexture(getTile(x, y)), coordBuffer.x + screenPos.x, coordBuffer.y + screenPos.y, TILE_SIZE*2, TILE_SIZE);
 			}
 		}
 

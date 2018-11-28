@@ -9,14 +9,14 @@ import java.io.IOException;
  */
 public abstract class AbstractMapGenerator extends Service implements IMapGenerator {
 	
-	public final String seed;
+	private final String seed;
 
 	public AbstractMapGenerator(ISeedProvider seedProvider) {
 		this.seed = seedProvider.getSeed();
 	}
 
 	@Override
-	public String getSeed() {
+	public final String getSeed() {
 		return seed;
 	}
 
