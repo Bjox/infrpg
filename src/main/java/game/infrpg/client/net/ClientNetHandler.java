@@ -18,7 +18,7 @@ public class ClientNetHandler extends AbstractNetHandler
 {
 	private final ILogger logger;
 	public final ConcurrentLinkedDeque<Chunk> chunksToProcess;
-	
+
 	@Inject
 	public ClientNetHandler(
 		ILogger logger)
@@ -32,10 +32,10 @@ public class ClientNetHandler extends AbstractNetHandler
 	{
 		if (Constants.NET_TRACE)
 			logger.debug("Handling netpacket: " + packet.toString());
-		
+
 		switch (packet.type)
 		{
-			case CHUNK_RESPONSE: handle((ChunkResponse) packet, connection);
+			case CHUNK_RESPONSE: handle((ChunkResponse)packet, connection);
 				break;
 			default: logger.error("Unhandled packet type " + packet.type);
 		}

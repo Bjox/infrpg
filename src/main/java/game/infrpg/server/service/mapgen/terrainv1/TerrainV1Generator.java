@@ -37,7 +37,7 @@ public class TerrainV1Generator extends AbstractMapGenerator
 	@Override
 	public Chunk generateChunk(int x, int y)
 	{
-		return new Chunk(x, y).setTiles((local_x, local_y) -> {
+		return new Chunk(x, y).setTileData((local_x, local_y) -> {
 			int global_x = x * Constants.CHUNK_SIZE + local_x;
 			int global_y = y * Constants.CHUNK_SIZE + local_y;
 			return determineTile(global_x, global_y);
@@ -54,6 +54,7 @@ public class TerrainV1Generator extends AbstractMapGenerator
 	private Tiles heightFilter(double height)
 	{
 		if (height < waterLevel) return Tiles.WATER;
+		//if (height < waterLevel * 1.2) return Tiles.SAND;
 		else return Tiles.GRASS;
 	}
 }

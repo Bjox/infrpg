@@ -24,3 +24,8 @@ Client has connected/disconnected
 Entities
 Entity positions
 Chat messages
+
+
+
+
+Dimension - a 2D world made up of regions in a cartesian coordinate system.

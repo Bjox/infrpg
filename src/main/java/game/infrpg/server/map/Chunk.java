@@ -1,5 +1,6 @@
 package game.infrpg.server.map;
 
+import game.infrpg.client.world.Tiles;
 import game.infrpg.common.util.Constants;
 import java.io.Serializable;
 
@@ -7,12 +8,12 @@ import java.io.Serializable;
  *
  * @author Bjørnar W. Alvestad
  */
-public class Chunk extends AbstractChunk implements Serializable
+public class Chunk extends AbstractChunk implements Serializable, TileDataSupplier
 {
 	// Increment this if non-backwards compatible changes are made on the class.
 	private static final long serialVersionUID = 2L;
 	
-	private final byte[][] tileData;
+	protected final byte[][] tileData;
 	
 	/**
 	 * Empty constructor for kryo.
@@ -34,14 +35,19 @@ public class Chunk extends AbstractChunk implements Serializable
 		this.tileData = orig.tileData;
 	}
 
-	public void setTile(int x, int y, byte tile)
-	{
-		tileData[x][y] = tile;
-	}
-
-	public byte getTile(int x, int y)
+	public byte getTileData(int x, int y)
 	{
 		return tileData[x][y];
+	}
+	
+	public Tiles getTileAt(int x, int y)
+	{
+		return Tiles.fromDataValue(getTileData(x, y));
+	}
+	
+	public void setTileData(int x, int y, byte tile)
+	{
+		tileData[x][y] = tile;
 	}
 	
 	/**
@@ -49,16 +55,27 @@ public class Chunk extends AbstractChunk implements Serializable
 	 * @param supplier
 	 * @return A reference to this chunk.
 	 */
-	public Chunk setTiles(TileDataSupplier supplier)
+	public final Chunk setTileData(TileDataSupplier supplier)
 	{
 		for (int i = 0; i < Constants.CHUNK_SIZE; i++)
 		{
 			for (int j = 0; j < Constants.CHUNK_SIZE; j++)
 			{
-				tileData[i][j] = supplier.supplyTileData(i, j);
+				tileData[i][j] = (byte)supplier.supplyTileData(i, j);
 			}
 		}
 		return this;
+	}
+	
+	public final TileDataSupplier getTileDataSupplier()
+	{
+		return (x, y) -> tileData[x][y];
+	}
+	
+	@Override
+	public int supplyTileData(int x, int y)
+	{
+		return tileData[x][y];
 	}
 
 	@Override
@@ -67,10 +84,6 @@ public class Chunk extends AbstractChunk implements Serializable
 		return String.format("Chunk(%d,%d)", position.getX(), position.getY());
 	}
 
-	@FunctionalInterface
-	public static interface TileDataSupplier
-	{
-		public byte supplyTileData(int x, int y);
-	}
+	
 
 }

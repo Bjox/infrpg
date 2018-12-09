@@ -22,7 +22,10 @@ import game.infrpg.client.screens.ingame.InGameScreen;
 import game.infrpg.client.screens.menu.MenuScreen;
 import game.infrpg.client.util.ClientConfig;
 import game.infrpg.client.world.ChunkCache;
+import game.infrpg.client.world.ClientMapService;
+import game.infrpg.client.world.IClientMapService;
 import game.infrpg.client.world.Tileset;
+import game.infrpg.client.world.wangtiles.WangTileset;
 import game.infrpg.common.util.Arguments;
 import game.infrpg.common.util.Globals;
 import game.infrpg.common.util.Helpers;
@@ -47,8 +50,8 @@ public class InfrpgGame extends Game
 	private float elapsed_t;
 	private float delta_t;
 	private final ClientNetListener net;
-	private final ChunkCache chunkCache;
 	private final FPSCounter fpsCounter;
+	private final ClientMapService mapService;
 
 	private BitmapFont consolaFont;
 	private SpriteBatch batch;
@@ -60,21 +63,21 @@ public class InfrpgGame extends Game
 	 * @param logger
 	 * @param config
 	 * @param net
-	 * @param chunkCache
+	 * @param mapService
 	 */
 	@Inject
 	public InfrpgGame(
 		ILogger logger,
 		ClientConfig config,
 		ClientNetListener net,
-		ChunkCache chunkCache)
+		ClientMapService mapService)
 	{
 		this.logger = logger;
 		this.config = config;
 		this.net = net;
+		this.mapService = mapService;
 		this.elapsed_t = 0;
 		this.screenSize = config.screenResolution.toDimension();
-		this.chunkCache = chunkCache;
 		this.fpsCounter = new FPSCounter(1000);
 
 		Console.setCommandHook(InfrpgGame::execCommand);
@@ -146,6 +149,9 @@ public class InfrpgGame extends Game
 		batch = new SpriteBatch();
 		
 		Tileset.loadTilesets(atlas);
+		WangTileset.loadWangTilesets(atlas);
+		
+		mapService.setup();
 
 		FreeTypeFontGenerator fontgenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/consola.ttf"));
 		FreeTypeFontParameter fontparameter = new FreeTypeFontParameter();
@@ -222,18 +228,25 @@ public class InfrpgGame extends Game
 
 	private void tick()
 	{
-		ClientNetHandler netHandler = net.getHandler();
-		
-		Chunk chunk;
-		while ((chunk = netHandler.chunksToProcess.poll()) != null)
-		{
-			chunkCache.putChunk(new MapChunk(chunk));
-		}
-		
-		
+		processInput();
+		processPendingChunks();
+	}
+	
+	private void processInput()
+	{
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
 		{
 			Gdx.app.exit();
+		}
+	}
+	
+	private void processPendingChunks()
+	{
+		ClientNetHandler netHandler = net.getHandler();
+		Chunk chunk;
+		while ((chunk = netHandler.chunksToProcess.poll()) != null)
+		{
+			mapService.processChunk(chunk);
 		}
 	}
 

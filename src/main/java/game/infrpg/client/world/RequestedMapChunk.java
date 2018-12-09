@@ -29,7 +29,7 @@ public class RequestedMapChunk extends AbstractChunk implements IMapChunk
 	}
 
 	@Override
-	public void render(Tileset tileset, SpriteBatch batch)
+	public void render(ITileProvider tileProvider, SpriteBatch batch)
 	{
 	}
 	

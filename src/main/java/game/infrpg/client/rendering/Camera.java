@@ -12,7 +12,7 @@ import game.infrpg.common.util.Util;
 public class Camera extends OrthographicCamera {
 	
 	/** The entity to follow. */
-	private Entity lookAtEnt;
+	private Entity followEnt;
 	/** Translational offset. */
 	public float offset_x, offset_y;
 	
@@ -21,16 +21,21 @@ public class Camera extends OrthographicCamera {
 	}
 	
 	
-	public void lookAt(Entity ent) {
-		this.lookAtEnt = ent;
+	public void follow(Entity ent) {
+		this.followEnt = ent;
+	}
+	
+	
+	public void moveTo(Entity ent) {
+		position.x = ent.getScreenX() + offset_x;
+		position.y = ent.getScreenY() + offset_y;
 	}
 	
 
 	@Override
 	public void update(boolean updateFrustum) {
-		if (lookAtEnt != null) {
-			position.x = lookAtEnt.getScreenX() + offset_x;
-			position.y = lookAtEnt.getScreenY() + offset_y;
+		if (followEnt != null) {
+			moveTo(followEnt);
 		}
 		super.update(updateFrustum);
 	}

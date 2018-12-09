@@ -1,5 +1,6 @@
 package game.infrpg.client.world;
 
+import game.infrpg.client.world.wangtiles.WangTileset;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
@@ -10,6 +11,7 @@ import game.infrpg.common.net.packets.ChunkRequest;
 import static game.infrpg.common.util.Constants.CHUNK_SIZE;
 import static game.infrpg.common.util.Constants.TILE_SIZE;
 import static game.infrpg.common.util.Constants.CHUNK_RENDER_DISTANCE;
+import game.infrpg.server.map.Chunk;
 import java.time.Duration;
 import lib.di.Inject;
 import lib.logger.ILogger;
@@ -19,29 +21,38 @@ import org.lwjgl.util.Point;
  *
  * @author Bjørnar W. Alvestad
  */
-public class Map implements Disposable, RenderCallCounter
+public class ClientMapService implements IClientMapService, Disposable, RenderCallCounter
 {
 	private static final Duration CHUNK_REQUEST_RETRY_PERIOD = Duration.ofMillis(10000);
 	
 	private final ILogger logger;
-	private final ChunkCache chunkCache;
-	private final SpriteBatch batch;
+	private final IMapChunkStorage chunkStorage;
 	private final Vector2 isoCamPosBuffer;
 	private final ClientNetListener netListener;
+	private final IChunkProcessor chunkProcessor;
+	private WangTileset wangTileset;
+	private SpriteBatch batch;
 	private Tileset tileset;
 
 	@Inject
-	public Map(
+	public ClientMapService(
 		ILogger logger,
-		ChunkCache chunkCache,
-		ClientNetListener netListener)
+		IMapChunkStorage chunkStorage,
+		ClientNetListener netListener,
+		IChunkProcessor chunkProcessor)
 	{
 		this.logger = logger;
-		this.chunkCache = chunkCache;
-		this.batch = new SpriteBatch();
+		this.chunkStorage = chunkStorage;
 		this.isoCamPosBuffer = new Vector2();
 		this.netListener = netListener;
-		this.tileset = Tileset.getTileset(Tileset.Tilesets.NORMAL);
+		this.chunkProcessor = chunkProcessor;
+	}
+	
+	public void setup()
+	{
+		this.batch = new SpriteBatch();
+		this.wangTileset = WangTileset.getWangTileset("overworld");
+		setTileset(Tileset.Tilesets.NORMAL);
 	}
 
 	public void setTileset(Tileset.Tilesets tileset)
@@ -86,7 +97,7 @@ public class Map implements Disposable, RenderCallCounter
 
 	private void renderMapChunk(int x, int y)
 	{
-		IMapChunk chunk = chunkCache.getChunk(x, y);
+		IMapChunk chunk = chunkStorage.getIMapChunk(x, y);
 		if (chunk == null)
 		{
 			requestChunk(x, y);
@@ -101,7 +112,7 @@ public class Map implements Disposable, RenderCallCounter
 		}
 		else
 		{
-			chunk.render(tileset, batch);
+			chunk.render(wangTileset, batch);
 		}
 	}
 	
@@ -109,13 +120,31 @@ public class Map implements Disposable, RenderCallCounter
 	{
 		netListener.sendTCP(new ChunkRequest(x, y)); // TODO: make async
 		RequestedMapChunk chunk = new RequestedMapChunk(x, y);
-		chunkCache.putChunk(chunk);
+		chunkStorage.storeMapChunk(chunk);
 		return chunk;
 	}
 
 	public int getNumCachedChunks()
 	{
-		return chunkCache.getElementCount();
+		return chunkStorage.getCount();
+	}
+	
+	@Override
+	public void processChunk(Chunk chunk)
+	{
+		if (!validateChunk(chunk))
+		{
+			return;
+		}
+		
+		IMapChunk processedChunk = chunkProcessor.process(chunk);
+		chunkStorage.storeMapChunk(processedChunk);
+	}
+	
+	private boolean validateChunk(Chunk chunk)
+	{
+		if (chunk == null) return false;
+		return true;
 	}
 
 	@Override
@@ -131,24 +160,4 @@ public class Map implements Disposable, RenderCallCounter
 		return batch.renderCalls;
 	}
 
-//	public static void main(String[] args)
-//	{
-//		final int X_RENDER_DIST = 7; // 7
-//		final int Y_RENDER_DIST = 3;  // 3
-//		final int RENDER_DIST_AVG = (X_RENDER_DIST + Y_RENDER_DIST) >>> 1; // 5
-//		final int RENDER_DIST_OFFSET = (X_RENDER_DIST - Y_RENDER_DIST) >> 1; // 2
-//		
-//		int xr = RENDER_DIST_AVG;
-//		
-//		for (int i = -xr; i <= xr; i++)
-//		{
-//			int yr = xr - Math.abs(i);
-//			int offset = -Integer.signum(i) * RENDER_DIST_OFFSET;
-//			for (int j = -yr + offset; j <= yr + offset; j++)
-//			{
-//				System.out.printf("%d,%d\n", i, j);
-//				//renderMapChunk(i + centerChunk.getX(), j + centerChunk.getY());
-//			}
-//		}
-//	}
 }

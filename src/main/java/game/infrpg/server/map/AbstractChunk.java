@@ -8,7 +8,7 @@ import org.lwjgl.util.ReadablePoint;
  *
  * @author Bjørnar W. Alvestad
  */
-public class AbstractChunk implements Serializable
+public abstract class AbstractChunk implements Serializable
 {
 	// Increment this if non-backwards compatible changes are made on the class.
 	private static final long serialVersionUID = 2L;

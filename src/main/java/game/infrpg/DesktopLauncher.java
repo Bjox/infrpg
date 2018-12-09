@@ -19,6 +19,11 @@ import game.infrpg.client.net.ClientNetHandler;
 import game.infrpg.client.net.ClientNetListener;
 import game.infrpg.client.util.ClientConfig;
 import game.infrpg.client.world.ChunkCache;
+import game.infrpg.client.world.ClientMapService;
+import game.infrpg.client.world.IChunkProcessor;
+import game.infrpg.client.world.IClientMapService;
+import game.infrpg.client.world.IMapChunkStorage;
+import game.infrpg.client.world.wangtiles.WangChunkProcessor;
 import game.infrpg.common.util.Helpers;
 import game.infrpg.server.map.storage.IMapStorage;
 import game.infrpg.server.net.ServerNetHandler;
@@ -26,7 +31,6 @@ import game.infrpg.server.service.client.ClientService;
 import game.infrpg.server.service.client.IClientService;
 import game.infrpg.server.service.map.IMapService;
 import game.infrpg.server.service.map.MapService;
-import game.infrpg.server.service.mapgen.flatgrass.FlatgrassGenerator;
 import game.infrpg.server.service.mapgen.IMapGenerator;
 import game.infrpg.server.service.mapgen.ISeedProvider;
 import game.infrpg.server.service.mapgen.SeedProvider;
@@ -170,7 +174,10 @@ public class DesktopLauncher {
 		container.registerSingleton(ClientNetListener.class);
 		container.registerSingleton(ClientNetHandler.class);
 		
-		container.registerSingleton(ChunkCache.class);
+		container.registerSingleton(IClientMapService.class, ClientMapService.class);
+		container.registerSingleton(IMapChunkStorage.class, ChunkCache.class);
+		
+		container.registerType(IChunkProcessor.class, WangChunkProcessor.class);
 	}
 
 	// TODO: registering generic IStorage to ServerConfig specific FileStorage
@@ -179,7 +186,6 @@ public class DesktopLauncher {
 		container.registerSingleton(IStorage.class, new FileStorage(Constants.SERVER_CONFIG_PATHNAME));
 		container.resolveAndRegisterInstance(ServerConfig.class).initConfig();
 
-		//container.registerType(IMapGenerator.class, FlatgrassGenerator.class);
 		container.registerType(IMapGenerator.class, TerrainV1Generator.class);
 		container.registerType(ISeedProvider.class, SeedProvider.class);
 		container.registerSingleton(IMapStorage.class, Constants.MAP_STORAGE_TYPE);

@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import game.infrpg.common.util.Globals;
-import game.infrpg.client.world.Map;
+import game.infrpg.client.world.ClientMapService;
 import game.infrpg.client.InfrpgGame;
 import static game.infrpg.client.InfrpgGame.*;
 import game.infrpg.client.rendering.Camera;
@@ -33,7 +33,7 @@ public class InGameScreen extends AbstractScreen
 {
 	private final ILogger logger;
 	private final ClientConfig config;
-	private final Map map;
+	private final ClientMapService map;
 	private final Camera cam;
 	private final TilesetCycler tilesetCycler;
 	private final SpriteBatch batch;
@@ -48,7 +48,7 @@ public class InGameScreen extends AbstractScreen
 		InfrpgGame game,
 		ILogger logger,
 		ClientConfig config,
-		Map map)
+		ClientMapService map)
 	{
 		super(game);
 		this.logger = logger;

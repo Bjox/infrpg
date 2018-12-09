@@ -175,7 +175,10 @@ public class Container implements IContainer {
 			catch (DIException e) {
 				exStack.add(e);
 			}
-			catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
+			catch (InvocationTargetException e) {
+				throw new RuntimeException("An exception occurred while constructing instance of type " + type.getName(), e.getCause());
+			}
+			catch (IllegalAccessException | IllegalArgumentException | InstantiationException e) {
 				throw new RuntimeException("An exception occurred while constructing instance of type " + type.getName(), e);
 			}
 		}

@@ -8,6 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 public interface IMapChunk
 {
-	void render(Tileset tileset, SpriteBatch batch);
+	void render(ITileProvider tileProvider, SpriteBatch batch);
 	long getId();
 }

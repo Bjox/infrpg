@@ -1,6 +1,6 @@
 package game.infrpg.client.screens.ingame;
 
-import game.infrpg.client.world.Map;
+import game.infrpg.client.world.ClientMapService;
 import game.infrpg.client.world.Tileset.Tilesets;
 import java.util.Arrays;
 
@@ -13,7 +13,7 @@ public class TilesetCycler {
 	private int currentIndex;
 	private final int numberOfTilesets;
 	
-	public TilesetCycler(Map map) {
+	public TilesetCycler(ClientMapService map) {
 		this.numberOfTilesets = Tilesets.values().length;
 		currentIndex = indexOfTilesetEnum(map.getTileset());
 	}

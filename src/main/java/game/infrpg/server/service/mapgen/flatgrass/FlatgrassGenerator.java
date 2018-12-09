@@ -22,7 +22,7 @@ public class FlatgrassGenerator extends AbstractMapGenerator
 	public Chunk generateChunk(int x, int y)
 	{
 		Chunk chunk = new Chunk(x, y);
-		chunk.setTiles((i, j) -> Tiles.GRASS.dataValue);
+		chunk.setTileData((i, j) -> Tiles.GRASS.dataValue);
 		return chunk;
 	}
 

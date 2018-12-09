@@ -9,29 +9,8 @@ import java.util.HashMap;
  *
  * @author Bjørnar W. Alvestad
  */
-public class Tileset
+public class Tileset implements ITileProvider
 {
-
-	/**
-	 * Available tilesets.
-	 */
-	public enum Tilesets
-	{
-		NORMAL,
-		SHIT,
-		DEV;
-
-		/**
-		 * Get the Tileset singleton instance.
-		 *
-		 * @return
-		 */
-		public Tileset instance()
-		{
-			return Tileset.getTileset(this);
-		}
-	}
-
 	/** Tileset singletons storage. */
 	private static HashMap<String, Tileset> tilesets;
 
@@ -100,20 +79,22 @@ public class Tileset
 	{
 		this.name = name;
 		this.enumInstance = tileset;
-		this.textures = new TextureRegion[Tiles.AMOUNT];
+		this.textures = new TextureRegion[Tiles.LENGTH];
 
 		for (Tiles tile : Tiles.values())
 		{
 			String tilename = tile.name().toLowerCase();
-			TextureRegion tex = atlas.findRegion(String.format("tilesets/%s/%s", name, tilename));
-			if (tex == null) Globals.logger().warning(String.format("Missing tile \"%s\" in tileset \"%s\".", tilename, name));
+			TextureRegion tex = atlas.findRegion(String.format("tilesets/plain/%s/%s", name, tilename));
+			if (tex == null) Globals.logger().warning(
+					String.format("Missing tile \"%s\" in tileset \"%s\".", tilename, name));
 			textures[tile.dataValue] = tex;
 		}
 	}
-
-	public TextureRegion getTexture(int index)
+	
+	@Override
+	public TextureRegion getTile(int dataValue)
 	{
-		return textures[index];
+		return textures[dataValue];
 	}
 
 	public TextureRegion getTexture(Tiles tile)
@@ -125,6 +106,26 @@ public class Tileset
 	public String toString()
 	{
 		return String.format("Tileset: %s", name);
+	}
+
+	/**
+	 * Available tilesets.
+	 */
+	public enum Tilesets
+	{
+		NORMAL,
+		SHIT,
+		DEV;
+
+		/**
+		 * Get the Tileset singleton instance.
+		 *
+		 * @return
+		 */
+		public Tileset instance()
+		{
+			return Tileset.getTileset(this);
+		}
 	}
 
 }
