@@ -54,7 +54,7 @@ public class TerrainV1Generator extends AbstractMapGenerator
 	private Tiles heightFilter(double height)
 	{
 		if (height < waterLevel) return Tiles.WATER;
-		//if (height < waterLevel * 1.2) return Tiles.SAND;
+		if (height < waterLevel * 1.08) return Tiles.SAND;
 		else return Tiles.GRASS;
 	}
 }

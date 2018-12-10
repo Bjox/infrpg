@@ -51,7 +51,7 @@ public class ClientMapService implements IClientMapService, Disposable, RenderCa
 	public void setup()
 	{
 		this.batch = new SpriteBatch();
-		this.wangTileset = WangTileset.getWangTileset("overworld");
+		this.wangTileset = WangTileset.getWangTileset("overworld32");
 		setTileset(Tileset.Tilesets.NORMAL);
 	}
 

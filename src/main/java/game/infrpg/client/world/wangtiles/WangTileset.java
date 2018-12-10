@@ -19,13 +19,15 @@ public class WangTileset implements ITileProvider
 {
 	public static final String[] TILESET_NAMES =
 	{
-		"overworld"
+		"overworld",
+		"overworld32"
 	};
 	public static final Variation[] VARIATIONS =
 	{
 		// Don't reorder these
 		new Variation(WATER, GRASS),
-		new Variation(WATER, SAND)
+		new Variation(WATER, SAND),
+		new Variation(GRASS, SAND)
 	};
 
 	private static final Map<String, WangTileset> wangTilesets = new HashMap<>();
