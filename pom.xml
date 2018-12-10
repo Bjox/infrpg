@@ -175,7 +175,7 @@
 				<executions>
 					<execution>
 						<id>groovy-magic</id>
-						<phase>prepare-package</phase>
+						<phase>generate-resources</phase>
 						<goals>
 							<goal>execute</goal>
 						</goals>
