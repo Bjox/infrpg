@@ -7,7 +7,7 @@ import lib.di.Inject;
  *
  * @author Bjørnar W. Alvestad
  */
-public class PlainChunkProcessor implements IChunkProcessor
+public class PlainChunkProcessor extends AbstractChunkProcessor
 {
 	@Inject
 	public PlainChunkProcessor()

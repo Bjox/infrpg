@@ -137,8 +137,9 @@ public class ClientMapService implements IClientMapService, Disposable, RenderCa
 			return;
 		}
 		
-		IMapChunk processedChunk = chunkProcessor.process(chunk);
-		chunkStorage.storeMapChunk(processedChunk);
+		chunkProcessor
+			.processAsync(chunk)
+			.thenAccept(chunkStorage::storeMapChunk);
 	}
 	
 	private boolean validateChunk(Chunk chunk)
@@ -152,6 +153,7 @@ public class ClientMapService implements IClientMapService, Disposable, RenderCa
 	{
 		logger.debug("Disposing map...");
 		batch.dispose();
+		chunkProcessor.dispose();
 	}
 
 	@Override
