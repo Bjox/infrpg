@@ -6,7 +6,7 @@ import game.infrpg.common.util.Globals;
 import game.infrpg.common.util.Helpers;
 import lib.cmd.Command;
 import lib.cmd.CommandObject;
-import lib.cmd.Default;
+import lib.cmd.DefaultValue;
 import lib.di.Inject;
 
 /**
@@ -50,7 +50,7 @@ public class ClientCommands implements CommandObject
 	}
 
 	@Command
-	public void connect(String ip, @Default(Constants.DEFAULT_PORT_STR) int port)
+	public void connect(String ip, @DefaultValue(Constants.DEFAULT_PORT_STR) int port)
 	{
 		InfrpgGame.connect(ip, port);
 	}

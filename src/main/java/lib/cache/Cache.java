@@ -20,12 +20,12 @@ import lib.logger.ILogger;
 public class Cache<K, V> implements ICache<K, V>
 {
 	/**
-	 * Default cleanup period in milliseconds.
+	 * DefaultValue cleanup period in milliseconds.
 	 */
 	private static final long DEFAULT_CLEANUP_PERIOD = 60_000;
 
 	/**
-	 * Default cache period in milliseconds.
+	 * DefaultValue cache period in milliseconds.
 	 */
 	private static final long DEFAULT_CACHE_PERIOD = 59_000;
 

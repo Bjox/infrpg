@@ -54,7 +54,7 @@ public class ScriptRunner {
     private boolean fullLineDelimiter = false;
 
     /**
-     * Default constructor
+     * DefaultValue constructor
      */
     public ScriptRunner(Connection connection, boolean autoCommit,
                         boolean stopOnError) {

@@ -28,7 +28,7 @@ public class CommandMethod {
 		int numParamsWithDefaultValue = 0;
 		int i = 0;
 		for (Parameter param : method.getParameters()) {
-			Default defAnnotation = param.getAnnotation(Default.class);
+			DefaultValue defAnnotation = param.getAnnotation(DefaultValue.class);
 			boolean isDefAnnotationPresent = defAnnotation != null;
 			
 			if (shouldHaveDefaultValueAtThisPoint && !isDefAnnotationPresent) {

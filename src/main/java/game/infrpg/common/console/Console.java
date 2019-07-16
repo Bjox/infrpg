@@ -32,7 +32,8 @@ import lib.cmd.CommandParseException;
  */
 public final class Console extends JFrame {
 
-	private static final String TITLE = "Console";
+    private static final int DOC_MAX_LENGTH = 20000;
+    private static final String TITLE = "Console";
 	private static final int HISTORY_MAX = 100;
 	private static final Color COLOR_BACKGROUND = Color.DARK_GRAY.darker().darker();
 	private static final Color COLOR_FOREGROUND = Color.LIGHT_GRAY;
@@ -780,8 +781,8 @@ public final class Console extends JFrame {
 			return;
 		}
 		try {
+		    trimDocument();
 			int offset = doc.getLength();
-			int lf = arg0.lastIndexOf("\n");
 
 			StyleConstants.setForeground(style, color);
 			doc.insertString(offset, arg0, style);
@@ -790,6 +791,15 @@ public final class Console extends JFrame {
 		catch (BadLocationException e) {
 		}
 	}
+
+	private static void trimDocument() {
+	    int lenToRemove = Math.max(0, doc.getLength() - DOC_MAX_LENGTH);
+	    try {
+            doc.remove(0, lenToRemove);
+        }
+	    catch (BadLocationException e) {
+        }
+    }
 
 	private static String historyBack() {
 		int oldHistory = historyPointer;

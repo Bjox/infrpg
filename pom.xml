@@ -142,6 +142,7 @@
 					<compilerArgs>
 						<arg>-Xlint:unchecked</arg>
 						<arg>-Xlint:deprecation</arg>
+						<arg>-parameters</arg>
 					</compilerArgs>
 				</configuration>
 			</plugin>
@@ -182,16 +183,8 @@
 						<configuration>
 							<source>
 								println "PACKING TEXTURES"
-								
 								import com.badlogic.gdx.tools.texturepacker.TexturePacker
-								
-								def input = new File("raw/")
-								def output = new File("src/main/resources/packed/")
-								def packName = "pack"
-								
-								output.deleteDir()
-								TexturePacker.process(input.getAbsolutePath(), output.getAbsolutePath(), packName)
-								
+								TexturePacker.process("raw", "src/main/resources/packed", "pack")
 								println "DONE PACKING TEXTURES"
 							</source>
 						</configuration>

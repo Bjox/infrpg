@@ -35,19 +35,19 @@ public final class Constants
 	/** Compress regions in storage. */
 	public static final boolean COMPRESS_REGIONS = true;
 
-	/** Default application port. */
+	/** DefaultValue application port. */
 	public static final int DEFAULT_PORT = 30555;
 
-	/** Default application port. */
+	/** DefaultValue application port. */
 	public static final String DEFAULT_PORT_STR = "30555";
 
-	/** Default FPS used when loding animations. */
+	/** DefaultValue FPS used when loading animations. */
 	public static final float DEFAULT_ANIMATION_FRAMERATE = 20;
 
-	/** Default playmode used when loading animations. */
+	/** DefaultValue playmode used when loading animations. */
 	public static final Animation.PlayMode DEFAULT_ANIMATION_PLAYMODE = Animation.PlayMode.LOOP;
 
-	/** Path to logile. */
+	/** Path to logfile. */
 	public static final String LOGFILE = "last_run.log";
 
 	/** The default name of the map directory. */
