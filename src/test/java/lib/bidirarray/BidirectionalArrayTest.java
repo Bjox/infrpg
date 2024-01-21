@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import javafx.util.Pair;
 import lib.bidirarray.BidirectionalArray;
 import static lib.util.Util.zip;
 import org.junit.After;
